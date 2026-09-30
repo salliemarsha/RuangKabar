@@ -8,6 +8,16 @@ use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
+    private function authorizeArticle(Article $article)
+        {
+            if (auth()->user()->role === 'admin') {
+                return;
+            }
+
+            if ($article->user_id !== auth()->id()) {
+                abort(403);
+            }
+        }
     public function index(Request $request)
     {
 
@@ -79,6 +89,8 @@ class ArticleController extends Controller
 
         public function edit(Article $article)
     {
+        $this->authorizeArticle($article);
+
         $categories = \App\Models\Category::orderBy('name')->get();
         $tags = \App\Models\Tag::orderBy('name')->get();
 
@@ -89,6 +101,8 @@ class ArticleController extends Controller
     
         public function update(Request $request, Article $article)
     {
+        $this->authorizeArticle($article);
+
         $data = $request->validate([
             'title' => 'required|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -113,6 +127,8 @@ class ArticleController extends Controller
 
         public function destroy(Article $article)
     {
+        $this->authorizeArticle($article);
+        
         $article->delete();
 
         return redirect('/articles')->with(

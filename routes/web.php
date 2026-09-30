@@ -23,7 +23,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware('auth', 'role:admin');
 Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middleware('auth', 'role:penulis');
 Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
-Route::resource('/articles', ArticleController::class)->middleware('auth');
+Route::resource('/articles', ArticleController::class)->middleware(['auth', 'role:admin,penulis']);
 Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
 Route::resource('/tags', TagController::class)->middleware(['auth', 'role:admin']);
 Route::resource('/comments', CommentController::class)->middleware('auth');
