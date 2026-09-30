@@ -61,6 +61,30 @@
         <br>
 
         <div>
+            <label>Tag</label>
+            <br>
+
+            @if ($tags->count())
+                @foreach ($tags as $tag)
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="tags[]"
+                            value="{{ $tag->id }}"
+                            {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}
+                        >
+                        {{ $tag->name }}
+                    </label>
+                    <br>
+                @endforeach
+            @else
+                <p>Belum ada tag.</p>
+            @endif
+        </div>
+
+        <br>
+
+        <div>
             <label>Status</label>
             <br>
             <select name="status" required>

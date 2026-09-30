@@ -28,6 +28,17 @@
                     Status: {{ $article->status }}
                 </p>
 
+                <p>
+                    Tag:
+                    @if ($article->tags->count())
+                        @foreach ($article->tags as $tag)
+                            {{ $tag->name }}@if (!$loop->last), @endif
+                        @endforeach
+                    @else
+                        Belum ada tag
+                    @endif
+                </p>
+
                 <a href="/articles/{{ $article->id }}">Lihat</a>
                 |
                 <a href="/articles/{{ $article->id }}/edit">Edit</a>

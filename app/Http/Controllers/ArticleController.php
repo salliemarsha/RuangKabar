@@ -10,7 +10,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::with(['category', 'user'])
+        $articles = Article::with(['category', 'user', 'tags'])
             ->latest()
             ->paginate(10);
 
@@ -20,8 +20,9 @@ class ArticleController extends Controller
     public function create()
     {
         $categories = \App\Models\Category::orderBy('name')->get();
+        $tags = \App\Models\Tag::orderBy('name')->get();
 
-        return view('articles.create', compact('categories'));
+        return view('articles.create', compact('categories', 'tags'));
     }
 
      public function store(Request $request)
@@ -32,12 +33,18 @@ class ArticleController extends Controller
             'content' => 'required',
             'image' => 'nullable|max:255',
             'status' => 'required|in:draft,published',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         $data['user_id'] = auth()->id();
         $data['slug'] = Str::slug($data['title']);
 
-        Article::create($data);
+        $article = Article::create($data);
+
+        if ($request->has('tags')) {
+            $article->tags()->sync($request->tags);
+        }
 
         return redirect('/articles')->with(
             'success',
@@ -55,8 +62,11 @@ class ArticleController extends Controller
         public function edit(Article $article)
     {
         $categories = \App\Models\Category::orderBy('name')->get();
+        $tags = \App\Models\Tag::orderBy('name')->get();
 
-        return view('articles.edit', compact('article', 'categories'));
+        $article->load('tags');
+
+        return view('articles.edit', compact('article', 'categories', 'tags'));
     }
     
         public function update(Request $request, Article $article)
@@ -67,11 +77,15 @@ class ArticleController extends Controller
             'content' => 'required',
             'image' => 'nullable|max:255',
             'status' => 'required|in:draft,published',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         $data['slug'] = Str::slug($data['title']);
 
         $article->update($data);
+
+        $article->tags()->sync($request->tags ?? []);
 
         return redirect('/articles')->with(
             'success',
