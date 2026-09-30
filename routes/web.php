@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PenulisController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ArticleController;
 
 Route::get('/', function () {
     return view('home');
@@ -19,5 +20,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware('auth', 'role:admin');
 Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middleware('auth', 'role:penulis');
 Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
+Route::resource('/articles', ArticleController::class)->middleware('auth');
 
 
