@@ -8,6 +8,7 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TagController;
 
 Route::get('/', function () {
     return view('home');
@@ -23,5 +24,6 @@ Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middl
 Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
 Route::resource('/articles', ArticleController::class)->middleware('auth');
 Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
+Route::resource('/tags', TagController::class)->middleware(['auth', 'role:admin']);
 
 

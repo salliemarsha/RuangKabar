@@ -12,6 +12,8 @@ class Tag extends Model
         'slug'
     ];
 
+    public $timestamps = false;
+
     public function articles(): BelongsToMany
     {
         return $this->belongsToMany(Article::class, 'article_tags', 'tag_id', 'article_id');
