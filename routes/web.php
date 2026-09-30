@@ -9,6 +9,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\CommentController;
 
 Route::get('/', function () {
     return view('home');
@@ -25,5 +26,6 @@ Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['aut
 Route::resource('/articles', ArticleController::class)->middleware('auth');
 Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
 Route::resource('/tags', TagController::class)->middleware(['auth', 'role:admin']);
+Route::resource('/comments', CommentController::class)->middleware('auth');
 
 

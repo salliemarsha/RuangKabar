@@ -54,7 +54,14 @@ class ArticleController extends Controller
 
         public function show(Article $article)
     {
-        $article->load(['category', 'user', 'tags']);
+        $article->load(['category',
+         'user',
+        'tags',
+        'comments' => function ($query) {
+                $query->where('status', 'approved')
+                    ->with('user')
+                    ->latest();
+            }]);
 
         return view('articles.show', compact('article'));
     }
