@@ -15,4 +15,11 @@ class ArticleController extends Controller
 
         return view('articles.index', compact('articles'));
     }
+
+    public function create()
+    {
+        $categories = \App\Models\Category::orderBy('name')->get();
+
+        return view('articles.create', compact('categories'));
+    }
 }

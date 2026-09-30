@@ -13,6 +13,8 @@ class Category extends Model
         'slug',
     ];
 
+    public $timestamps = false;
+
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class, 'category_id');
