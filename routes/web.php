@@ -7,6 +7,10 @@ use App\Http\Controllers\PenulisController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\RegisterController;
 
+Route::get('/', function () {
+    return view('home');
+});
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
