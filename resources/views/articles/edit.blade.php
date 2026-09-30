@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Artikel - RuangKabar</title>
+</head>
+<body>
+
+    <h1>Edit Artikel</h1>
+
+    @if ($errors->any())
+        <div>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="/articles/{{ $article->id }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div>
+            <label>Judul</label>
+            <br>
+            <input
+                type="text"
+                name="title"
+                value="{{ old('title', $article->title) }}"
+                required
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Kategori</label>
+            <br>
+            <select name="category_id" required>
+                @foreach ($categories as $category)
+                    <option
+                        value="{{ $category->id }}"
+                        {{ $article->category_id == $category->id ? 'selected' : '' }}
+                    >
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Isi Artikel</label>
+            <br>
+            <textarea name="content" rows="10" required>{{ old('content', $article->content) }}</textarea>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Gambar</label>
+            <br>
+            <input
+                type="text"
+                name="image"
+                value="{{ old('image', $article->image) }}"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Status</label>
+            <br>
+            <select name="status" required>
+                <option value="draft" {{ $article->status == 'draft' ? 'selected' : '' }}>
+                    Draft
+                </option>
+
+                <option value="published" {{ $article->status == 'published' ? 'selected' : '' }}>
+                    Published
+                </option>
+            </select>
+        </div>
+
+        <br>
+
+        <button type="submit">Update Artikel</button>
+        <a href="/articles">Kembali</a>
+    </form>
+
+</body>
+</html>
