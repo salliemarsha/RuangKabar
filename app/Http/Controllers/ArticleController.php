@@ -8,13 +8,24 @@ use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::with(['category', 'user', 'tags'])
-            ->latest()
-            ->paginate(10);
 
-        return view('articles.index', compact('articles'));
+        $search = $request->search;
+    
+        $articles = Article::with(['category', 'user', 'tags'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', '%' . $search . '%')
+                        ->orWhere('content', 'like', '%' . $search . '%');
+                });
+            })
+
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('articles.index', compact('articles', 'search'));
     }
 
     public function create()

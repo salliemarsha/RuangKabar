@@ -7,6 +7,23 @@
 
     <h1>Daftar Artikel</h1>
 
+        <form action="/articles" method="GET">
+            <input
+                type="text"
+                name="search"
+                value="{{ $search }}"
+                placeholder="Cari artikel..."
+            >
+
+        <button type="submit">Cari</button>
+
+        @if ($search)
+            <a href="/articles">Reset</a>
+        @endif
+    </form>
+
+    <hr>
+
     <a href="/articles/create">Tambah Artikel</a>
 
     <hr>
