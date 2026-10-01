@@ -47,3 +47,19 @@ Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])
 Route::get('/articles/{article}', [ArticleController::class, 'show'])
     ->name('articles.show');
 
+Route::post('/comments', [CommentController::class, 'store'])
+    ->middleware(['auth', 'role:pengguna'])
+    ->name('comments.store');
+
+Route::get('/comments', [CommentController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('comments.index');
+
+Route::put('/comments/{comment}', [CommentController::class, 'update'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('comments.update');
+
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('comments.destroy');
+

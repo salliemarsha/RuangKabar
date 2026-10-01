@@ -51,7 +51,6 @@
                     <button type="submit">Simpan Status</button>
                 </form>
 
-                <a href="/comments/{{ $comment->id }}/edit">Edit</a>
 
                 <form
                     action="/comments/{{ $comment->id }}"
