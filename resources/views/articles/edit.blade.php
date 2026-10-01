@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <form action="/articles/{{ $article->id }}" method="POST">
+    <form action="/articles/{{ $article->id }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -60,15 +60,29 @@
         <br>
 
         <div>
-            <label>Gambar</label>
+            <label for="image">Gambar</label>
             <br>
-            <input
-                type="text"
-                name="image"
-                value="{{ old('image', $article->image) }}"
-            >
-        </div>
 
+            @if ($article->image)
+                <img
+                    src="{{ asset('storage/' . $article->image) }}"
+                    alt="{{ $article->title }}"
+                    width="200"
+                >
+                <br><br>
+            @endif
+
+            <input
+                type="file"
+                name="image"
+                id="image"
+                accept=".jpg,.jpeg,.png,.webp"
+            >
+
+            @error('image')
+                <div>{{ $message }}</div>
+            @enderror
+        </div>
         <br>
 
         <div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -116,6 +117,14 @@ class ArticleController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($article->image && Storage::disk('public')->exists($article->image)) {
+                Storage::disk('public')->delete($article->image);
+            }
+
+            $data['image'] = $request->file('image')->store('articles', 'public');
+        }
 
         $data['slug'] = Str::slug($data['title']);
 
