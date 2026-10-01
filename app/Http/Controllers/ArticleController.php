@@ -39,6 +39,15 @@ class ArticleController extends Controller
         return view('articles.index', compact('articles', 'search'));
     }
 
+    public function report()
+    {
+        $articles = Article::with(['category', 'user'])
+            ->latest()
+            ->get();
+
+        return view('reports.articles', compact('articles'));
+    }
+
     public function create()
     {
         $categories = \App\Models\Category::orderBy('name')->get();

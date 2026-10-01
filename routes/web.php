@@ -25,6 +25,9 @@ Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middl
 Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
 Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
 Route::resource('/tags', TagController::class)->middleware(['auth', 'role:admin']);
+Route::get('/reports/articles', [ArticleController::class, 'report'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('reports.articles');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/create', [ArticleController::class, 'create'])
     ->name('articles.create');
