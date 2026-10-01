@@ -2,6 +2,13 @@
 <html>
 <head>
     <title>{{ $article->title }} - RuangKabar</title>
+    @if ($article->image)
+        <img
+            src="{{ asset('storage/' . $article->image) }}"
+            alt="{{ $article->title }}"
+            width="400"
+        >
+    @endif
 </head>
 <body>
 

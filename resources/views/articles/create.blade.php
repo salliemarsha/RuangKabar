@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <form action="/articles" method="POST">
+    <form action="/articles" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div>
@@ -53,10 +53,15 @@
         <br>
 
         <div>
-            <label>Gambar</label>
-            <br>
-            <input type="text" name="image" value="{{ old('image') }}">
-        </div>
+            
+            <label for="image">Gambar</label>
+            <input type="file" name="image" id="image" accept=".jpg,.jpeg,.png,.webp">
+
+            @error('image')
+                <div>{{ $message }}</div>
+            @enderror
+
+                    </div>
 
         <br>
 

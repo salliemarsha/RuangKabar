@@ -52,11 +52,15 @@ class ArticleController extends Controller
             'title' => 'required|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required',
-            'image' => 'nullable|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'status' => 'required|in:draft,published',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('articles', 'public');
+        }
 
         $data['user_id'] = auth()->id();
         $data['slug'] = Str::slug($data['title']);
