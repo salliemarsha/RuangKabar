@@ -10,9 +10,16 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
+use App\Models\Article;
 
 Route::get('/', function () {
-    return view('home');
+    $articles = Article::with(['category', 'user', 'tags'])
+        ->where('status', 'published')
+        ->latest()
+        ->take(6)
+        ->get();
+
+    return view('home', compact('articles'));
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
