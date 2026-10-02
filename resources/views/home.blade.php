@@ -419,88 +419,278 @@
             }
         }
 
-        /* ===== SECTION LAIN (BELUM DIKERJAKAN PADA TAHAP INI) ===== */
-        .container {
-            width: 84%;
+        /* ===== BERITA TERBARU ===== */
+        .latest {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 0 auto;
+            padding: 56px 24px 72px;
         }
 
-        .section-title {
-            margin-bottom: 25px;
+        .latest-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 16px;
+            padding-bottom: 14px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .latest-head h2 {
+            font-family: var(--serif);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .latest-all {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .latest-all:hover {
+            text-decoration: underline;
+        }
+
+        .latest-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 40px 32px;
+        }
+
+        .news-item {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .news-media {
+            aspect-ratio: 3 / 2;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #E7E3DA;
+            margin-bottom: 16px;
+        }
+
+        .news-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .3s;
+        }
+
+        .news-item:hover .news-media img {
+            transform: scale(1.03);
+        }
+
+        .latest .cat {
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .news-item h3 {
+            font-family: var(--serif);
+            font-size: 21px;
+            line-height: 1.3;
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: color .15s;
+        }
+
+        .news-item:hover h3 {
+            color: var(--accent);
+        }
+
+        .news-excerpt {
+            font-size: 14.5px;
+            line-height: 1.65;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .news-item.wide {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 28px;
+            align-items: start;
+        }
+
+        .news-item.wide .news-media {
+            margin-bottom: 0;
+            aspect-ratio: 4 / 3;
+        }
+
+        .news-item.wide h3 {
             font-size: 26px;
         }
 
-        .articles {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
+        .latest-empty {
+            padding: 32px 0;
+            color: var(--muted);
+            border-bottom: 1px solid var(--line);
         }
 
-        .card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #ddd;
-        }
-
-        .card-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background: #e5e7eb;
-        }
-
-        .card-content {
-            padding: 20px;
-        }
-
-        .category {
-            font-size: 13px;
-            color: #2563eb;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .card h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .read-more {
-            text-decoration: none;
-            color: #2563eb;
-            font-weight: bold;
-        }
-
-        .empty {
-            background: white;
-            padding: 30px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-
-        footer {
-            margin-top: 60px;
-            padding: 25px;
-            text-align: center;
-            background: #1f2937;
-            color: #d1d5db;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
+        @media (max-width: 1023px) {
+            .latest {
+                padding: 44px 24px 56px;
             }
 
-            .articles {
+            .latest-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 36px 28px;
+            }
+
+            .news-item.wide {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .latest {
+                padding: 36px 20px 48px;
+            }
+
+            .latest-head h2 {
+                font-size: 20px;
+            }
+
+            .latest-grid {
                 grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .news-item,
+            .news-item.wide {
+                display: block;
+                grid-column: auto;
+                padding: 24px 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .news-item:first-child {
+                padding-top: 0;
+            }
+
+            .news-item.wide .news-media {
+                margin-bottom: 16px;
+                aspect-ratio: 3 / 2;
+            }
+
+            .news-item h3,
+            .news-item.wide h3 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: var(--ink);
+            color: #F7F5F0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 56px 24px 40px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+            gap: 40px;
+        }
+
+        .footer-logo {
+            font-family: var(--serif);
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: #F7F5F0;
+            text-decoration: none;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-about {
+            margin-top: 12px;
+            max-width: 320px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #A8A8A8;
+        }
+
+        .footer-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #F7F5F0;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li + li {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            font-size: 14px;
+            color: #A8A8A8;
+            text-decoration: none;
+            transition: color .15s;
+        }
+
+        .footer-links a:hover {
+            color: #F7F5F0;
+        }
+
+        .footer-info {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #A8A8A8;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px 28px;
+            border-top: 1px solid #3A3B3E;
+            font-size: 12.5px;
+            color: #8A8A8A;
+        }
+
+        @media (max-width: 1023px) {
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+                padding: 48px 24px 32px;
+            }
+
+            .footer-brand {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .footer-inner {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                padding: 40px 20px 28px;
+            }
+
+            .footer-brand {
+                grid-column: auto;
+            }
+
+            .footer-bottom {
+                padding: 18px 20px 24px;
             }
         }
     </style>
@@ -614,53 +804,47 @@
 
 </section>
 
-{{-- ================= BERITA TERBARU (belum dikerjakan) ================= --}}
-<main class="container">
+{{-- ================= BERITA TERBARU ================= --}}
+<section class="latest" aria-labelledby="latest-title">
 
-    <h2 class="section-title">Berita Terbaru</h2>
+    <div class="latest-head">
+        <h2 id="latest-title">Berita Terbaru</h2>
+        <a class="latest-all" href="{{ route('articles.index') }}">Lihat Semua →</a>
+    </div>
 
-    @if ($articles->count())
+    @php
+        $latest = $articles->slice(1);
+    @endphp
 
-        <div class="articles">
+    @if ($latest->count())
 
-            @foreach ($articles as $article)
+        <div class="latest-grid">
 
-                <article class="card">
+            @foreach ($latest as $article)
 
-                    @if ($article->image)
-                        <img
-                            class="card-image"
-                            src="{{ asset('storage/' . $article->image) }}"
-                            alt="{{ $article->title }}"
-                        >
-                    @else
-                        <div class="card-image"></div>
-                    @endif
-
-                    <div class="card-content">
-
-                        <div class="category">
-                            {{ $article->category->name }}
-                        </div>
-
-                        <h3>
-                            {{ $article->title }}
-                        </h3>
-
-                        <p>
-                            {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 120) }}
-                        </p>
-
-                        <a
-                            class="read-more"
-                            href="{{ route('articles.show', $article) }}"
-                        >
-                            Baca Selengkapnya →
-                        </a>
-
+                <a
+                    class="news-item {{ $loop->first ? 'wide' : '' }}"
+                    href="{{ route('articles.show', $article) }}"
+                >
+                    <div class="news-media">
+                        @if ($article->image)
+                            <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}">
+                        @else
+                            <div class="ph">RK</div>
+                        @endif
                     </div>
 
-                </article>
+                    <div class="news-body">
+                        <div class="cat">{{ $article->category->name }}</div>
+                        <h3>{{ $article->title }}</h3>
+                        <p class="news-excerpt">
+                            {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 110) }}
+                        </p>
+                        <div class="meta">
+                            {{ $article->user->name }}, {{ $article->created_at->format('d M Y') }}
+                        </div>
+                    </div>
+                </a>
 
             @endforeach
 
@@ -668,16 +852,38 @@
 
     @else
 
-        <div class="empty">
-            Belum ada artikel yang dipublikasikan.
-        </div>
+        <p class="latest-empty">Belum ada berita terbaru.</p>
 
     @endif
 
-</main>
+</section>
 
-<footer>
-    &copy; {{ date('Y') }} RuangKabar. Semua hak dilindungi.
+{{-- ================= FOOTER ================= --}}
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a class="footer-logo" href="/">RUANG<span>KABAR</span></a>
+            <p class="footer-about">Portal berita dan informasi terkini.</p>
+        </div>
+
+        <div>
+            <h2 class="footer-title">Navigasi</h2>
+            <ul class="footer-links">
+                <li><a href="/">Beranda</a></li>
+                <li><a href="{{ route('articles.index') }}">Berita</a></li>
+                <li><a href="{{ route('articles.index') }}">Kategori</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 class="footer-title">Informasi</h2>
+            <p class="footer-info">Portal Berita RuangKabar</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        &copy; {{ date('Y') }} RuangKabar. All rights reserved.
+    </div>
 </footer>
 
 <script>
