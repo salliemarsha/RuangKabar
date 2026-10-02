@@ -20,25 +20,25 @@ class ArticleController extends Controller
             }
         }
     public function index(Request $request)
-    {
+{
+    $search = $request->search;
 
-        $search = $request->search;
-    
-        $articles = Article::with(['category', 'user', 'tags'])
-            ->when($search, function ($query, $search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('title', 'like', '%' . $search . '%')
-                        ->orWhere('content', 'like', '%' . $search . '%');
-                });
-            })
+    $articles = Article::with(['category', 'user', 'tags'])
+        ->when(auth()->user()->role === 'pengguna', function ($query) {
+            $query->where('status', 'published');
+        })
+        ->when($search, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                      ->orWhere('content', 'like', '%' . $search . '%');
+            });
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
 
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
-
-        return view('articles.index', compact('articles', 'search'));
-    }
-
+    return view('articles.index', compact('articles', 'search'));
+}
     public function report()
     {
         $articles = Article::with(['category', 'user'])

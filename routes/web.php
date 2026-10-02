@@ -29,10 +29,11 @@ Route::get('/reports/articles', [ArticleController::class, 'report'])
     ->middleware(['auth', 'role:admin'])
     ->name('reports.articles');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
-Route::get('/articles/create', [ArticleController::class, 'create'])
-    ->name('articles.create');
 
 Route::middleware(['auth', 'role:admin,penulis'])->group(function () {
+
+Route::get('/articles/create', [ArticleController::class, 'create'])
+    ->name('articles.create');
 
 Route::post('/articles', [ArticleController::class, 'store'])
     ->name('articles.store');
