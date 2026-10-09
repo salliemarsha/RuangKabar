@@ -377,6 +377,114 @@
             margin: 0;
         }
 
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+        }
+
+        .pg-numbers {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pg-gap {
+            min-width: 24px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .pg-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 44px;
+            height: 44px;
+            padding: 0 12px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+            background: transparent;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            transition: color .15s, border-color .15s, background .15s;
+        }
+
+        a.pg-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .pg-link.is-current {
+            color: var(--bg);
+            background: var(--ink);
+            border-color: var(--ink);
+        }
+
+        .pg-link.is-disabled {
+            color: var(--muted);
+            opacity: 0.45;
+            border-style: dashed;
+            cursor: not-allowed;
+        }
+
+        .pg-status {
+            display: none;
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .empty-state {
+            max-width: 560px;
+            padding: 48px 0 24px;
+            border-top: 2px solid var(--ink);
+        }
+
+        .empty-title {
+            font-family: var(--serif);
+            font-size: 30px;
+            line-height: 1.25;
+            font-weight: 700;
+            margin: 0 0 12px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin: 0 0 24px;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-link {
+            display: inline-flex;
+            align-items: center;
+            height: 44px;
+            padding: 0 22px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bg);
+            background: var(--ink);
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .empty-link:hover {
+            background: var(--accent);
+        }
+
         @media (max-width: 1023px) {
             .page {
                 padding: 0 24px 56px;
@@ -475,6 +583,36 @@
 
             .row-title {
                 font-size: 22px;
+            }
+        }
+
+        @media (max-width: 639px) {
+            .pg-numbers {
+                display: none;
+            }
+
+            .pg-status {
+                display: block;
+            }
+
+            .pg-text {
+                display: none;
+            }
+
+            .pg-step {
+                min-width: 48px;
+            }
+
+            .empty-state {
+                padding: 36px 0 16px;
+            }
+
+            .empty-title {
+                font-size: 24px;
+            }
+
+            .empty-text {
+                font-size: 15px;
             }
         }
 
@@ -596,9 +734,73 @@
                 @endforeach
             </div>
 
-            {{ $articles->links() }}
+            @if ($articles->hasPages())
+                @php
+                    $current = $articles->currentPage();
+                    $last = $articles->lastPage();
+                    $pages = collect([1, $last, $current - 1, $current, $current + 1])
+                        ->filter(fn ($page) => $page >= 1 && $page <= $last)
+                        ->unique()
+                        ->sort()
+                        ->values();
+                @endphp
+
+                <nav class="pagination" aria-label="Navigasi halaman">
+                    @if ($articles->onFirstPage())
+                        <span class="pg-link pg-step is-disabled" aria-disabled="true" aria-label="Halaman sebelumnya">
+                            <span aria-hidden="true">←</span><span class="pg-text">Sebelumnya</span>
+                        </span>
+                    @else
+                        <a class="pg-link pg-step" href="{{ $articles->previousPageUrl() }}" rel="prev" aria-label="Halaman sebelumnya">
+                            <span aria-hidden="true">←</span><span class="pg-text">Sebelumnya</span>
+                        </a>
+                    @endif
+
+                    <ul class="pg-numbers">
+                        @foreach ($pages as $page)
+                            @if (! $loop->first && $page - $pages[$loop->index - 1] > 1)
+                                <li class="pg-gap" aria-hidden="true">…</li>
+                            @endif
+                            <li>
+                                @if ($page === $current)
+                                    <span class="pg-link is-current" aria-current="page">{{ $page }}</span>
+                                @else
+                                    <a class="pg-link" href="{{ $articles->url($page) }}" aria-label="Halaman {{ $page }}">{{ $page }}</a>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <span class="pg-status">Halaman {{ $current }} dari {{ $last }}</span>
+
+                    @if ($articles->hasMorePages())
+                        <a class="pg-link pg-step" href="{{ $articles->nextPageUrl() }}" rel="next" aria-label="Halaman berikutnya">
+                            <span class="pg-text">Berikutnya</span><span aria-hidden="true">→</span>
+                        </a>
+                    @else
+                        <span class="pg-link pg-step is-disabled" aria-disabled="true" aria-label="Halaman berikutnya">
+                            <span class="pg-text">Berikutnya</span><span aria-hidden="true">→</span>
+                        </span>
+                    @endif
+                </nav>
+            @endif
         @else
-            <p>Belum ada artikel.</p>
+            <section class="empty-state">
+                @if ($search)
+                    <div class="cat">Hasil pencarian</div>
+                    <h2 class="empty-title">Berita tidak ditemukan</h2>
+                    <p class="empty-text">
+                        Tidak ada hasil untuk “{{ $search }}”. Coba kata kunci lain atau periksa kembali ejaannya.
+                    </p>
+                    <a class="empty-link" href="/articles">Lihat semua berita</a>
+                @else
+                    <div class="cat">Daftar berita</div>
+                    <h2 class="empty-title">Belum ada berita untuk ditampilkan</h2>
+                    <p class="empty-text">
+                        Berita yang dipublikasikan akan muncul di halaman ini.
+                    </p>
+                @endif
+            </section>
         @endif
 
     </main>
