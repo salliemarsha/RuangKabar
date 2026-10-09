@@ -36,6 +36,8 @@
             background: var(--bg);
             color: var(--ink);
             overflow-x: hidden;
+            overflow-wrap: break-word;
+            -webkit-text-size-adjust: 100%;
         }
 
         a:focus-visible,
@@ -44,7 +46,6 @@
             outline-offset: 3px;
         }
 
-        /* ===== NAVBAR ===== */
         .site-header {
             background: var(--bg);
             border-bottom: 1px solid var(--line);
@@ -116,13 +117,17 @@
             color: var(--accent);
         }
 
+        .nav-form {
+            display: contents;
+        }
+
         .nav-toggle {
             display: none;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: none;
             border: 1px solid var(--line);
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             align-items: center;
             justify-content: center;
@@ -191,7 +196,6 @@
             }
         }
 
-        /* ===== FEATURED NEWS ===== */
         .featured {
             max-width: 1200px;
             margin: 0 auto;
@@ -212,7 +216,7 @@
 
         .lead-media {
             aspect-ratio: 16 / 10;
-            border-radius: 6px;
+            border-radius: 4px;
             overflow: hidden;
             background: #E7E3DA;
         }
@@ -249,8 +253,10 @@
         }
 
         .cat {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
             color: var(--accent);
             margin-bottom: 8px;
         }
@@ -300,10 +306,16 @@
 
         .compact-head {
             font-family: var(--serif);
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
             padding-bottom: 14px;
             border-bottom: 2px solid var(--ink);
+        }
+
+        .featured > .compact-head {
+            margin-bottom: 0;
         }
 
         .compact-item {
@@ -348,7 +360,6 @@
             border-bottom: 1px solid var(--line);
         }
 
-        /* Tablet */
         @media (max-width: 1023px) {
             .featured {
                 padding: 32px 24px 8px;
@@ -375,7 +386,6 @@
             }
         }
 
-        /* Mobile */
         @media (max-width: 767px) {
             .featured {
                 padding: 20px 20px 8px;
@@ -419,7 +429,6 @@
             }
         }
 
-        /* ===== BERITA TERBARU ===== */
         .latest {
             max-width: 1200px;
             margin: 0 auto;
@@ -430,8 +439,9 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            gap: 16px;
-            padding-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            padding-bottom: 6px;
             margin-bottom: 32px;
             border-bottom: 2px solid var(--ink);
         }
@@ -450,6 +460,7 @@
             color: var(--accent);
             text-decoration: none;
             white-space: nowrap;
+            padding: 8px 0;
         }
 
         .latest-all:hover {
@@ -486,13 +497,6 @@
 
         .news-item:hover .news-media img {
             transform: scale(1.03);
-        }
-
-        .latest .cat {
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            font-weight: 600;
-            font-size: 11px;
         }
 
         .news-item h3 {
@@ -590,7 +594,6 @@
             }
         }
 
-        /* ===== FOOTER ===== */
         .site-footer {
             background: var(--ink);
             color: #F7F5F0;
@@ -638,10 +641,12 @@
         }
 
         .footer-links li + li {
-            margin-top: 10px;
+            margin-top: 4px;
         }
 
         .footer-links a {
+            display: inline-block;
+            padding: 5px 0;
             font-size: 14px;
             color: #A8A8A8;
             text-decoration: none;
@@ -693,12 +698,25 @@
                 padding: 18px 20px 24px;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+            }
+
+            .lead:hover .lead-media img,
+            .compact-item:hover .thumb img,
+            .news-item:hover .news-media img {
+                transform: none;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-{{-- ================= NAVBAR ================= --}}
 <header class="site-header">
     <div class="nav-inner">
         <a class="logo" href="/">RUANG<span>KABAR</span></a>
@@ -721,7 +739,7 @@
             <a href="{{ route('articles.index') }}">Search</a>
 
             @auth
-                <form method="POST" action="/logout" style="display:contents">
+                <form class="nav-form" method="POST" action="/logout">
                     @csrf
                     <button type="submit" class="nav-logout">Logout</button>
                 </form>
@@ -732,7 +750,6 @@
     </div>
 </header>
 
-{{-- ================= FEATURED NEWS ================= --}}
 <section class="featured" aria-labelledby="featured-title">
 
     @if ($articles->count())
@@ -754,7 +771,7 @@
                 </div>
 
                 <div class="lead-body">
-                    <div class="cat" style="margin-top:0">{{ $featured->category->name }}</div>
+                    <div class="cat">{{ $featured->category->name }}</div>
                     <h2 id="featured-title">{{ $featured->title }}</h2>
                     <p class="lead-excerpt">
                         {{ \Illuminate\Support\Str::limit(strip_tags($featured->content), 160) }}
@@ -775,7 +792,7 @@
                             <a class="compact-item" href="{{ route('articles.show', $article) }}">
                                 <div class="thumb">
                                     @if ($article->image)
-                                        <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}">
+                                        <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" loading="lazy">
                                     @else
                                         <div class="ph">RK</div>
                                     @endif
@@ -797,14 +814,13 @@
 
     @else
 
-        <h2 id="featured-title" class="compact-head" style="margin-bottom:0">Featured News</h2>
+        <h2 id="featured-title" class="compact-head">Featured News</h2>
         <p class="featured-empty">Belum ada artikel yang dipublikasikan.</p>
 
     @endif
 
 </section>
 
-{{-- ================= BERITA TERBARU ================= --}}
 <section class="latest" aria-labelledby="latest-title">
 
     <div class="latest-head">
@@ -828,7 +844,7 @@
                 >
                     <div class="news-media">
                         @if ($article->image)
-                            <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}">
+                            <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" loading="lazy">
                         @else
                             <div class="ph">RK</div>
                         @endif
@@ -858,7 +874,6 @@
 
 </section>
 
-{{-- ================= FOOTER ================= --}}
 <footer class="site-footer">
     <div class="footer-inner">
         <div class="footer-brand">
