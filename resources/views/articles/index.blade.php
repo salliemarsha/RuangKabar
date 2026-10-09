@@ -207,6 +207,176 @@
             text-decoration: underline;
         }
 
+        .add-link {
+            display: inline-block;
+            padding: 8px 0;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .add-link:hover {
+            text-decoration: underline;
+        }
+
+        .news-list {
+            border-top: 2px solid var(--ink);
+            margin-bottom: 40px;
+        }
+
+        .news-row {
+            display: grid;
+            grid-template-columns: 300px minmax(0, 1fr);
+            gap: 32px;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .row-media {
+            display: block;
+            aspect-ratio: 3 / 2;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #E7E3DA;
+        }
+
+        .row-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .3s;
+        }
+
+        .news-row:hover .row-media img {
+            transform: scale(1.03);
+        }
+
+        .ph {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 40px;
+            color: var(--line);
+            background: #E7E3DA;
+        }
+
+        .cat {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .row-title {
+            font-family: var(--serif);
+            font-size: 26px;
+            line-height: 1.3;
+            font-weight: 600;
+            margin: 0 0 10px;
+        }
+
+        .row-title a {
+            color: var(--ink);
+            text-decoration: none;
+            transition: color .15s;
+        }
+
+        .row-title a:hover {
+            color: var(--accent);
+        }
+
+        .row-excerpt {
+            font-size: 15px;
+            line-height: 1.65;
+            color: var(--muted);
+            margin: 0 0 12px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .meta span + span::before {
+            content: "";
+            display: inline-block;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--muted);
+            vertical-align: middle;
+            margin-right: 16px;
+            margin-left: -4px;
+        }
+
+        .meta .status {
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tags {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0 0;
+            padding: 0;
+        }
+
+        .tags li {
+            font-size: 12px;
+            color: var(--muted);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 2px 8px;
+        }
+
+        .row-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px 20px;
+            margin-top: 14px;
+        }
+
+        .row-actions a,
+        .row-actions button {
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+            background: none;
+            border: 0;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: color .15s;
+        }
+
+        .row-actions a:hover,
+        .row-actions button:hover {
+            color: var(--accent);
+        }
+
+        .inline-form {
+            display: inline;
+            margin: 0;
+        }
+
         @media (max-width: 1023px) {
             .page {
                 padding: 0 24px 56px;
@@ -279,11 +449,44 @@
             }
         }
 
+        @media (max-width: 1023px) {
+            .news-row {
+                grid-template-columns: 220px minmax(0, 1fr);
+                gap: 24px;
+                padding: 24px 0;
+            }
+
+            .row-title {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .news-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 24px 0;
+            }
+
+            .row-media {
+                margin: 0 -20px;
+                border-radius: 0;
+            }
+
+            .row-title {
+                font-size: 22px;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
             *::after {
                 transition: none !important;
+            }
+
+            .news-row:hover .row-media img {
+                transform: none;
             }
         }
     </style>
@@ -335,53 +538,63 @@
             </form>
         </div>
 
-        <a href="/articles/create">Tambah Artikel</a>
-
-        <hr>
+        <a class="add-link" href="/articles/create">Tambah Artikel</a>
 
         @if ($articles->count())
-            @foreach ($articles as $article)
-                <article>
-                    <h2>{{ $article->title }}</h2>
+            <div class="news-list">
+                @foreach ($articles as $article)
+                    <article class="news-row">
+                        <a class="row-media" href="/articles/{{ $article->id }}" tabindex="-1" aria-hidden="true">
+                            @if ($article->image)
+                                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" loading="lazy">
+                            @else
+                                <div class="ph">RK</div>
+                            @endif
+                        </a>
 
-                    <p>
-                        Kategori: {{ $article->category->name }}
-                    </p>
+                        <div class="row-body">
+                            <div class="cat">{{ $article->category->name }}</div>
 
-                    <p>
-                        Penulis: {{ $article->user->name }}
-                    </p>
+                            <h2 class="row-title">
+                                <a href="/articles/{{ $article->id }}">{{ $article->title }}</a>
+                            </h2>
 
-                    <p>
-                        Status: {{ $article->status }}
-                    </p>
+                            <p class="row-excerpt">
+                                {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 150) }}
+                            </p>
 
-                    <p>
-                        Tag:
-                        @if ($article->tags->count())
-                            @foreach ($article->tags as $tag)
-                                {{ $tag->name }}@if (!$loop->last), @endif
-                            @endforeach
-                        @else
-                            Belum ada tag
-                        @endif
-                    </p>
+                            <div class="meta">
+                                <span>{{ $article->user->name }}</span>
+                                <span>{{ $article->created_at->format('d M Y') }}</span>
+                                @if ($article->status !== 'published')
+                                    <span class="status">{{ $article->status }}</span>
+                                @endif
+                            </div>
 
-                    <a href="/articles/{{ $article->id }}">Lihat</a>
-                    |
-                    <a href="/articles/{{ $article->id }}/edit">Edit</a>
-                    <form action="/articles/{{ $article->id }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
+                            @if ($article->tags->count())
+                                <ul class="tags">
+                                    @foreach ($article->tags as $tag)
+                                        <li>{{ $tag->name }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
 
-                        <button type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">
-                            Hapus
-                        </button>
-                    </form>
-                </article>
+                            <div class="row-actions">
+                                <a href="/articles/{{ $article->id }}">Lihat</a>
+                                <a href="/articles/{{ $article->id }}/edit">Edit</a>
+                                <form class="inline-form" action="/articles/{{ $article->id }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
 
-                <hr>
-            @endforeach
+                                    <button type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
 
             {{ $articles->links() }}
         @else
