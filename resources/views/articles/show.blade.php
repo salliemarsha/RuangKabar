@@ -163,6 +163,58 @@
             line-height: 1.7;
         }
 
+        .article-body {
+            max-width: 680px;
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--ink);
+        }
+
+        .article-body p {
+            margin: 0 0 1.4em;
+        }
+
+        .article-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 10px 14px;
+            margin-top: 40px;
+        }
+
+        .tags-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+        }
+
+        .tags-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            min-width: 0;
+        }
+
+        .tags-list li {
+            max-width: 100%;
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--muted);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 5px 10px;
+            overflow-wrap: anywhere;
+        }
+
         .article-rest hr {
             border: 0;
             border-top: 1px solid var(--line);
@@ -184,6 +236,10 @@
 
             .detail-figure {
                 margin-bottom: 40px;
+            }
+
+            .article-body {
+                font-size: 17.5px;
             }
         }
 
@@ -231,6 +287,19 @@
             .detail-ph {
                 font-size: 40px;
             }
+
+            .article-body {
+                font-size: 16.5px;
+                line-height: 1.75;
+            }
+
+            .article-body p {
+                margin-bottom: 1.3em;
+            }
+
+            .article-tags {
+                margin-top: 32px;
+            }
         }
     </style>
 </head>
@@ -275,9 +344,22 @@
 
         <div class="article-rest">
 
-            <div>
-                {!! nl2br(e($article->content)) !!}
+            <div class="article-body">
+                @foreach (preg_split('/\R{2,}/', trim($article->content)) as $paragraph)
+                    <p>{!! nl2br(e($paragraph)) !!}</p>
+                @endforeach
             </div>
+
+            @if ($article->tags->count())
+                <div class="article-tags">
+                    <span class="tags-label">Tag</span>
+                    <ul class="tags-list">
+                        @foreach ($article->tags as $tag)
+                            <li>{{ $tag->name }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <hr>
 
