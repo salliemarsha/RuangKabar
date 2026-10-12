@@ -17,6 +17,7 @@
             --accent: #C94B3C;
             --muted: #6B6B6B;
             --line: #D9D6CF;
+            --accent-strong: #B8402F;
             --serif: 'Lora', Georgia, serif;
             --sans: 'Plus Jakarta Sans', Arial, sans-serif;
         }
@@ -34,6 +35,7 @@
         body {
             margin: 0;
             min-height: 100vh;
+            min-height: 100dvh;
             font-family: var(--sans);
             background: var(--bg);
             color: var(--ink);
@@ -52,6 +54,7 @@
             display: grid;
             grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
             min-height: 100vh;
+            min-height: 100dvh;
         }
 
         .auth-side {
@@ -64,6 +67,9 @@
         }
 
         .brand {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 8px 0;
             font-family: var(--serif);
             font-size: 24px;
             font-weight: 700;
@@ -123,6 +129,14 @@
             border-radius: 2px;
         }
 
+        .alert-title {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-strong);
+        }
+
         .alert ul {
             margin: 0;
             padding-left: 18px;
@@ -175,7 +189,7 @@
         }
 
         .auth-submit:hover {
-            background: var(--accent);
+            background: var(--accent-strong);
         }
 
         .auth-links {
@@ -192,9 +206,9 @@
 
         .auth-links a {
             display: inline-block;
-            padding: 6px 0;
+            padding: 10px 0;
             font-weight: 600;
-            color: var(--accent);
+            color: var(--accent-strong);
             text-decoration: none;
         }
 
@@ -204,7 +218,7 @@
 
         .auth-links .back {
             display: block;
-            margin-top: 6px;
+            margin-top: 2px;
             color: var(--muted);
         }
 
@@ -234,8 +248,30 @@
                 padding: 32px 20px 48px;
             }
 
+            .auth-card {
+                max-width: 440px;
+            }
+
             .auth-title {
                 font-size: 30px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .auth-side {
+                padding: 16px;
+            }
+
+            .auth-main {
+                padding: 28px 16px 40px;
+            }
+
+            .auth-title {
+                font-size: 27px;
+            }
+
+            .auth-lead {
+                margin-bottom: 24px;
             }
         }
 
@@ -263,6 +299,7 @@
 
                 @if ($errors->any())
                     <div class="alert" role="alert">
+                        <strong class="alert-title">Terjadi kesalahan</strong>
                         <ul>
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
