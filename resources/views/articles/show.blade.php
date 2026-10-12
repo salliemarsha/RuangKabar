@@ -215,14 +215,158 @@
             overflow-wrap: anywhere;
         }
 
-        .article-rest hr {
-            border: 0;
+        .comment-section {
+            max-width: 680px;
+            margin-top: 48px;
+            padding-top: 32px;
             border-top: 1px solid var(--line);
-            margin: 28px 0;
         }
 
-        .article-rest textarea {
-            max-width: 100%;
+        .comment-heading {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            font-family: var(--serif);
+            font-size: 24px;
+            line-height: 1.3;
+            font-weight: 700;
+            margin: 0 0 24px;
+        }
+
+        .comment-count {
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .form-notice {
+            margin: 0 0 20px;
+            padding: 12px 14px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--accent);
+            border-radius: 2px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .field textarea {
+            display: block;
+            width: 100%;
+            min-height: 140px;
+            padding: 14px;
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--ink);
+            background: #FFFFFF;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            resize: vertical;
+            transition: border-color .15s;
+        }
+
+        .field textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--ink);
+        }
+
+        .form-error {
+            margin: 8px 0 0;
+            font-size: 13px;
+            color: var(--accent);
+        }
+
+        .comment-form button {
+            height: 44px;
+            margin-top: 16px;
+            padding: 0 24px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bg);
+            background: var(--ink);
+            border: 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .comment-form button:hover {
+            background: var(--accent);
+        }
+
+        .comment-list {
+            border-top: 2px solid var(--ink);
+        }
+
+        .comment-item {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .comment-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 2px 14px;
+            margin-bottom: 8px;
+        }
+
+        .comment-head strong {
+            font-size: 15px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .comment-head time {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .comment-text {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .comment-empty {
+            margin: 0;
+            padding: 20px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--muted);
+            border-top: 2px solid var(--ink);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 1023px) {
@@ -300,6 +444,20 @@
             .article-tags {
                 margin-top: 32px;
             }
+
+            .comment-section {
+                margin-top: 40px;
+                padding-top: 28px;
+            }
+
+            .comment-heading {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .comment-form button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -361,50 +519,66 @@
                 </div>
             @endif
 
-            <hr>
+            <section class="comment-section" aria-labelledby="comment-form-title">
+                <h2 class="comment-heading" id="comment-form-title">Berikan Komentar</h2>
 
-            <h2>Berikan Komentar</h2>
+                @if (session('success'))
+                    <p class="form-notice" role="status">{{ session('success') }}</p>
+                @endif
 
-            <form action="/comments" method="POST">
-                @csrf
+                <form class="comment-form" action="/comments" method="POST">
+                    @csrf
 
-                <input type="hidden" name="article_id" value="{{ $article->id }}">
+                    <input type="hidden" name="article_id" value="{{ $article->id }}">
 
-                <div>
-                    <label>Komentar</label>
-                    <br>
-                    <textarea
-                        name="comment"
-                        rows="5"
-                        required
-                        placeholder="Tulis komentar Anda..."
-                    ></textarea>
-                </div>
+                    <div class="field">
+                        <label for="comment">Komentar</label>
+                        <textarea
+                            id="comment"
+                            name="comment"
+                            rows="5"
+                            required
+                            placeholder="Tulis komentar Anda..."
+                        >{{ old('comment') }}</textarea>
 
-                <br>
-
-                <button type="submit">Kirim Komentar</button>
-            </form>
-
-            <hr>
-
-            <h2>Komentar</h2>
-
-            @if ($article->comments->count())
-                @foreach ($article->comments as $comment)
-                    <div>
-                        <strong>{{ $comment->user->name }}</strong>
-
-                        <p>{{ $comment->comment }}</p>
+                        @error('comment')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <hr>
-                @endforeach
-            @else
-                <p>Belum ada komentar yang disetujui.</p>
-            @endif
+                    <button type="submit">Kirim Komentar</button>
+                </form>
+            </section>
 
-            <a href="/articles">Kembali ke Daftar Artikel</a>
+            <section class="comment-section" aria-labelledby="comment-list-title">
+                <h2 class="comment-heading" id="comment-list-title">
+                    Komentar
+                    @if ($article->comments->count())
+                        <span class="comment-count">{{ $article->comments->count() }}</span>
+                    @endif
+                </h2>
+
+                @if ($article->comments->count())
+                    <div class="comment-list">
+                        @foreach ($article->comments as $comment)
+                            <article class="comment-item">
+                                <div class="comment-head">
+                                    <strong>{{ $comment->user->name }}</strong>
+                                    @if ($comment->created_at)
+                                        <time datetime="{{ $comment->created_at->toDateString() }}">{{ $comment->created_at->format('d M Y') }}</time>
+                                    @endif
+                                </div>
+
+                                <p class="comment-text">{{ $comment->comment }}</p>
+                            </article>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="comment-empty">Belum ada komentar yang disetujui.</p>
+                @endif
+            </section>
+
+            <a class="back-link" href="/articles">Kembali ke Daftar Artikel</a>
 
         </div>
 
