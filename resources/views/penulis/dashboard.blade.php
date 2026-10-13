@@ -383,13 +383,14 @@
         .stat-value {
             display: block;
             font-family: var(--serif);
-            font-size: 44px;
+            font-size: clamp(28px, 3.2vw, 44px);
             line-height: 1.1;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .stat-lead .stat-value {
-            font-size: 64px;
+            font-size: clamp(40px, 5vw, 64px);
         }
 
         .stat-note {
