@@ -399,6 +399,231 @@
             color: var(--muted);
         }
 
+        .block-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .block-head .block-title {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        .primary-action {
+            display: inline-flex;
+            align-items: center;
+            height: 44px;
+            padding: 0 22px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bg);
+            background: var(--ink);
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background .2s;
+        }
+
+        .primary-action:hover {
+            background: var(--accent-strong);
+        }
+
+        .primary-action:active {
+            transform: translateY(1px);
+        }
+
+        .post-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .post {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            grid-template-areas: "main status actions";
+            align-items: center;
+            gap: 12px 28px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .post-main {
+            grid-area: main;
+            min-width: 0;
+        }
+
+        .post-title {
+            margin: 0 0 6px;
+            font-family: var(--serif);
+            font-size: 18px;
+            line-height: 1.35;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .post-title a {
+            color: var(--ink);
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .post-title a:hover {
+            color: var(--accent-strong);
+        }
+
+        .post-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px 16px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .post-cat {
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-size: 11px;
+            color: var(--accent-strong);
+        }
+
+        .badge {
+            grid-area: status;
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
+        .badge-published {
+            color: var(--bg);
+            background: var(--ink);
+            border: 1px solid var(--ink);
+        }
+
+        .badge-draft {
+            color: var(--muted);
+            background: transparent;
+            border: 1px dashed var(--muted);
+        }
+
+        .post-actions {
+            grid-area: actions;
+            display: flex;
+            align-items: center;
+            gap: 0 18px;
+        }
+
+        .post-actions a,
+        .post-actions button {
+            padding: 12px 0;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            transition: color .2s;
+        }
+
+        .post-actions a:hover,
+        .post-actions button:hover {
+            color: var(--accent-strong);
+        }
+
+        .inline-form {
+            margin: 0;
+        }
+
+        .post-empty {
+            padding: 32px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .post-empty p {
+            margin: 0 0 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 24px;
+        }
+
+        .pg-numbers {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pg-gap {
+            min-width: 24px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .pg-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 44px;
+            height: 44px;
+            padding: 0 12px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            transition: color .2s, border-color .2s;
+        }
+
+        a.pg-link:hover {
+            color: var(--accent-strong);
+            border-color: var(--accent);
+        }
+
+        .pg-link.is-current {
+            color: var(--bg);
+            background: var(--ink);
+            border-color: var(--ink);
+        }
+
+        .pg-link.is-disabled {
+            color: var(--muted);
+            opacity: 0.45;
+            border-style: dashed;
+            cursor: not-allowed;
+        }
+
+        .pg-status {
+            display: none;
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+
         .scrim {
             display: none;
         }
@@ -557,6 +782,40 @@
             .stat-lead .stat-value {
                 font-size: 48px;
             }
+
+            .post {
+                grid-template-columns: auto minmax(0, 1fr);
+                grid-template-areas:
+                    "main main"
+                    "status actions";
+                gap: 10px 16px;
+                padding: 18px 0;
+            }
+
+            .post-actions {
+                justify-self: end;
+            }
+
+            .primary-action {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .pg-numbers {
+                display: none;
+            }
+
+            .pg-status {
+                display: block;
+            }
+
+            .pg-text {
+                display: none;
+            }
+
+            .pg-link.pg-step {
+                min-width: 48px;
+            }
         }
 
         @media (max-width: 359px) {
@@ -589,6 +848,7 @@
             }
 
             .logout-btn:active,
+            .primary-action:active,
             .menu-toggle:active,
             .sidebar-close:active {
                 transform: none;
@@ -690,6 +950,104 @@
                             <span class="stat-note">Belum dipublikasikan</span>
                         </div>
                     </div>
+                </section>
+
+                <section class="block" aria-labelledby="posts-title">
+                    <div class="block-head">
+                        <h2 class="block-title" id="posts-title">Daftar Artikel</h2>
+                        <a class="primary-action" href="{{ route('articles.create') }}">Tulis Artikel Baru</a>
+                    </div>
+
+                    @if ($articles->count())
+                        <ul class="post-list">
+                            @foreach ($articles as $article)
+                                <li class="post">
+                                    <div class="post-main">
+                                        <h3 class="post-title">
+                                            <a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a>
+                                        </h3>
+                                        <div class="post-meta">
+                                            <span class="post-cat">{{ $article->category->name }}</span>
+                                            <time datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->format('d M Y') }}</time>
+                                        </div>
+                                    </div>
+
+                                    @if ($article->status === 'published')
+                                        <span class="badge badge-published">Terbit</span>
+                                    @else
+                                        <span class="badge badge-draft">{{ $article->status }}</span>
+                                    @endif
+
+                                    <div class="post-actions">
+                                        <a href="{{ route('articles.show', $article) }}">Lihat</a>
+                                        <a href="{{ route('articles.edit', $article) }}">Edit</a>
+                                        <form class="inline-form" action="{{ route('articles.destroy', $article) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">Hapus</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        @if ($articles->hasPages())
+                            @php
+                                $current = $articles->currentPage();
+                                $last = $articles->lastPage();
+                                $pages = collect([1, $last, $current - 1, $current, $current + 1])
+                                    ->filter(fn ($page) => $page >= 1 && $page <= $last)
+                                    ->unique()
+                                    ->sort()
+                                    ->values();
+                            @endphp
+
+                            <nav class="pagination" aria-label="Navigasi halaman">
+                                @if ($articles->onFirstPage())
+                                    <span class="pg-link pg-step is-disabled" aria-disabled="true" aria-label="Halaman sebelumnya">
+                                        <span aria-hidden="true">←</span><span class="pg-text">Sebelumnya</span>
+                                    </span>
+                                @else
+                                    <a class="pg-link pg-step" href="{{ $articles->previousPageUrl() }}" rel="prev" aria-label="Halaman sebelumnya">
+                                        <span aria-hidden="true">←</span><span class="pg-text">Sebelumnya</span>
+                                    </a>
+                                @endif
+
+                                <ul class="pg-numbers">
+                                    @foreach ($pages as $page)
+                                        @if (! $loop->first && $page - $pages[$loop->index - 1] > 1)
+                                            <li class="pg-gap" aria-hidden="true">…</li>
+                                        @endif
+                                        <li>
+                                            @if ($page === $current)
+                                                <span class="pg-link is-current" aria-current="page">{{ $page }}</span>
+                                            @else
+                                                <a class="pg-link" href="{{ $articles->url($page) }}" aria-label="Halaman {{ $page }}">{{ $page }}</a>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+
+                                <span class="pg-status">Halaman {{ $current }} dari {{ $last }}</span>
+
+                                @if ($articles->hasMorePages())
+                                    <a class="pg-link pg-step" href="{{ $articles->nextPageUrl() }}" rel="next" aria-label="Halaman berikutnya">
+                                        <span class="pg-text">Berikutnya</span><span aria-hidden="true">→</span>
+                                    </a>
+                                @else
+                                    <span class="pg-link pg-step is-disabled" aria-disabled="true" aria-label="Halaman berikutnya">
+                                        <span class="pg-text">Berikutnya</span><span aria-hidden="true">→</span>
+                                    </span>
+                                @endif
+                            </nav>
+                        @endif
+                    @else
+                        <div class="post-empty">
+                            <p>Anda belum memiliki artikel. Mulai tulis artikel pertama Anda.</p>
+                            <a class="primary-action" href="{{ route('articles.create') }}">Tulis Artikel Pertama</a>
+                        </div>
+                    @endif
                 </section>
             </main>
 

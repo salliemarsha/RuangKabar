@@ -15,6 +15,11 @@ class PenulisController extends Controller
         $publishedArticles = Article::where('user_id', $userId)->where('status', 'published')->count();
         $draftArticles = Article::where('user_id', $userId)->where('status', 'draft')->count();
 
-        return view('penulis.dashboard', compact('totalArticles', 'publishedArticles', 'draftArticles'));
+        $articles = Article::with('category')
+            ->where('user_id', $userId)
+            ->latest()
+            ->paginate(10);
+
+        return view('penulis.dashboard', compact('totalArticles', 'publishedArticles', 'draftArticles', 'articles'));
     }
 }
