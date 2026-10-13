@@ -74,10 +74,11 @@
 
         .sidebar-top {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 24px 24px 20px;
+            min-height: 72px;
+            padding: 12px 24px;
             border-bottom: 1px solid var(--line);
         }
 
@@ -95,9 +96,10 @@
             color: var(--accent);
         }
 
-        .brand-sub {
+        .brand .brand-sub {
             display: block;
-            margin-top: 4px;
+            margin-top: 2px;
+            color: var(--muted);
             font-family: var(--sans);
             font-size: 11px;
             font-weight: 600;
@@ -110,7 +112,7 @@
             display: none;
             width: 40px;
             height: 40px;
-            margin: -6px -8px 0 0;
+            margin: 0 -8px 0 0;
             font-size: 22px;
             line-height: 1;
             color: var(--ink);
@@ -314,6 +316,161 @@
             color: var(--muted);
         }
 
+        .block {
+            max-width: 1040px;
+            margin-top: 48px;
+        }
+
+        .block-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .block-title {
+            margin: 0;
+            font-family: var(--serif);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        #stats-title {
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+            border-bottom: 1px solid var(--line);
+        }
+
+        .stat {
+            display: block;
+            padding: 24px;
+            color: inherit;
+            text-decoration: none;
+            border-left: 1px solid var(--line);
+            transition: background .15s;
+        }
+
+        .stat:first-child {
+            padding-left: 0;
+            border-left: 0;
+        }
+
+        .stat:hover {
+            background: rgba(32, 33, 36, 0.03);
+        }
+
+        .stat-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            display: block;
+            font-family: var(--serif);
+            font-size: 44px;
+            line-height: 1.1;
+            font-weight: 700;
+            transition: color .15s;
+        }
+
+        .stat-lead .stat-value {
+            font-size: 64px;
+        }
+
+        .stat:hover .stat-value {
+            color: var(--accent-strong);
+        }
+
+        .stat-note {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .primary-action {
+            display: inline-flex;
+            align-items: center;
+            height: 44px;
+            padding: 0 22px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bg);
+            background: var(--ink);
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .primary-action:hover {
+            background: var(--accent-strong);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 40px;
+        }
+
+        .action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 0;
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .action-text {
+            min-width: 0;
+        }
+
+        .action-text strong {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: color .15s;
+        }
+
+        .action-text span {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .action-arrow {
+            flex-shrink: 0;
+            font-size: 18px;
+            color: var(--muted);
+            transition: color .15s, transform .15s;
+        }
+
+        .action:hover .action-text strong,
+        .action:hover .action-arrow {
+            color: var(--accent-strong);
+        }
+
+        .action:hover .action-arrow {
+            transform: translateX(3px);
+        }
+
         .scrim {
             display: none;
         }
@@ -365,7 +522,7 @@
 
             .topbar {
                 padding: 12px 24px;
-                min-height: 68px;
+                min-height: 72px;
             }
 
             .content {
@@ -376,7 +533,7 @@
         @media (max-width: 639px) {
             .topbar {
                 padding: 10px 16px;
-                min-height: 64px;
+                min-height: 72px;
                 gap: 10px;
             }
 
@@ -402,6 +559,60 @@
 
             .welcome-title {
                 font-size: 22px;
+            }
+        }
+
+        @media (max-width: 1199px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .stat {
+                padding: 20px 24px 20px 0;
+                border-left: 0;
+            }
+
+            .stat:nth-child(n + 3) {
+                border-top: 1px solid var(--line);
+            }
+
+            .stat:nth-child(even) {
+                padding: 20px 0 20px 24px;
+                border-left: 1px solid var(--line);
+            }
+        }
+
+        @media (max-width: 859px) {
+            .actions {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 639px) {
+            .block {
+                margin-top: 36px;
+            }
+
+            .stat,
+            .stat:nth-child(even) {
+                padding: 16px 0 16px 16px;
+            }
+
+            .stat:nth-child(odd) {
+                padding: 16px 16px 16px 0;
+            }
+
+            .stat-value {
+                font-size: 34px;
+            }
+
+            .stat-lead .stat-value {
+                font-size: 44px;
+            }
+
+            .primary-action {
+                width: 100%;
+                justify-content: center;
             }
         }
 
@@ -495,8 +706,92 @@
             </header>
 
             <main class="content">
+                @php
+                    $totalArticles = \App\Models\Article::count();
+                    $publishedArticles = \App\Models\Article::where('status', 'published')->count();
+                    $totalCategories = \App\Models\Category::count();
+                    $totalTags = \App\Models\Tag::count();
+                    $totalComments = \App\Models\Comment::count();
+                @endphp
+
                 <h2 class="welcome-title">Selamat datang, {{ auth()->user()->name }}!</h2>
                 <p class="welcome-meta">Anda login sebagai: {{ auth()->user()->role }}</p>
+
+                <section class="block" aria-labelledby="stats-title">
+                    <h2 class="block-title" id="stats-title">Ringkasan</h2>
+
+                    <div class="stats">
+                        <a class="stat stat-lead" href="{{ route('articles.index') }}">
+                            <span class="stat-label">Artikel</span>
+                            <span class="stat-value">{{ number_format($totalArticles, 0, ',', '.') }}</span>
+                            <span class="stat-note">{{ number_format($publishedArticles, 0, ',', '.') }} dipublikasikan</span>
+                        </a>
+
+                        <a class="stat" href="{{ route('categories.index') }}">
+                            <span class="stat-label">Kategori</span>
+                            <span class="stat-value">{{ number_format($totalCategories, 0, ',', '.') }}</span>
+                        </a>
+
+                        <a class="stat" href="{{ route('tags.index') }}">
+                            <span class="stat-label">Tag</span>
+                            <span class="stat-value">{{ number_format($totalTags, 0, ',', '.') }}</span>
+                        </a>
+
+                        <a class="stat" href="{{ route('comments.index') }}">
+                            <span class="stat-label">Komentar</span>
+                            <span class="stat-value">{{ number_format($totalComments, 0, ',', '.') }}</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="block" aria-labelledby="actions-title">
+                    <div class="block-head">
+                        <h2 class="block-title" id="actions-title">Pintasan</h2>
+                        <a class="primary-action" href="{{ route('articles.create') }}">Tulis Artikel Baru</a>
+                    </div>
+
+                    <div class="actions">
+                        <a class="action" href="{{ route('articles.index') }}">
+                            <span class="action-text">
+                                <strong>Kelola Artikel</strong>
+                                <span>Lihat dan kelola semua artikel</span>
+                            </span>
+                            <span class="action-arrow" aria-hidden="true">→</span>
+                        </a>
+
+                        <a class="action" href="{{ route('categories.index') }}">
+                            <span class="action-text">
+                                <strong>Kelola Kategori</strong>
+                                <span>Atur kategori berita</span>
+                            </span>
+                            <span class="action-arrow" aria-hidden="true">→</span>
+                        </a>
+
+                        <a class="action" href="{{ route('tags.index') }}">
+                            <span class="action-text">
+                                <strong>Kelola Tag</strong>
+                                <span>Atur tag artikel</span>
+                            </span>
+                            <span class="action-arrow" aria-hidden="true">→</span>
+                        </a>
+
+                        <a class="action" href="{{ route('comments.index') }}">
+                            <span class="action-text">
+                                <strong>Moderasi Komentar</strong>
+                                <span>Tinjau komentar pembaca</span>
+                            </span>
+                            <span class="action-arrow" aria-hidden="true">→</span>
+                        </a>
+
+                        <a class="action" href="{{ route('reports.articles') }}">
+                            <span class="action-text">
+                                <strong>Laporan Artikel</strong>
+                                <span>Lihat laporan seluruh artikel</span>
+                            </span>
+                            <span class="action-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </section>
             </main>
 
         </div>
