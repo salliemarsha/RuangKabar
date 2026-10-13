@@ -53,6 +53,15 @@
             outline-offset: 3px;
         }
 
+        .sidebar a:focus-visible {
+            outline-offset: -3px;
+        }
+
+        .stat:focus-visible,
+        .action:focus-visible {
+            outline-offset: -2px;
+        }
+
         .admin {
             display: grid;
             grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
@@ -120,6 +129,7 @@
             border: 1px solid var(--line);
             border-radius: 4px;
             cursor: pointer;
+            transition: border-color .2s, background .2s;
         }
 
         .side-nav {
@@ -139,13 +149,13 @@
 
         .nav-link {
             display: block;
-            padding: 11px 24px 11px 22px;
+            padding: 12px 24px 12px 22px;
             font-size: 14px;
             font-weight: 500;
             color: var(--ink);
             text-decoration: none;
             border-left: 2px solid transparent;
-            transition: color .15s, background .15s;
+            transition: color .2s, background .2s;
         }
 
         .nav-link:hover {
@@ -197,6 +207,7 @@
         }
 
         .menu-toggle {
+            transition: border-color .2s, background .2s;
             display: none;
             flex-direction: column;
             align-items: center;
@@ -209,6 +220,12 @@
             border: 1px solid var(--line);
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        .menu-toggle:hover,
+        .sidebar-close:hover {
+            border-color: var(--ink);
+            background: rgba(32, 33, 36, 0.04);
         }
 
         .menu-toggle span {
@@ -289,12 +306,19 @@
             border: 1px solid var(--ink);
             border-radius: 4px;
             cursor: pointer;
-            transition: color .15s, background .15s;
+            transition: color .2s, background .2s;
         }
 
         .logout-btn:hover {
             color: var(--bg);
             background: var(--ink);
+        }
+
+        .logout-btn:active,
+        .primary-action:active,
+        .menu-toggle:active,
+        .sidebar-close:active {
+            transform: translateY(1px);
         }
 
         .content {
@@ -357,7 +381,7 @@
             color: inherit;
             text-decoration: none;
             border-left: 1px solid var(--line);
-            transition: background .15s;
+            transition: background .2s;
         }
 
         .stat:first-child {
@@ -385,7 +409,7 @@
             font-size: 44px;
             line-height: 1.1;
             font-weight: 700;
-            transition: color .15s;
+            transition: color .2s;
         }
 
         .stat-lead .stat-value {
@@ -414,7 +438,7 @@
             background: var(--ink);
             border-radius: 4px;
             text-decoration: none;
-            transition: background .15s;
+            transition: background .2s;
         }
 
         .primary-action:hover {
@@ -447,7 +471,7 @@
             margin-bottom: 2px;
             font-size: 15px;
             font-weight: 600;
-            transition: color .15s;
+            transition: color .2s;
         }
 
         .action-text span {
@@ -459,7 +483,7 @@
             flex-shrink: 0;
             font-size: 18px;
             color: var(--muted);
-            transition: color .15s, transform .15s;
+            transition: color .2s, transform .2s;
         }
 
         .action:hover .action-text strong,
@@ -490,13 +514,13 @@
                 height: auto;
                 visibility: hidden;
                 transform: translateX(-100%);
-                transition: transform .2s ease, visibility 0s linear .2s;
+                transition: transform .25s ease, visibility 0s linear .25s;
             }
 
             .sidebar.is-open {
                 visibility: visible;
                 transform: none;
-                transition: transform .2s ease;
+                transition: transform .25s ease;
             }
 
             .sidebar-close {
@@ -506,14 +530,20 @@
             }
 
             .scrim {
+                display: block;
                 position: fixed;
                 inset: 0;
                 z-index: 30;
                 background: rgba(32, 33, 36, 0.45);
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity .25s ease, visibility 0s linear .25s;
             }
 
             .scrim.is-visible {
-                display: block;
+                opacity: 1;
+                visibility: visible;
+                transition: opacity .25s ease;
             }
 
             .menu-toggle {
@@ -616,11 +646,41 @@
             }
         }
 
+        @media (max-width: 359px) {
+            .topbar {
+                padding: 10px 12px;
+            }
+
+            .page-title {
+                font-size: 17px;
+            }
+
+            .content {
+                padding: 20px 12px 32px;
+            }
+
+            .stat-lead .stat-value {
+                font-size: 38px;
+            }
+
+            .stat-value {
+                font-size: 30px;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
             *::after {
                 transition: none !important;
+            }
+
+            .action:hover .action-arrow,
+            .logout-btn:active,
+            .primary-action:active,
+            .menu-toggle:active,
+            .sidebar-close:active {
+                transform: none;
             }
         }
     </style>
