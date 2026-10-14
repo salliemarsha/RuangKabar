@@ -130,7 +130,7 @@
         .welcome {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 72px 24px 96px;
+            padding: 72px 24px 72px;
         }
 
         .welcome-inner {
@@ -218,9 +218,186 @@
             text-decoration: underline;
         }
 
+        .latest {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+
+        .latest-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            padding-bottom: 6px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .latest-title {
+            margin: 0;
+            font-family: var(--serif);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .latest-all {
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-strong);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .latest-all:hover {
+            text-decoration: underline;
+        }
+
+        .latest-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 40px 32px;
+        }
+
+        .news-item {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .news-media {
+            aspect-ratio: 3 / 2;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #E7E3DA;
+        }
+
+        .news-media img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .3s;
+        }
+
+        .news-item:hover .news-media img {
+            transform: scale(1.03);
+        }
+
+        .ph {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-family: var(--serif);
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--line);
+            background: #E7E3DA;
+        }
+
+        .cat {
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-strong);
+        }
+
+        .news-item h3 {
+            margin: 0 0 10px;
+            font-family: var(--serif);
+            font-size: 21px;
+            line-height: 1.3;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+            transition: color .2s;
+        }
+
+        .news-item:hover h3 {
+            color: var(--accent-strong);
+        }
+
+        .news-excerpt {
+            margin: 0 0 12px;
+            font-size: 14.5px;
+            line-height: 1.65;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 18px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .read-more {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-strong);
+        }
+
+        .news-item.wide {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 28px;
+            align-items: start;
+        }
+
+        .news-item.wide .news-media {
+            margin-bottom: 0;
+            aspect-ratio: 4 / 3;
+        }
+
+        .news-item.wide h3 {
+            font-size: 26px;
+        }
+
+        .latest-empty {
+            padding: 32px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .latest-empty strong {
+            display: block;
+            margin-bottom: 6px;
+            font-family: var(--serif);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .latest-empty p {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
         @media (max-width: 1023px) {
             .welcome {
-                padding: 56px 24px 72px;
+                padding: 56px 24px 56px;
+            }
+
+            .latest {
+                padding: 0 24px 64px;
+            }
+
+            .latest-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 36px 28px;
             }
 
             .welcome-title {
@@ -253,7 +430,42 @@
             }
 
             .welcome {
-                padding: 40px 20px 56px;
+                padding: 40px 20px 40px;
+            }
+
+            .latest {
+                padding: 0 20px 48px;
+            }
+
+            .latest-title {
+                font-size: 20px;
+            }
+
+            .latest-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 0;
+            }
+
+            .news-item,
+            .news-item.wide {
+                display: block;
+                grid-column: auto;
+                padding: 24px 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .news-item:first-child {
+                padding-top: 0;
+            }
+
+            .news-item.wide .news-media {
+                margin-bottom: 16px;
+                aspect-ratio: 3 / 2;
+            }
+
+            .news-item h3,
+            .news-item.wide h3 {
+                font-size: 21px;
             }
 
             .welcome-eyebrow {
@@ -313,6 +525,10 @@
             .btn-primary:active {
                 transform: none;
             }
+
+            .news-item:hover .news-media img {
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -351,6 +567,45 @@
             </div>
         </div>
     </main>
+
+    <section class="latest" aria-labelledby="latest-title">
+        <div class="latest-head">
+            <h2 class="latest-title" id="latest-title">Berita Terbaru</h2>
+            <a class="latest-all" href="{{ route('articles.index') }}">Lihat Semua →</a>
+        </div>
+
+        @if ($articles->count())
+            <div class="latest-grid">
+                @foreach ($articles as $article)
+                    <a class="news-item {{ $loop->first ? 'wide' : '' }}" href="{{ route('articles.show', $article) }}">
+                        <div class="news-media">
+                            @if ($article->image)
+                                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" loading="lazy">
+                            @else
+                                <div class="ph">RK</div>
+                            @endif
+                        </div>
+
+                        <div class="news-body">
+                            <div class="cat">{{ $article->category->name }}</div>
+                            <h3>{{ $article->title }}</h3>
+                            <p class="news-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($article->content), 110) }}</p>
+                            <div class="meta">
+                                <span>{{ $article->user->name }}</span>
+                                <time datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->format('d M Y') }}</time>
+                            </div>
+                            <span class="read-more">Baca Selengkapnya →</span>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        @else
+            <div class="latest-empty">
+                <strong>Belum ada berita yang dipublikasikan</strong>
+                <p>Berita terbaru akan tampil di sini setelah dipublikasikan.</p>
+            </div>
+        @endif
+    </section>
 
 </body>
 </html>
