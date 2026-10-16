@@ -34,6 +34,9 @@ Route::get('/admin/users', [AdminController::class, 'userIndex'])
 Route::get('/admin/users/data', [AdminController::class, 'users'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.users.data');
+Route::get('/admin/users/{user}/edit', [AdminController::class, 'editUser'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.users.edit');    
 Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.users.update');

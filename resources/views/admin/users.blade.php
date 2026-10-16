@@ -70,7 +70,7 @@
                         <td>{{ $user->created_at ?? '—' }}</td>
                         <td>
                             @if ($user->role !== 'admin')
-                                <a href="{{ route('admin.users.index', ['edit' => $user->id]) }}">
+                                <a href="{{ route('admin.users.edit', $user->id) }}">
                                     Edit
                                 </a>
 

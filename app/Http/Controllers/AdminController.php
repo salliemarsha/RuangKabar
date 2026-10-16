@@ -49,6 +49,15 @@ class AdminController extends Controller
     return view('admin.users', compact('users', 'search', 'role'));
 }
 
+public function editUser(User $user)
+{
+    if ($user->role === 'admin') {
+        abort(403, 'Akun admin tidak dapat diedit melalui fitur ini.');
+    }
+
+    return view('admin.users-edit', compact('user'));
+}
+
 public function updateUser(Request $request, User $user)
 {
     if ($user->role === 'admin') {
