@@ -28,9 +28,18 @@ Route::get('/register', [RegisterController::class, 'showRegister'])->name('regi
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware('auth', 'role:admin');
+Route::get('/admin/users', [AdminController::class, 'userIndex'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.users.index');
 Route::get('/admin/users/data', [AdminController::class, 'users'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.users.data');
+Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.users.update');
+Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.users.destroy');
 Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middleware('auth', 'role:penulis');
 Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
 Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
