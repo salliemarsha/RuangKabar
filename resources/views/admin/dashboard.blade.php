@@ -725,6 +725,9 @@
                     <li>
                         <a class="nav-link {{ request()->is('reports/*') ? 'is-active' : '' }}" href="{{ route('reports.articles') }}" {!! request()->is('reports/*') ? 'aria-current="page"' : '' !!}>Laporan</a>
                     </li>
+                    <li>
+                        <a class="nav-link {{ request()->is('admin/users*') ? 'is-active' : '' }}" href="{{ route('admin.users.index') }}" {!! request()->is('admin/users*') ? 'aria-current="page"' : '' !!}>Pengguna</a>
+                    </li>
                 </ul>
             </nav>
 
@@ -847,6 +850,14 @@
                             <span class="action-text">
                                 <strong>Laporan Artikel</strong>
                                 <span>Lihat laporan seluruh artikel</span>
+                            </span>
+                            <span class="action-arrow" aria-hidden="true">→</span>
+                        </a>
+
+                        <a class="action" href="{{ route('admin.users.index') }}">
+                            <span class="action-text">
+                                <strong>Kelola Pengguna</strong>
+                                <span>Atur akun penulis dan pembaca</span>
                             </span>
                             <span class="action-arrow" aria-hidden="true">→</span>
                         </a>
