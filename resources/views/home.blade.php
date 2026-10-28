@@ -195,27 +195,6 @@
             gap: 6px 14px;
         }
 
-        .icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            color: var(--ivory);
-            background: rgba(250, 248, 243, 0.1);
-            border-radius: 50%;
-            transition: background var(--t-fast) ease-out;
-        }
-
-        .icon-btn:hover {
-            background: rgba(250, 248, 243, 0.2);
-        }
-
-        .icon-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
         .actions-user {
             max-width: 150px;
             overflow: hidden;
@@ -306,19 +285,6 @@
 
         .btn:hover svg {
             transform: translateX(3px);
-        }
-
-        .link-quiet {
-            padding: 12px 4px;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--forest);
-            text-decoration: none;
-        }
-
-        .link-quiet:hover {
-            text-decoration: underline;
-            text-underline-offset: 4px;
         }
 
         /* ---------- Shared ---------- */
@@ -550,7 +516,8 @@
         .panel {
             display: flex;
             align-items: center;
-            gap: 16px 28px;
+            max-width: 760px;
+            margin: 0 auto;
             padding: 10px;
             background: var(--sand);
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -561,7 +528,7 @@
 
         .search {
             display: flex;
-            flex: 1 1 52%;
+            flex: 1;
             align-items: center;
             gap: 10px;
             min-width: 0;
@@ -605,52 +572,6 @@
 
         .search .btn {
             height: 44px;
-        }
-
-        .cats {
-            display: flex;
-            flex: 1 1 48%;
-            align-items: center;
-            gap: 16px;
-            min-width: 0;
-            padding-right: 20px;
-        }
-
-        .cats-label {
-            flex: none;
-            margin: 0;
-            font-family: var(--sans);
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-soft);
-        }
-
-        .cats-list {
-            display: flex;
-            min-width: 0;
-            margin: 0;
-            padding: 0;
-            overflow-x: auto;
-            list-style: none;
-            font-family: var(--sans);
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            scrollbar-width: none;
-        }
-
-        .cats-list::-webkit-scrollbar {
-            display: none;
-        }
-
-        .cats-list li + li::before {
-            content: "";
-            display: inline-block;
-            width: 1px;
-            height: 14px;
-            margin: 0 14px;
-            vertical-align: -2px;
-            background: rgba(24, 60, 54, 0.25);
         }
 
         /* ---------- Blok berita pilihan (gambar + badge bulat) ---------- */
@@ -700,32 +621,6 @@
             width: 20px;
             height: 20px;
             color: var(--gold);
-        }
-
-        .lead-go {
-            position: absolute;
-            right: -14px;
-            bottom: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 52px;
-            height: 52px;
-            color: var(--emerald);
-            background: var(--gold);
-            border: 4px solid var(--ivory);
-            border-radius: 50%;
-            transition: transform var(--t-ui) var(--ease), background var(--t-fast) ease-out;
-        }
-
-        .lead-go:hover {
-            background: #CBAF7C;
-            transform: scale(1.08);
-        }
-
-        .lead-go svg {
-            width: 20px;
-            height: 20px;
         }
 
         .lead-title {
@@ -842,6 +737,12 @@
 
         .card .meta {
             margin-top: auto;
+        }
+
+        .cards-more {
+            display: flex;
+            justify-content: center;
+            margin-top: 44px;
         }
 
         /* ---------- Berita lainnya (daftar) ---------- */
@@ -1026,21 +927,6 @@
                     linear-gradient(0deg, rgba(24, 60, 54, 0.9) 0%, rgba(24, 60, 54, 0.6) 50%, rgba(24, 60, 54, 0.1) 100%);
             }
 
-            .panel {
-                flex-wrap: wrap;
-                padding: 12px;
-                border-radius: 28px;
-            }
-
-            .search,
-            .cats {
-                flex: 1 1 100%;
-            }
-
-            .cats {
-                padding: 0 8px 4px;
-            }
-
             .lead {
                 padding: 72px 0 64px;
             }
@@ -1053,11 +939,6 @@
             .lead-badge {
                 top: 14px;
                 left: 14px;
-            }
-
-            .lead-go {
-                right: 14px;
-                bottom: 14px;
             }
 
             .cards-sec {
@@ -1211,7 +1092,6 @@
             }
 
             .card:hover,
-            .lead-go:hover,
             .lead-media:hover img,
             .card:hover .media img,
             .row:hover .media img {
@@ -1237,10 +1117,6 @@
                 </nav>
 
                 <div class="actions">
-                    <a class="icon-btn search-toggle" href="{{ route('articles.index') }}" aria-label="Cari berita">
-                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-                    </a>
-
                     @auth
                         <span class="actions-user">{{ auth()->user()->name }}</span>
 
@@ -1272,7 +1148,6 @@
                 $lead = $articles->get(1);
                 $cards = $articles->slice(2, 3)->values();
                 $more = $articles->slice(5)->values();
-                $categories = \App\Models\Category::orderBy('name')->get();
             @endphp
 
             {{-- Hero --}}
@@ -1313,24 +1188,13 @@
 
             {{-- Panel pencarian & kategori --}}
             <div class="wrap panel-wrap">
-                <div class="panel" id="cari">
+                <div class="panel">
                     <form class="search" action="{{ route('articles.index') }}" method="GET" role="search">
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
                         <label class="sr-only" for="q">Cari berita</label>
                         <input id="q" type="search" name="search" placeholder="Cari berita">
                         <button class="btn" type="submit">Cari</button>
                     </form>
-
-                    @if ($categories->count())
-                        <div class="cats">
-                            <p class="cats-label" id="cats-title">Kategori</p>
-                            <ul class="cats-list" aria-labelledby="cats-title">
-                                @foreach ($categories as $category)
-                                    <li>{{ $category->name }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
                 </div>
             </div>
 
@@ -1351,10 +1215,6 @@
                                 <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.5 5.3 5.8.7-4.3 4 1.1 5.7L10 14.3 4.9 17.2 6 11.5l-4.3-4 5.8-.7L10 1.5z"/></svg>
                                 <span>Berita<br>Pilihan</span>
                             </span>
-
-                            <a class="lead-go" href="{{ route('articles.show', $lead) }}" aria-label="Baca: {{ $lead->title }}">
-                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6"/></svg>
-                            </a>
                         </div>
 
                         <div class="lead-copy reveal">
@@ -1378,7 +1238,6 @@
                                     Baca Selengkapnya
                                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
                                 </a>
-                                <a class="link-quiet" href="{{ route('articles.index') }}">Lihat semua berita</a>
                             </div>
                         </div>
                     </div>
@@ -1423,6 +1282,15 @@
                                 </article>
                             @endforeach
                         </div>
+
+                        @if ($more->isEmpty())
+                            <div class="cards-more">
+                                <a class="btn" href="{{ route('articles.index') }}">
+                                    Lihat semua berita
+                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </section>
             @endif
@@ -1526,8 +1394,6 @@
 
     <script>
         (function () {
-            var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
             var header = document.getElementById('site-header');
             if (header) {
                 var onScroll = function () {
@@ -1535,18 +1401,6 @@
                 };
                 onScroll();
                 window.addEventListener('scroll', onScroll, { passive: true });
-            }
-
-            // Ikon cari di header: arahkan ke panel pencarian jika ada, jika tidak ikuti tautan biasa.
-            var toggle = document.querySelector('.search-toggle');
-            var panel = document.getElementById('cari');
-            var input = document.getElementById('q');
-            if (toggle && panel && input) {
-                toggle.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-                    setTimeout(function () { input.focus({ preventScroll: true }); }, reduce ? 0 : 450);
-                });
             }
 
             var items = document.querySelectorAll('.reveal');
