@@ -204,7 +204,7 @@
         .actions {
             display: flex;
             align-items: center;
-            gap: 6px 14px;
+            gap: 0 4px;
         }
 
         .icon-btn {
@@ -229,26 +229,58 @@
         }
 
         .actions-user {
-            max-width: 150px;
+            max-width: 140px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            padding: 6px 14px 6px 8px;
             font-size: 13px;
             font-weight: 600;
             color: var(--ivory);
+            border-right: 1px solid rgba(250, 248, 243, 0.2);
+            margin-right: 8px;
         }
 
-        .actions a.link,
-        .actions .link-btn {
-            padding: 10px 2px;
+        .btn-dash {
+            display: inline-flex;
+            align-items: center;
+            height: 36px;
+            padding: 0 16px;
             font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ivory);
+            background: rgba(250, 248, 243, 0.12);
+            border: 1px solid rgba(250, 248, 243, 0.2);
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
+        }
+
+        .btn-dash:hover {
+            background: rgba(250, 248, 243, 0.22);
+            border-color: rgba(250, 248, 243, 0.35);
+        }
+
+        .actions .link-btn {
+            padding: 8px 12px;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--on-dark);
+            background: none;
+            border: 0;
+            cursor: pointer;
+            transition: color var(--t-fast) ease-out;
+        }
+
+        .actions a.link {
+            padding: 8px 12px;
             font-size: 14px;
             font-weight: 600;
             color: var(--on-dark);
             text-decoration: none;
-            background: none;
-            border: 0;
-            cursor: pointer;
             transition: color var(--t-fast) ease-out;
         }
 
@@ -380,6 +412,12 @@
             font-size: 13px;
             font-weight: 700;
             color: var(--forest);
+            text-decoration: none;
+            transition: color var(--t-fast) ease-out;
+        }
+
+        a.detail-cat:hover {
+            color: var(--emerald);
         }
 
         .detail-cat::before {
@@ -918,6 +956,15 @@
             font-size: 13px;
             font-weight: 700;
             color: var(--forest);
+            text-decoration: none;
+            transition: color var(--t-fast) ease-out;
+        }
+
+        a.cat:hover {
+            color: var(--emerald);
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 3px;
         }
 
         .card .title {
@@ -1311,14 +1358,14 @@
                     </a>
 
                     @auth
-                        <span class="actions-user">{{ auth()->user()->name }}</span>
+                        <span class="actions-user" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</span>
 
                         @if (auth()->user()->role === 'admin')
-                            <a class="link" href="/admin/dashboard">Dashboard</a>
+                            <a class="btn-dash" href="/admin/dashboard">Dashboard</a>
                         @elseif (auth()->user()->role === 'penulis')
-                            <a class="link" href="/penulis/dashboard">Dashboard</a>
+                            <a class="btn-dash" href="/penulis/dashboard">Dashboard</a>
                         @else
-                            <a class="link" href="/beranda">Akun Saya</a>
+                            <a class="btn-dash" href="/beranda">Akun Saya</a>
                         @endif
 
                         <form class="actions-form" action="/logout" method="POST">
@@ -1340,13 +1387,13 @@
             <nav class="crumbs" aria-label="Breadcrumb">
                 <ol>
                     <li><a href="/">Beranda</a></li>
-                    <li><span>{{ $article->category->name }}</span></li>
+                    <li><a href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a></li>
                     <li><span aria-current="page">{{ $article->title }}</span></li>
                 </ol>
             </nav>
 
             <header class="detail-head">
-                <span class="detail-cat">{{ $article->category->name }}</span>
+                <a class="detail-cat" href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
 
                 <h1 class="detail-title">{{ $article->title }}</h1>
 
@@ -1493,8 +1540,8 @@
                     @endif
                 </section>
 
-                <a class="back-link" href="{{ route('articles.index') }}">
-                    <span aria-hidden="true">&larr;</span> Kembali ke daftar berita
+                <a class="back-link" href="/">
+                    <span aria-hidden="true">&larr;</span> Kembali ke Beranda
                 </a>
 
             </div>
@@ -1519,7 +1566,7 @@
                                 </a>
 
                                 <div class="card-body">
-                                    <span class="cat">{{ $item->category->name }}</span>
+                                    <a class="cat" href="{{ route('kategori.show', $item->category) }}">{{ $item->category->name }}</a>
 
                                     <h3 class="title">
                                         <a href="{{ route('articles.show', $item) }}">{{ $item->title }}</a>

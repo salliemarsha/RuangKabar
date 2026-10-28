@@ -192,22 +192,59 @@
         .actions {
             display: flex;
             align-items: center;
-            gap: 6px 14px;
+            gap: 6px;
         }
 
-        .actions-user {
-            max-width: 150px;
+        /* Chip nama pengguna */
+        .user-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px 5px 5px;
+            background: rgba(250, 248, 243, 0.1);
+            border: 1px solid rgba(250, 248, 243, 0.15);
+            border-radius: 999px;
+        }
+
+        .user-chip-avatar {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            font-family: var(--sans);
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--emerald);
+            background: var(--gold);
+            border-radius: 50%;
+            text-transform: uppercase;
+        }
+
+        .user-chip-name {
+            max-width: 130px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            font-family: var(--sans);
             font-size: 13px;
             font-weight: 600;
             color: var(--ivory);
         }
 
+        /* Pemisah vertikal tipis */
+        .actions-sep {
+            width: 1px;
+            height: 18px;
+            flex-shrink: 0;
+            background: rgba(250, 248, 243, 0.18);
+            margin: 0 6px;
+        }
+
         .actions a.link,
         .actions .link-btn {
-            padding: 10px 2px;
+            padding: 8px 6px;
             font-family: var(--sans);
             font-size: 14px;
             font-weight: 600;
@@ -224,8 +261,40 @@
             color: var(--ivory);
         }
 
+        /* Logout: sedikit lebih muted dari Dashboard */
+        .actions .link-btn--logout {
+            font-size: 13px;
+            color: rgba(250, 248, 243, 0.52);
+        }
+
+        .actions .link-btn--logout:hover {
+            color: rgba(250, 248, 243, 0.85);
+        }
+
         .actions-form {
             display: contents;
+        }
+
+        .btn-dash {
+            display: inline-flex;
+            align-items: center;
+            height: 36px;
+            padding: 0 16px;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ivory);
+            background: rgba(250, 248, 243, 0.12);
+            border: 1px solid rgba(250, 248, 243, 0.2);
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
+        }
+
+        .btn-dash:hover {
+            background: rgba(250, 248, 243, 0.22);
+            border-color: rgba(250, 248, 243, 0.35);
         }
 
         .btn {
@@ -295,6 +364,15 @@
             font-size: 13px;
             font-weight: 700;
             color: var(--forest);
+            text-decoration: none;
+            transition: color var(--t-fast) ease-out;
+        }
+
+        a.cat:hover {
+            color: var(--emerald);
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 3px;
         }
 
         .meta {
@@ -504,6 +582,13 @@
             color: var(--ivory);
             border: 1px solid rgba(250, 248, 243, 0.4);
             border-radius: 999px;
+            text-decoration: none;
+            transition: background var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
+        }
+
+        a.hero-cat:hover {
+            background: rgba(250, 248, 243, 0.18);
+            border-color: rgba(250, 248, 243, 0.7);
         }
 
         /* ---------- Panel pencarian melayang ---------- */
@@ -992,7 +1077,7 @@
                 margin-left: auto;
             }
 
-            .actions-user {
+            .user-chip-name {
                 display: none;
             }
 
@@ -1118,19 +1203,24 @@
 
                 <div class="actions">
                     @auth
-                        <span class="actions-user">{{ auth()->user()->name }}</span>
+                        <div class="user-chip">
+                            <span class="user-chip-avatar" aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr(auth()->user()->name, 0, 1)) }}</span>
+                            <span class="user-chip-name">{{ auth()->user()->name }}</span>
+                        </div>
+
+                        <span class="actions-sep" aria-hidden="true"></span>
 
                         @if (auth()->user()->role === 'admin')
-                            <a class="link" href="/admin/dashboard">Dashboard</a>
+                            <a class="btn-dash" href="/admin/dashboard">Dashboard</a>
                         @elseif (auth()->user()->role === 'penulis')
-                            <a class="link" href="/penulis/dashboard">Dashboard</a>
+                            <a class="btn-dash" href="/penulis/dashboard">Dashboard</a>
                         @else
-                            <a class="link" href="/beranda">Akun Saya</a>
+                            <a class="btn-dash" href="/beranda">Akun Saya</a>
                         @endif
 
                         <form class="actions-form" action="/logout" method="POST">
                             @csrf
-                            <button class="link-btn" type="submit">Logout</button>
+                            <button class="link-btn link-btn--logout" type="submit">Logout</button>
                         </form>
                     @else
                         <a class="link" href="{{ route('login') }}">Login</a>
@@ -1171,7 +1261,7 @@
                         <p class="hero-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($featured->content), 200) }}</p>
 
                         <div class="hero-meta">
-                            <span class="hero-cat">{{ $featured->category->name }}</span>
+                            <a class="hero-cat" href="{{ route('kategori.show', $featured->category) }}">{{ $featured->category->name }}</a>
                             <span>Oleh {{ $featured->user->name }}</span>
                             @if ($featured->created_at)
                                 <time datetime="{{ $featured->created_at->toDateString() }}">{{ $featured->created_at->locale('id')->translatedFormat('d F Y') }}</time>
@@ -1218,7 +1308,7 @@
                         </div>
 
                         <div class="lead-copy reveal">
-                            <span class="cat">{{ $lead->category->name }}</span>
+                            <a class="cat" href="{{ route('kategori.show', $lead->category) }}">{{ $lead->category->name }}</a>
 
                             <h2 class="lead-title" id="lead-title">
                                 <a href="{{ route('articles.show', $lead) }}">{{ $lead->title }}</a>
@@ -1264,7 +1354,7 @@
                                     </a>
 
                                     <div class="card-body">
-                                        <span class="cat">{{ $article->category->name }}</span>
+                                        <a class="cat" href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
 
                                         <h3 class="title">
                                             <a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a>
@@ -1320,7 +1410,7 @@
                                     </a>
 
                                     <div>
-                                        <span class="cat">{{ $article->category->name }}</span>
+                                        <a class="cat" href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
 
                                         <h3 class="title">
                                             <a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a>
@@ -1362,7 +1452,10 @@
                 <h2 class="footer-title">Jelajahi</h2>
                 <ul class="footer-links">
                     <li><a href="/">Beranda</a></li>
-                    <li><a href="{{ route('articles.index') }}">Berita</a></li>
+                    <li><a href="{{ route('articles.index') }}">Semua Berita</a></li>
+                    @foreach ($categories as $cat)
+                        <li><a href="{{ route('kategori.show', $cat) }}">{{ $cat->name }}</a></li>
+                    @endforeach
                 </ul>
             </div>
 

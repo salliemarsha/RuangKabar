@@ -8,9 +8,11 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PublicCategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
 use App\Models\Article;
+use App\Models\Category;
 
 Route::get('/', function () {
     $articles = Article::with(['category', 'user', 'tags'])
@@ -19,8 +21,13 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    return view('home', compact('articles'));
+    $categories = Category::orderBy('name')->get();
+
+    return view('home', compact('articles', 'categories'));
 });
+
+Route::get('/kategori/{category:slug}', [PublicCategoryController::class, 'show'])
+    ->name('kategori.show');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,7 +43,7 @@ Route::get('/admin/users/data', [AdminController::class, 'users'])
     ->name('admin.users.data');
 Route::get('/admin/users/{user}/edit', [AdminController::class, 'editUser'])
     ->middleware(['auth', 'role:admin'])
-    ->name('admin.users.edit');    
+    ->name('admin.users.edit');
 Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.users.update');
@@ -88,4 +95,3 @@ Route::put('/comments/{comment}', [CommentController::class, 'update'])
 Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
     ->middleware(['auth', 'role:admin'])
     ->name('comments.destroy');
-
