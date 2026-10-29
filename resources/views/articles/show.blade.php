@@ -65,6 +65,7 @@
 
         a:focus-visible,
         button:focus-visible,
+        input:focus-visible,
         textarea:focus-visible {
             outline: 2px solid var(--gold);
             outline-offset: 3px;
@@ -322,36 +323,45 @@
             z-index: 5;
             display: flex;
             align-items: center;
+            gap: 0;
             width: 40px;
             height: 40px;
             margin: 0;
             overflow: hidden;
             background: rgba(250, 248, 243, 0.1);
+            border: 0;
             border-radius: 999px;
-            transition: width var(--t-ui) var(--ease), background var(--t-fast) ease-out, box-shadow var(--t-fast) ease-out;
+            transition:
+                width var(--t-ui) var(--ease),
+                gap var(--t-ui) var(--ease),
+                background var(--t-fast) ease-out,
+                box-shadow var(--t-fast) ease-out;
         }
 
         .search-wrap.is-open .search-form {
+            width: min(340px, calc(100vw - 48px));
+            gap: 10px;
             background: var(--white);
         }
 
         .search-wrap.is-open .search-form:focus-within {
-            box-shadow: 0 0 0 2px var(--gold);
+            box-shadow: 0 0 0 2px var(--forest);
         }
 
         .search-form input {
-            flex: 1;
+            flex: 0 1 0;
             min-width: 0;
+            width: 0;
             height: 40px;
-            padding: 0 8px 0 18px;
+            padding: 0;
             font-family: var(--body);
             font-size: 15px;
             color: var(--emerald);
             background: transparent;
             border: 0;
             opacity: 0;
-            visibility: hidden;
-            transition: opacity var(--t-fast) ease-out, visibility 0s linear var(--t-fast);
+            pointer-events: none;
+            transition: opacity var(--t-fast) ease-out, flex-basis var(--t-ui) var(--ease), padding var(--t-ui) var(--ease);
         }
 
         .search-form input:focus {
@@ -363,16 +373,21 @@
         }
 
         .search-wrap.is-open .search-form input {
+            flex: 1 1 auto;
+            width: auto;
+            padding: 0 0 0 18px;
             opacity: 1;
-            visibility: visible;
-            transition: opacity var(--t-fast) ease-out 120ms, visibility 0s;
+            pointer-events: auto;
+            transition: opacity var(--t-fast) ease-out 80ms, flex-basis var(--t-ui) var(--ease), padding var(--t-ui) var(--ease);
         }
 
         .search-submit {
             flex: none;
+            width: 0;
+            min-width: 0;
             height: 32px;
-            padding: 0 16px;
-            margin-right: 2px;
+            padding: 0;
+            overflow: hidden;
             font-family: var(--sans);
             font-size: 13px;
             font-weight: 700;
@@ -380,10 +395,11 @@
             background: var(--forest);
             border: 0;
             border-radius: 999px;
+            white-space: nowrap;
             cursor: pointer;
             opacity: 0;
-            visibility: hidden;
-            transition: opacity var(--t-fast) ease-out, background var(--t-fast) ease-out, visibility 0s linear var(--t-fast);
+            pointer-events: none;
+            transition: width var(--t-ui) var(--ease), padding var(--t-ui) var(--ease), opacity var(--t-fast) ease-out, background var(--t-fast) ease-out;
         }
 
         .search-submit:hover {
@@ -391,9 +407,12 @@
         }
 
         .search-wrap.is-open .search-submit {
+            width: auto;
+            padding: 0 16px;
+            overflow: visible;
             opacity: 1;
-            visibility: visible;
-            transition: opacity var(--t-fast) ease-out 120ms, background var(--t-fast) ease-out, visibility 0s;
+            pointer-events: auto;
+            transition: width var(--t-ui) var(--ease), padding var(--t-ui) var(--ease), opacity var(--t-fast) ease-out 80ms, background var(--t-fast) ease-out;
         }
 
         .search-toggle {
@@ -403,10 +422,12 @@
             justify-content: center;
             width: 40px;
             height: 40px;
+            margin: 0;
             padding: 0;
             color: var(--ivory);
+            background: transparent;
+            border: 0;
             border-radius: 50%;
-            text-decoration: none;
             cursor: pointer;
             transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out;
         }
@@ -1446,18 +1467,15 @@
     @php
         $str = \Illuminate\Support\Str::class;
 
-        // Estimasi waktu baca (~200 kata per menit), dihitung dari isi berita
         $plain = trim(strip_tags($article->content));
         $wordCount = $plain === '' ? 0 : count(preg_split('/\s+/u', $plain, -1, PREG_SPLIT_NO_EMPTY));
         $readMinutes = max(1, (int) ceil($wordCount / 200));
 
-        // Tautan share memakai URL berita yang sebenarnya
         $url = route('articles.show', $article);
         $shareWa = 'https://wa.me/?text=' . rawurlencode($article->title . ' - ' . $url);
         $shareFb = 'https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode($url);
         $shareX = 'https://twitter.com/intent/tweet?url=' . rawurlencode($url) . '&text=' . rawurlencode($article->title);
 
-        // Berita terkait: utamakan kategori yang sama, tanpa artikel yang sedang dibaca
         $sameCategory = \App\Models\Article::with(['category', 'user'])
             ->where('status', 'published')
             ->where('id', '!=', $article->id)
@@ -1505,10 +1523,10 @@
                             <label class="sr-only" for="search-input">Cari berita</label>
                             <input id="search-input" type="search" name="search" placeholder="Cari berita" autocomplete="off">
                             <button class="search-submit" type="submit">Cari</button>
-                            <a class="search-toggle" id="search-toggle" href="{{ route('articles.index') }}" role="button" aria-label="Buka pencarian" aria-expanded="false" aria-controls="search-input">
+                            <button class="search-toggle" id="search-toggle" type="button" aria-label="Buka pencarian" aria-expanded="false" aria-controls="search-input">
                                 <svg class="ico-search" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
                                 <svg class="ico-close" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
-                            </a>
+                            </button>
                         </form>
                     </div>
 
@@ -1814,20 +1832,10 @@
             window.addEventListener('resize', onScroll);
 
             var searchWrap = document.getElementById('search-wrap');
-            var searchForm = document.getElementById('search-form');
             var searchToggle = document.getElementById('search-toggle');
             var searchInput = document.getElementById('search-input');
-            var searchBar = document.querySelector('.bar');
-            var searchBrand = document.querySelector('.bar .brand');
 
-            if (searchWrap && searchForm && searchToggle && searchInput && searchBar && searchBrand) {
-                var openWidth = function () {
-                    var barBox = searchBar.getBoundingClientRect();
-                    var wrapBox = searchWrap.getBoundingClientRect();
-                    var left = window.innerWidth < 720 ? barBox.left + 8 : searchBrand.getBoundingClientRect().right + 16;
-                    return Math.max(Math.min(wrapBox.right - left, 380), 40);
-                };
-
+            if (searchWrap && searchToggle && searchInput) {
                 var isOpen = function () {
                     return searchWrap.classList.contains('is-open');
                 };
@@ -1836,7 +1844,7 @@
                     searchWrap.classList.toggle('is-open', open);
                     searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
                     searchToggle.setAttribute('aria-label', open ? 'Tutup pencarian' : 'Buka pencarian');
-                    searchForm.style.width = open ? openWidth() + 'px' : '';
+                    searchInput.tabIndex = open ? 0 : -1;
 
                     if (open) {
                         searchInput.focus({ preventScroll: true });
@@ -1845,16 +1853,10 @@
                     }
                 };
 
-                searchToggle.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    setOpen(!isOpen(), true);
-                });
+                searchInput.tabIndex = -1;
 
-                searchToggle.addEventListener('keydown', function (event) {
-                    if (event.key === ' ') {
-                        event.preventDefault();
-                        setOpen(!isOpen(), true);
-                    }
+                searchToggle.addEventListener('click', function () {
+                    setOpen(!isOpen(), true);
                 });
 
                 document.addEventListener('keydown', function (event) {
@@ -1868,15 +1870,8 @@
                         setOpen(false, false);
                     }
                 });
-
-                window.addEventListener('resize', function () {
-                    if (isOpen()) {
-                        searchForm.style.width = openWidth() + 'px';
-                    }
-                });
             }
 
-            // Salin tautan
             var copyBtn = document.getElementById('copy-link');
             var status = document.getElementById('share-status');
 
@@ -1915,7 +1910,6 @@
                 });
             }
 
-            // Scroll reveal (hanya kartu berita terkait)
             var items = document.querySelectorAll('.reveal');
             if (!items.length) return;
 
