@@ -204,41 +204,84 @@
         .actions {
             display: flex;
             align-items: center;
-            gap: 0 4px;
+            gap: 6px;
         }
 
-        .icon-btn {
+        .user-chip {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            color: var(--ivory);
+            gap: 8px;
+            padding: 5px 12px 5px 5px;
             background: rgba(250, 248, 243, 0.1);
+            border: 1px solid rgba(250, 248, 243, 0.15);
+            border-radius: 999px;
+        }
+
+        .user-chip-avatar {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            font-family: var(--sans);
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--emerald);
+            background: var(--gold);
             border-radius: 50%;
-            transition: background var(--t-fast) ease-out;
+            text-transform: uppercase;
         }
 
-        .icon-btn:hover {
-            background: rgba(250, 248, 243, 0.2);
-        }
-
-        .icon-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .actions-user {
-            max-width: 140px;
+        .user-chip-name {
+            max-width: 130px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            padding: 6px 14px 6px 8px;
+            font-family: var(--sans);
             font-size: 13px;
             font-weight: 600;
             color: var(--ivory);
-            border-right: 1px solid rgba(250, 248, 243, 0.2);
-            margin-right: 8px;
+        }
+
+        .actions-sep {
+            width: 1px;
+            height: 18px;
+            flex-shrink: 0;
+            background: rgba(250, 248, 243, 0.18);
+            margin: 0 6px;
+        }
+
+        .actions a.link,
+        .actions .link-btn {
+            padding: 8px 6px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--on-dark);
+            text-decoration: none;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            transition: color var(--t-fast) ease-out;
+        }
+
+        .actions a.link:hover,
+        .actions .link-btn:hover {
+            color: var(--ivory);
+        }
+
+        .actions .link-btn--logout {
+            font-size: 13px;
+            color: rgba(250, 248, 243, 0.52);
+        }
+
+        .actions .link-btn--logout:hover {
+            color: rgba(250, 248, 243, 0.85);
+        }
+
+        .actions-form {
+            display: contents;
         }
 
         .btn-dash {
@@ -263,34 +306,138 @@
             border-color: rgba(250, 248, 243, 0.35);
         }
 
-        .actions .link-btn {
-            padding: 8px 12px;
+        /* Pencarian di dalam navbar */
+        .search-wrap {
+            position: relative;
+            flex: none;
+            width: 40px;
+            height: 40px;
+            margin-right: 4px;
+        }
+
+        .search-form {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            margin: 0;
+            overflow: hidden;
+            background: rgba(250, 248, 243, 0.1);
+            border-radius: 999px;
+            transition: width var(--t-ui) var(--ease), background var(--t-fast) ease-out, box-shadow var(--t-fast) ease-out;
+        }
+
+        .search-wrap.is-open .search-form {
+            background: var(--white);
+        }
+
+        .search-wrap.is-open .search-form:focus-within {
+            box-shadow: 0 0 0 2px var(--gold);
+        }
+
+        .search-form input {
+            flex: 1;
+            min-width: 0;
+            height: 40px;
+            padding: 0 8px 0 18px;
+            font-family: var(--body);
+            font-size: 15px;
+            color: var(--emerald);
+            background: transparent;
+            border: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--t-fast) ease-out, visibility 0s linear var(--t-fast);
+        }
+
+        .search-form input:focus {
+            outline: none;
+        }
+
+        .search-form input::placeholder {
+            color: var(--text-soft);
+        }
+
+        .search-wrap.is-open .search-form input {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity var(--t-fast) ease-out 120ms, visibility 0s;
+        }
+
+        .search-submit {
+            flex: none;
+            height: 32px;
+            padding: 0 16px;
+            margin-right: 2px;
             font-family: var(--sans);
             font-size: 13px;
-            font-weight: 600;
-            color: var(--on-dark);
-            background: none;
+            font-weight: 700;
+            color: var(--white);
+            background: var(--forest);
             border: 0;
+            border-radius: 999px;
             cursor: pointer;
-            transition: color var(--t-fast) ease-out;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--t-fast) ease-out, background var(--t-fast) ease-out, visibility 0s linear var(--t-fast);
         }
 
-        .actions a.link {
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--on-dark);
-            text-decoration: none;
-            transition: color var(--t-fast) ease-out;
+        .search-submit:hover {
+            background: var(--emerald);
         }
 
-        .actions a.link:hover,
-        .actions .link-btn:hover {
+        .search-wrap.is-open .search-submit {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity var(--t-fast) ease-out 120ms, background var(--t-fast) ease-out, visibility 0s;
+        }
+
+        .search-toggle {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
             color: var(--ivory);
+            border-radius: 50%;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out;
         }
 
-        .actions-form {
-            display: contents;
+        .search-toggle:hover {
+            background: rgba(250, 248, 243, 0.14);
+        }
+
+        .search-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .search-toggle .ico-close {
+            display: none;
+        }
+
+        .search-wrap.is-open .search-toggle {
+            color: var(--emerald);
+        }
+
+        .search-wrap.is-open .search-toggle:hover {
+            background: var(--sand);
+        }
+
+        .search-wrap.is-open .search-toggle .ico-search {
+            display: none;
+        }
+
+        .search-wrap.is-open .search-toggle .ico-close {
+            display: block;
         }
 
         .btn {
@@ -1156,7 +1303,7 @@
                 margin-left: auto;
             }
 
-            .actions-user {
+            .user-chip-name {
                 display: none;
             }
 
@@ -1348,17 +1495,30 @@
                 <nav class="nav" aria-label="Menu utama">
                     <ul class="nav-links">
                         <li><a href="/">Beranda</a></li>
-                        <li><a class="is-current" href="{{ route('articles.index') }}">Berita</a></li>
+                        <li><a class="is-current" href="{{ route('articles.index') }}" aria-current="page">Berita</a></li>
                     </ul>
                 </nav>
 
                 <div class="actions">
-                    <a class="icon-btn" href="{{ route('articles.index') }}" aria-label="Cari berita">
-                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-                    </a>
+                    <div class="search-wrap" id="search-wrap">
+                        <form class="search-form" id="search-form" action="{{ route('articles.index') }}" method="GET" role="search">
+                            <label class="sr-only" for="search-input">Cari berita</label>
+                            <input id="search-input" type="search" name="search" placeholder="Cari berita" autocomplete="off">
+                            <button class="search-submit" type="submit">Cari</button>
+                            <a class="search-toggle" id="search-toggle" href="{{ route('articles.index') }}" role="button" aria-label="Buka pencarian" aria-expanded="false" aria-controls="search-input">
+                                <svg class="ico-search" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+                                <svg class="ico-close" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+                            </a>
+                        </form>
+                    </div>
 
                     @auth
-                        <span class="actions-user" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</span>
+                        <div class="user-chip">
+                            <span class="user-chip-avatar" aria-hidden="true">{{ $str::upper($str::substr(auth()->user()->name, 0, 1)) }}</span>
+                            <span class="user-chip-name">{{ auth()->user()->name }}</span>
+                        </div>
+
+                        <span class="actions-sep" aria-hidden="true"></span>
 
                         @if (auth()->user()->role === 'admin')
                             <a class="btn-dash" href="/admin/dashboard">Dashboard</a>
@@ -1370,7 +1530,7 @@
 
                         <form class="actions-form" action="/logout" method="POST">
                             @csrf
-                            <button class="link-btn" type="submit">Logout</button>
+                            <button class="link-btn link-btn--logout" type="submit">Logout</button>
                         </form>
                     @else
                         <a class="link" href="{{ route('login') }}">Login</a>
@@ -1652,6 +1812,69 @@
             onScroll();
             window.addEventListener('scroll', onScroll, { passive: true });
             window.addEventListener('resize', onScroll);
+
+            var searchWrap = document.getElementById('search-wrap');
+            var searchForm = document.getElementById('search-form');
+            var searchToggle = document.getElementById('search-toggle');
+            var searchInput = document.getElementById('search-input');
+            var searchBar = document.querySelector('.bar');
+            var searchBrand = document.querySelector('.bar .brand');
+
+            if (searchWrap && searchForm && searchToggle && searchInput && searchBar && searchBrand) {
+                var openWidth = function () {
+                    var barBox = searchBar.getBoundingClientRect();
+                    var wrapBox = searchWrap.getBoundingClientRect();
+                    var left = window.innerWidth < 720 ? barBox.left + 8 : searchBrand.getBoundingClientRect().right + 16;
+                    return Math.max(Math.min(wrapBox.right - left, 380), 40);
+                };
+
+                var isOpen = function () {
+                    return searchWrap.classList.contains('is-open');
+                };
+
+                var setOpen = function (open, restoreFocus) {
+                    searchWrap.classList.toggle('is-open', open);
+                    searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    searchToggle.setAttribute('aria-label', open ? 'Tutup pencarian' : 'Buka pencarian');
+                    searchForm.style.width = open ? openWidth() + 'px' : '';
+
+                    if (open) {
+                        searchInput.focus({ preventScroll: true });
+                    } else if (restoreFocus) {
+                        searchToggle.focus({ preventScroll: true });
+                    }
+                };
+
+                searchToggle.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    setOpen(!isOpen(), true);
+                });
+
+                searchToggle.addEventListener('keydown', function (event) {
+                    if (event.key === ' ') {
+                        event.preventDefault();
+                        setOpen(!isOpen(), true);
+                    }
+                });
+
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape' && isOpen()) {
+                        setOpen(false, true);
+                    }
+                });
+
+                document.addEventListener('pointerdown', function (event) {
+                    if (isOpen() && !searchWrap.contains(event.target)) {
+                        setOpen(false, false);
+                    }
+                });
+
+                window.addEventListener('resize', function () {
+                    if (isOpen()) {
+                        searchForm.style.width = openWidth() + 'px';
+                    }
+                });
+            }
 
             // Salin tautan
             var copyBtn = document.getElementById('copy-link');
