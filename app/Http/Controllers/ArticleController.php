@@ -24,7 +24,7 @@ class ArticleController extends Controller
     $search = $request->search;
 
     $articles = Article::with(['category', 'user', 'tags'])
-        ->when(auth()->check() && auth()->user()->role === 'pengguna', function ($query) {
+        ->when(! auth()->check() || ! in_array(auth()->user()->role, ['admin', 'penulis'], true), function ($query) {
             $query->where('status', 'published');
         })
         ->when($search, function ($query, $search) {
