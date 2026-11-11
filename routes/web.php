@@ -11,6 +11,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PublicCategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AccountController;
 use App\Models\Article;
 use App\Models\Category;
 
@@ -34,6 +36,16 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pengaturan-akun', [AccountController::class, 'edit'])
+        ->name('account.settings');
+
+    Route::patch('/pengaturan-akun/profil', [AccountController::class, 'updateProfile'])
+        ->name('account.profile.update');
+
+    Route::patch('/pengaturan-akun/password', [AccountController::class, 'updatePassword'])
+        ->name('account.password.update');
+});
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware('auth', 'role:admin');
 Route::get('/admin/users', [AdminController::class, 'userIndex'])
     ->middleware(['auth', 'role:admin'])
@@ -54,7 +66,7 @@ Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middl
 Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
 Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
 Route::resource('/tags', TagController::class)->middleware(['auth', 'role:admin']);
-Route::get('/reports/articles', [ArticleController::class, 'report'])
+Route::get('/reports/articles', [ReportController::class, 'articles'])
     ->middleware(['auth', 'role:admin'])
     ->name('reports.articles');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
