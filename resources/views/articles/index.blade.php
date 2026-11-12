@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <script>document.documentElement.classList.add('js');</script>
 
@@ -24,11 +24,14 @@
     --text-soft: #68736E;
     --on-dark: rgba(250, 248, 243, 0.82);
     --rule: rgba(24, 60, 54, 0.14);
+
     --sans: 'Plus Jakarta Sans', Arial, sans-serif;
     --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
     --body: 'Inter', 'Plus Jakarta Sans', Arial, sans-serif;
+
     --wrap: 1240px;
     --pad: 32px;
+    --gap: 28px;
     --r-md: 16px;
     --r-lg: 28px;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -44,8 +47,8 @@ html { scroll-behavior: smooth; }
 body {
     margin: 0;
     font-family: var(--sans);
-    background: var(--ivory);
     color: var(--text);
+    background: var(--ivory);
     overflow-x: clip;
     overflow-wrap: break-word;
     -webkit-text-size-adjust: 100%;
@@ -96,277 +99,13 @@ input:focus-visible {
     padding: 0 var(--pad);
 }
 
-.site-header {
-    position: sticky;
-    top: -10px;
-    z-index: 50;
-    height: 0;
-}
-
-.bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0 24px;
-    min-height: 64px;
-    margin-top: 26px;
-    padding: 0 12px 0 24px;
-    background: var(--emerald);
-    border: 1px solid rgba(250, 248, 243, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px -14px rgba(24, 60, 54, 0.5);
-    transition: box-shadow var(--t-ui) ease-out;
-}
-
-.site-header.is-scrolled .bar { box-shadow: 0 14px 36px -10px rgba(24, 60, 54, 0.6); }
-
-.brand {
-    display: inline-block;
-    padding: 8px 0;
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--ivory);
-    text-decoration: none;
-}
-
-.brand span { color: var(--gold); }
-
-.nav {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    transition: opacity var(--t-fast) ease-out, visibility 0s;
-}
-
-.bar.is-searching .nav {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--t-fast) ease-out, visibility 0s linear var(--t-fast);
-}
-
-.nav-links {
-    display: flex;
-    gap: 4px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.nav-links a {
-    display: inline-flex;
-    align-items: center;
-    height: 40px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--on-dark);
-    text-decoration: none;
-    border-radius: 12px;
-    transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out;
-}
-
-.nav-links a:hover {
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.08);
-}
-
-.nav-links a.is-current {
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.14);
-    box-shadow: inset 0 -2px 0 var(--gold);
-}
-
-.actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.icon-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.1);
-    border: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background var(--t-fast) ease-out;
-}
-
-.icon-btn:hover { background: rgba(250, 248, 243, 0.2); }
-.icon-btn svg { width: 18px; height: 18px; }
-
-.icon-btn .i-close,
-.bar.is-searching .icon-btn .i-search { display: none; }
-
-.bar.is-searching .icon-btn .i-close { display: block; }
-
-.search-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    --sw: 340px;
-}
-
-.nav-search {
-    position: absolute;
-    top: 50%;
-    right: calc(100% + 8px);
-    z-index: 2;
-    width: 0;
-    height: 44px;
-    overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    background: var(--white);
-    border-radius: 999px;
-    transform: translateY(-50%);
-    transition: width var(--t-ui) var(--ease), opacity var(--t-fast) ease-out, visibility 0s linear var(--t-ui);
-}
-
-.nav-search:focus-within { box-shadow: 0 0 0 2px var(--gold); }
-
-.bar.is-searching .nav-search {
-    width: var(--sw);
-    opacity: 1;
-    visibility: visible;
-    transition: width var(--t-ui) var(--ease), opacity var(--t-fast) ease-out, visibility 0s;
-}
-
-.nav-search-field {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: var(--sw);
-    height: 44px;
-    padding: 0 4px 0 16px;
-}
-
-.nav-search-field > svg {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    color: var(--forest);
-}
-
-.nav-search input {
-    flex: 1;
-    min-width: 0;
-    height: 40px;
-    padding: 0;
-    font-family: var(--body);
-    font-size: 15px;
-    color: var(--emerald);
-    background: transparent;
-    border: 0;
-}
-
-.nav-search input:focus { outline: none; }
-.nav-search input::placeholder { color: var(--text-soft); }
-.nav-search .btn { height: 36px; padding: 0 18px; font-size: 13px; }
-
-.user-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 12px 5px 5px;
-    background: rgba(250, 248, 243, 0.1);
-    border: 1px solid rgba(250, 248, 243, 0.15);
-    border-radius: 999px;
-}
-
-.user-chip-avatar {
-    display: flex;
-    flex: none;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    font-family: var(--sans);
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--emerald);
-    background: var(--gold);
-    border-radius: 50%;
-    text-transform: uppercase;
-}
-
-.user-chip-name {
-    max-width: 130px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ivory);
-}
-
-.actions-sep {
-    width: 1px;
-    height: 18px;
-    flex-shrink: 0;
-    background: rgba(250, 248, 243, 0.18);
-    margin: 0 6px;
-}
-
-.actions a.link,
-.actions .link-btn {
-    padding: 8px 6px;
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--on-dark);
-    text-decoration: none;
-    background: none;
-    border: 0;
-    cursor: pointer;
-    transition: color var(--t-fast) ease-out;
-}
-
-.actions a.link:hover,
-.actions .link-btn:hover { color: var(--ivory); }
-
-.actions .link-btn--logout { font-size: 13px; color: rgba(250, 248, 243, 0.52); }
-.actions .link-btn--logout:hover { color: rgba(250, 248, 243, 0.85); }
-
-.actions-form { display: contents; }
-
-.btn-dash {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 16px;
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.12);
-    border: 1px solid rgba(250, 248, 243, 0.2);
-    border-radius: 10px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
-}
-
-.btn-dash:hover {
-    background: rgba(250, 248, 243, 0.22);
-    border-color: rgba(250, 248, 243, 0.35);
-}
-
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 46px;
-    padding: 0 24px;
+    height: 48px;
+    padding: 0 26px;
     font-family: var(--sans);
     font-size: 14px;
     font-weight: 700;
@@ -375,20 +114,18 @@ input:focus-visible {
     border: 0;
     border-radius: 999px;
     text-decoration: none;
+    white-space: nowrap;
     cursor: pointer;
-    transition: background var(--t-fast) ease-out, color var(--t-fast) ease-out, transform 120ms ease-out;
+    transition: background var(--t-fast) ease-out, color var(--t-fast) ease-out, border-color var(--t-fast) ease-out, transform 120ms ease-out;
 }
 
 .btn:hover { background: var(--emerald); }
 .btn:active { transform: scale(0.97); }
 
-.btn--ivory { height: 40px; padding: 0 20px; color: var(--emerald); background: var(--ivory); }
-.btn--ivory:hover { background: var(--sand); }
-
 .btn--ghost {
     color: var(--emerald);
     background: transparent;
-    border: 1px solid var(--rule);
+    border: 1px solid rgba(24, 60, 54, 0.3);
 }
 
 .btn--ghost:hover {
@@ -400,31 +137,44 @@ input:focus-visible {
 .btn svg { width: 16px; height: 16px; transition: transform var(--t-ui) var(--ease); }
 .btn:hover svg { transform: translateX(3px); }
 
-.page-head {
+.page-head { margin-top: 20px; }
+
+.page-head__panel {
     position: relative;
     overflow: hidden;
-    margin: 8px 12px 0;
-    padding: 170px 0 56px;
+    padding: 56px 56px 52px;
     color: var(--ivory);
     background: var(--emerald);
     border-radius: var(--r-lg);
 }
 
-.page-head::before {
+.page-head__panel::before {
     content: "";
     position: absolute;
-    top: -150px;
-    right: -110px;
-    width: 460px;
-    height: 460px;
+    top: -160px;
+    right: -100px;
+    width: 440px;
+    height: 440px;
     background: var(--forest);
     opacity: 0.45;
     border-radius: 50%;
 }
 
-.page-head-inner {
+.page-head__panel::after {
+    content: "";
+    position: absolute;
+    right: 72px;
+    bottom: -90px;
+    width: 220px;
+    height: 220px;
+    border: 1px solid rgba(185, 154, 100, 0.45);
+    border-radius: 50%;
+}
+
+.page-head__inner {
     position: relative;
     z-index: 1;
+    max-width: 680px;
     animation: rise var(--t-enter) var(--ease) both;
 }
 
@@ -453,30 +203,65 @@ input:focus-visible {
 }
 
 .page-title {
-    max-width: 900px;
-    margin: 0 0 14px;
+    margin: 0 0 12px;
     font-family: var(--serif);
-    font-size: clamp(36px, 5vw, 64px);
+    font-size: clamp(32px, 4vw, 48px);
     font-weight: 600;
-    line-height: 1.1;
+    line-height: 1.12;
     letter-spacing: -0.015em;
     overflow-wrap: anywhere;
 }
 
 .page-lead {
-    max-width: 620px;
     margin: 0 0 28px;
     font-family: var(--body);
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.7;
     color: var(--on-dark);
 }
+
+.search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 640px;
+    height: 58px;
+    padding: 0 6px 0 22px;
+    background: var(--white);
+    border-radius: 999px;
+    transition: box-shadow var(--t-fast) ease-out;
+}
+
+.search:focus-within { box-shadow: 0 0 0 3px rgba(185, 154, 100, 0.55); }
+
+.search > svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--forest);
+}
+
+.search input {
+    flex: 1;
+    min-width: 0;
+    height: 54px;
+    padding: 0;
+    font-family: var(--body);
+    font-size: 15px;
+    color: var(--text);
+    background: transparent;
+    border: 0;
+}
+
+.search input:focus { outline: none; }
+.search input::placeholder { color: var(--text-soft); }
+.search .btn { height: 46px; }
 
 .page-clear {
     display: inline-flex;
     align-items: center;
     height: 40px;
-    margin: 0 0 24px;
+    margin-top: 16px;
     padding: 0 18px;
     font-family: var(--sans);
     font-size: 13px;
@@ -490,6 +275,31 @@ input:focus-visible {
 
 .page-clear:hover { background: rgba(250, 248, 243, 0.14); }
 
+.filter { margin-top: 28px; }
+
+.filter__card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 24px;
+}
+
+.filter__label {
+    flex: none;
+    padding-top: 11px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest);
+}
+
+.filter__card nav { flex: 1; min-width: 0; }
+
 .chips {
     display: flex;
     flex-wrap: wrap;
@@ -499,51 +309,45 @@ input:focus-visible {
     list-style: none;
 }
 
-.chips a {
+.chip {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     height: 40px;
     padding: 0 18px;
-    white-space: nowrap;
     font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--on-dark);
-    text-decoration: none;
-    background: rgba(250, 248, 243, 0.1);
-    border: 1px solid rgba(250, 248, 243, 0.18);
-    border-radius: 999px;
-    transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out;
-}
-
-.chips a:hover { color: var(--ivory); background: rgba(250, 248, 243, 0.2); }
-
-.chips a.is-active {
-    color: var(--emerald);
-    background: var(--gold);
-    border-color: var(--gold);
-}
-
-.listing { padding: 56px 0 88px; }
-
-.listing-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px 20px;
-    margin-bottom: 28px;
-}
-
-
-.result-info {
-    margin: 0;
-    font-family: var(--body);
     font-size: 14px;
-    color: var(--text-soft);
+    font-weight: 600;
+    color: var(--emerald);
+    text-decoration: none;
+    white-space: nowrap;
+    background: var(--ivory);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
 }
 
-.result-info strong { font-weight: 600; color: var(--text); }
+.chip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+}
+
+.chip:hover {
+    color: var(--ivory);
+    background: var(--forest);
+    border-color: var(--forest);
+}
+
+.chip.is-active {
+    color: var(--ivory);
+    background: var(--emerald);
+    border-color: var(--emerald);
+}
+
+.listing { padding-top: 40px; padding-bottom: 88px; }
 
 .notice {
     margin: 0 0 24px;
@@ -558,6 +362,26 @@ input:focus-visible {
     border-radius: 12px;
 }
 
+.listing-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    margin-bottom: 24px;
+}
+
+.result-info {
+    margin: 0;
+    font-family: var(--body);
+    font-size: 14px;
+    color: var(--text-soft);
+}
+
+.result-info strong { font-weight: 600; color: var(--text); }
+
+.listing-bar .btn { height: 44px; }
+
 .media {
     display: block;
     overflow: hidden;
@@ -566,7 +390,7 @@ input:focus-visible {
     border-radius: var(--r-md);
 }
 
-.media img {
+.media > img {
     display: block;
     width: 100%;
     height: 100%;
@@ -580,16 +404,21 @@ input:focus-visible {
     justify-content: center;
     width: 100%;
     height: 100%;
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: rgba(24, 60, 54, 0.22);
+    background: var(--emerald);
+}
+
+.ph img {
+    display: block;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    flex: none;
 }
 
 .cat {
     position: relative;
     z-index: 2;
-    display: inline-block;
+    align-self: flex-start;
     margin-bottom: 10px;
     font-family: var(--sans);
     font-size: 13px;
@@ -606,23 +435,6 @@ input:focus-visible {
     text-underline-offset: 3px;
 }
 
-.title,
-.feature-title {
-    margin: 0;
-    font-weight: 700;
-    letter-spacing: -0.015em;
-    overflow-wrap: anywhere;
-}
-
-.title { font-family: var(--sans); font-size: 20px; line-height: 1.28; margin-bottom: 10px; }
-
-.title a,
-.feature-title a {
-    color: var(--emerald);
-    text-decoration: none;
-    transition: color var(--t-fast) ease-out;
-}
-
 .stretch::after {
     content: "";
     position: absolute;
@@ -636,10 +448,14 @@ input:focus-visible {
     align-items: center;
     gap: 2px 14px;
     margin-top: auto;
+    padding-top: 14px;
     font-family: var(--body);
     font-size: 13px;
     color: var(--text-soft);
+    border-top: 1px solid var(--rule);
 }
+
+.meta span:first-child { font-weight: 500; color: var(--text); }
 
 .badge-draft {
     position: relative;
@@ -659,8 +475,8 @@ input:focus-visible {
     display: flex;
     align-items: center;
     gap: 4px 18px;
-    margin-top: 14px;
-    padding-top: 10px;
+    margin-top: 12px;
+    padding-top: 8px;
     border-top: 1px solid var(--rule);
 }
 
@@ -679,9 +495,10 @@ input:focus-visible {
     cursor: pointer;
 }
 
-.manage a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.manage .danger { color: #A3321F; }
+.manage a:hover,
 .manage .danger:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.manage .danger { color: #A3321F; }
 
 .feature {
     position: relative;
@@ -689,7 +506,7 @@ input:focus-visible {
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: 44px;
     align-items: center;
-    margin-bottom: 32px;
+    margin-bottom: var(--gap);
     padding: 16px;
     background: var(--white);
     border: 1px solid rgba(24, 60, 54, 0.08);
@@ -697,28 +514,78 @@ input:focus-visible {
     transition: box-shadow var(--t-ui) ease-out;
 }
 
-.feature .media { aspect-ratio: 16 / 11; border-radius: 20px; }
+.feature .media {
+    aspect-ratio: 16 / 11;
+    border-radius: 20px;
+}
 
-.feature-body { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 24px 8px 0; }
+.feature-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    padding: 8px 24px 8px 0;
+}
+
+.feature-label {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.feature-label::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+}
 
 .feature-title {
-    margin-bottom: 14px;
+    display: -webkit-box;
+    margin: 0 0 14px;
+    overflow: hidden;
     font-family: var(--serif);
-    font-size: clamp(26px, 2.8vw, 38px);
+    font-size: clamp(24px, 2.6vw, 36px);
     font-weight: 600;
-    line-height: 1.18;
+    line-height: 1.2;
     letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.feature-title a {
+    color: var(--emerald);
+    text-decoration: none;
+    transition: color var(--t-fast) ease-out;
 }
 
 .feature-excerpt {
-    margin: 0 0 18px;
+    display: -webkit-box;
+    margin: 0 0 20px;
+    overflow: hidden;
     font-family: var(--body);
     font-size: 16px;
     line-height: 1.75;
     color: var(--text-soft);
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
-.feature .meta { margin-top: 0; margin-bottom: 22px; }
+.feature .meta {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
 
 .feature-more {
     display: inline-flex;
@@ -735,13 +602,14 @@ input:focus-visible {
 .grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 28px;
+    gap: var(--gap);
 }
 
 .card {
     position: relative;
     display: flex;
     flex-direction: column;
+    min-width: 0;
     padding: 12px;
     background: var(--white);
     border: 1px solid rgba(24, 60, 54, 0.08);
@@ -749,33 +617,55 @@ input:focus-visible {
     transition: transform var(--t-ui) var(--ease), box-shadow var(--t-ui) ease-out;
 }
 
-.card .media { aspect-ratio: 4 / 3; }
+.card .media { aspect-ratio: 16 / 10; }
 
 .card-body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 20px 10px 10px;
+    padding: 20px 10px 8px;
+}
+
+.card .title {
+    display: -webkit-box;
+    margin: 0 0 12px;
+    overflow: hidden;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.card .title a {
+    color: var(--emerald);
+    text-decoration: none;
+    transition: color var(--t-fast) ease-out;
 }
 
 .card-excerpt {
-    margin: 0 0 16px;
+    display: -webkit-box;
+    margin: 0 0 18px;
+    overflow: hidden;
     font-family: var(--body);
     font-size: 14.5px;
     line-height: 1.65;
     color: var(--text-soft);
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 @media (hover: hover) {
     .card:hover,
-    .feature:hover {
-        box-shadow: 0 18px 36px -22px rgba(24, 60, 54, 0.4);
-    }
+    .feature:hover { box-shadow: 0 18px 36px -22px rgba(24, 60, 54, 0.4); }
 
     .card:hover { transform: translateY(-4px); }
 
-    .card:hover .media img,
-    .feature:hover .media img { transform: scale(1.03); }
+    .card:hover .media > img,
+    .feature:hover .media > img { transform: scale(1.03); }
 
     .card:hover .title a,
     .feature:hover .feature-title a { color: var(--forest); }
@@ -813,7 +703,7 @@ input:focus-visible {
     color: var(--emerald);
     text-decoration: none;
     background: var(--white);
-    border: 1px solid var(--sand);
+    border: 1px solid var(--rule);
     border-radius: 999px;
     transition: background var(--t-fast) ease-out, color var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
 }
@@ -834,7 +724,11 @@ a.pager-num:hover {
     border-color: var(--emerald);
 }
 
-.pager-btn.is-disabled { color: var(--text-soft); background: transparent; opacity: 0.6; }
+.pager-btn.is-disabled {
+    color: var(--text-soft);
+    background: transparent;
+    opacity: 0.6;
+}
 
 .pager-gap { padding: 0 4px; color: var(--text-soft); }
 
@@ -851,6 +745,20 @@ a.pager-num:hover {
     background: var(--sand);
     border-radius: var(--r-lg);
 }
+
+.empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    color: var(--gold);
+    background: var(--emerald);
+    border-radius: 50%;
+}
+
+.empty-icon svg { width: 28px; height: 28px; }
 
 .empty strong {
     display: block;
@@ -878,8 +786,6 @@ a.pager-num:hover {
     margin-top: 24px;
 }
 
-.empty .btn--ghost { border-color: rgba(24, 60, 54, 0.3); }
-
 @keyframes rise {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: none; }
@@ -901,22 +807,22 @@ a.pager-num:hover {
 
 .footer-grid {
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 3fr);
     gap: 32px 48px;
-    padding-top: 56px;
-    padding-bottom: 44px;
+    padding-top: 64px;
+    padding-bottom: 48px;
 }
 
 .footer-about {
     max-width: 300px;
-    margin: 10px 0 0;
+    margin: 16px 0 0;
     font-family: var(--body);
     font-size: 14px;
     line-height: 1.7;
 }
 
 .footer-title {
-    margin: 0 0 12px;
+    margin: 0 0 14px;
     font-family: var(--sans);
     font-size: 14px;
     font-weight: 700;
@@ -946,75 +852,92 @@ a.pager-num:hover {
 }
 
 @media (max-width: 1023px) {
-    :root { --pad: 24px; --r-lg: 24px; }
+    :root { --pad: 24px; --r-lg: 24px; --gap: 20px; }
 
-    .search-wrap { order: 9; margin-left: 2px; }
+    .page-head__panel { padding: 44px 40px 40px; }
 
-    .bar.is-searching .brand,
-    .bar.is-searching .actions > :not(.search-wrap) {
-        visibility: hidden;
-        transition: visibility 0s linear var(--t-ui);
-    }
+    .filter__card { padding: 18px 20px; }
 
-    .page-head { padding: 160px 0 48px; }
-    .listing { padding: 44px 0 72px; }
+    .listing { padding-top: 32px; padding-bottom: 72px; }
 
     .feature { grid-template-columns: minmax(0, 1fr); gap: 20px; }
     .feature-body { padding: 4px 8px 12px; }
 
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-    .footer-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .footer-brand { grid-column: 1 / -1; }
 }
 
 @media (max-width: 719px) {
-    :root { --pad: 20px; --r-lg: 22px; }
+    :root { --pad: 16px; --r-lg: 22px; --gap: 18px; }
 
-    .bar { padding: 4px 8px 4px 18px; gap: 0 12px; }
-    .brand { font-size: 22px; }
-    .actions { margin-left: auto; }
-    .user-chip-name { display: none; }
-    .nav-search input { font-size: 16px; }
+    .page-head { margin-top: 14px; }
+    .page-head__panel { padding: 32px 22px 30px; }
 
-    .nav {
-        order: 3;
-        flex-basis: 100%;
-        justify-content: flex-start;
-        padding-bottom: 8px;
+    .page-head__panel::before { width: 300px; height: 300px; top: -120px; right: -120px; }
+    .page-head__panel::after { display: none; }
+
+    .page-label { margin-bottom: 16px; }
+    .page-lead { margin-bottom: 22px; font-size: 15px; }
+
+    .search { height: 54px; padding-left: 16px; }
+    .search input { height: 50px; }
+    .search .btn { height: 42px; padding: 0 20px; }
+
+    .filter { margin-top: 20px; }
+
+    .filter__card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 20px;
     }
 
-    .nav-links a { height: 36px; padding: 0 12px; }
-
-    .page-head { margin: 6px 8px 0; padding: 176px 0 36px; }
-    .page-head::before { width: 320px; height: 320px; top: -120px; right: -120px; }
-    .page-lead { font-size: 16px; }
+    .filter__label { padding-top: 0; }
 
     .chips {
         flex-wrap: nowrap;
-        margin: 0 calc(var(--pad) * -1);
-        padding: 0 var(--pad) 4px;
+        margin: 0 -16px;
+        padding: 0 16px 4px;
         overflow-x: auto;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
     }
 
     .chips::-webkit-scrollbar { display: none; }
 
-    .listing { padding: 32px 0 56px; }
+    .chip { flex: none; }
+
+    .listing { padding-top: 28px; padding-bottom: 56px; }
+
+    .listing-bar .btn { width: 100%; }
 
     .feature { padding: 10px; border-radius: 22px; }
     .feature .media { aspect-ratio: 4 / 3; }
+    .feature-body { padding: 4px 8px 10px; }
+    .feature-excerpt { font-size: 15px; }
 
-    .grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .grid { grid-template-columns: minmax(0, 1fr); }
 
-    .pager-pages { display: none; }
-    .pager-status { display: block; order: 0; width: 100%; text-align: center; }
+    .card-body { padding: 18px 8px 6px; }
+    .card .title { font-size: 20px; }
+
     .pager { margin-top: 40px; }
-    .pager-btn { flex: 1 1 0; padding: 0 12px; }
+    .pager-pages { display: none; }
+    .pager-status { display: block; order: -1; width: 100%; text-align: center; }
+    .pager-btn { flex: 1 1 0; padding: 0 10px; }
 
     .empty { padding: 48px 20px; }
+    .empty strong { font-size: 24px; }
+    .empty-actions .btn { width: 100%; }
 
-    .footer-grid { grid-template-columns: minmax(0, 1fr); padding-top: 40px; }
+    .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; padding-top: 44px; }
+}
+
+@media (max-width: 479px) {
+    .footer-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1028,8 +951,8 @@ a.pager-num:hover {
     .js .reveal { opacity: 1; transform: none; }
 
     .card:hover,
-    .card:hover .media img,
-    .feature:hover .media img,
+    .card:hover .media > img,
+    .feature:hover .media > img,
     .feature:hover .feature-more svg { transform: none; }
 }
     </style>
@@ -1054,103 +977,63 @@ a.pager-num:hover {
 
     <a class="skip-link" href="#konten">Lewati ke konten utama</a>
 
-    <header class="site-header" id="site-header">
-        <div class="wrap">
-            <div class="bar">
-                <a class="brand" href="/">Ruang<span>Kabar</span></a>
-
-                <nav class="nav" aria-label="Menu utama">
-                    <ul class="nav-links">
-                        <li><a href="/">Beranda</a></li>
-                        <li><a class="is-current" href="{{ route('articles.index') }}">Berita</a></li>
-                    </ul>
-                </nav>
-
-                <div class="actions">
-                    <div class="search-wrap" id="search-wrap">
-                        <form class="nav-search" id="nav-search" action="{{ route('articles.index') }}" method="GET" role="search">
-                            <div class="nav-search-field">
-                                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-                                <label class="sr-only" for="nav-q">Cari berita</label>
-                                <input id="nav-q" type="search" name="search" placeholder="Cari berita" value="{{ request('search') }}" autocomplete="off">
-                                <button class="btn" type="submit">Cari</button>
-                            </div>
-                        </form>
-
-                        <button class="icon-btn" id="search-toggle" type="button" aria-label="Cari berita" aria-expanded="false" aria-controls="nav-search">
-                            <svg class="i-search" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-                            <svg class="i-close" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
-                        </button>
-                    </div>
-
-                    @auth
-                        <div class="user-chip">
-                            <span class="user-chip-avatar" aria-hidden="true">{{ $str::upper($str::substr(auth()->user()->name, 0, 1)) }}</span>
-                            <span class="user-chip-name">{{ auth()->user()->name }}</span>
-                        </div>
-
-                        <span class="actions-sep" aria-hidden="true"></span>
-
-                        @if (auth()->user()->role === 'admin')
-                            <a class="btn-dash" href="/admin/dashboard">Dashboard</a>
-                        @elseif (auth()->user()->role === 'penulis')
-                            <a class="btn-dash" href="/penulis/dashboard">Dashboard</a>
-                        @else
-                            <a class="btn-dash" href="/beranda">Akun Saya</a>
-                        @endif
-
-                        <form class="actions-form" action="/logout" method="POST">
-                            @csrf
-                            <button class="link-btn link-btn--logout" type="submit">Logout</button>
-                        </form>
-                    @else
-                        <a class="link" href="{{ route('login') }}">Login</a>
-                        <a class="btn btn--ivory" href="{{ route('register') }}">Daftar</a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('components.navbar-public')
 
     <main id="konten">
-        <section class="page-head" aria-labelledby="page-title">
-            <div class="wrap page-head-inner">
-                <span class="page-label">BERITA</span>
+        <section class="page-head wrap" aria-labelledby="page-title">
+            <div class="page-head__panel">
+                <div class="page-head__inner">
+                    <span class="page-label">BERITA</span>
 
-                <h1 class="page-title" id="page-title">{{ $searchTerm !== '' ? 'Hasil Pencarian' : 'Semua Berita' }}</h1>
+                    <h1 class="page-title" id="page-title">{{ $searchTerm !== '' ? 'Hasil Pencarian' : 'Semua Berita' }}</h1>
 
-                <p class="page-lead">
+                    <p class="page-lead">
+                        @if ($searchTerm !== '')
+                            Menampilkan {{ $total }} berita untuk &ldquo;{{ $searchTerm }}&rdquo;.
+                        @else
+                            Kabar terbaru dan terpercaya dari redaksi RuangKabar.
+                        @endif
+                    </p>
+
+                    <form class="search" action="{{ route('articles.index') }}" method="GET" role="search">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+                        <label class="sr-only" for="q">Cari berita</label>
+                        <input id="q" type="search" name="search" placeholder="Cari berita" value="{{ request('search') }}" autocomplete="off">
+                        <button class="btn" type="submit">Cari</button>
+                    </form>
+
                     @if ($searchTerm !== '')
-                        Menampilkan {{ $total }} berita untuk &ldquo;{{ $searchTerm }}&rdquo;.
-                    @else
-                        Kabar terbaru dan terpercaya dari redaksi RuangKabar.
+                        <a class="page-clear" href="{{ route('articles.index') }}">Hapus pencarian</a>
                     @endif
-                </p>
-
-                @if ($searchTerm !== '')
-                    <a class="page-clear" href="{{ route('articles.index') }}">Hapus pencarian</a>
-                @endif
-
-                @if ($categories->count())
-                    <ul class="chips" aria-label="Kategori berita">
-                        <li><a class="is-active" href="{{ route('articles.index') }}" aria-current="page">Semua</a></li>
-                        @foreach ($categories as $cat)
-                            <li><a href="{{ route('kategori.show', $cat) }}">{{ $cat->name }}</a></li>
-                        @endforeach
-                    </ul>
-                @endif
+                </div>
             </div>
         </section>
 
-        <section class="listing" aria-label="Daftar berita">
-            <div class="wrap">
-                @if (session('success'))
-                    <p class="notice" role="status">{{ session('success') }}</p>
-                @endif
+        @if ($categories->count())
+            <section class="filter wrap" aria-label="Filter kategori">
+                <div class="filter__card">
+                    <span class="filter__label">Kategori</span>
 
-                @if ($items->isNotEmpty() || $canCreate)
-                    <div class="listing-bar">
-                        @if ($items->isNotEmpty())
+                    <nav aria-label="Kategori berita">
+                        <ul class="chips">
+                            <li><a class="chip is-active" href="{{ route('articles.index') }}" aria-current="page">Semua</a></li>
+                            @foreach ($categories as $cat)
+                                <li><a class="chip" href="{{ route('kategori.show', $cat) }}">{{ $cat->name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+        @endif
+
+        <section class="listing wrap" aria-label="Daftar berita">
+            @if (session('success'))
+                <p class="notice" role="status">{{ session('success') }}</p>
+            @endif
+
+            @if ($items->isNotEmpty() || $canCreate)
+                <div class="listing-bar">
+                    @if ($items->isNotEmpty())
                         <p class="result-info">
                             @if ($isPaginator && $articles->firstItem())
                                 Menampilkan <strong>{{ $articles->firstItem() }}&ndash;{{ $articles->lastItem() }}</strong> dari <strong>{{ $total }}</strong> berita
@@ -1158,26 +1041,30 @@ a.pager-num:hover {
                                 <strong>{{ $total }}</strong> berita
                             @endif
                         </p>
-                        @endif
+                    @endif
 
-                        @if ($canCreate)
-                            <a class="btn" href="{{ route('articles.create') }}">Tambah Artikel</a>
-                        @endif
-                    </div>
-                @endif
+                    @if ($canCreate)
+                        <a class="btn" href="{{ route('articles.create') }}">Tambah Artikel</a>
+                    @endif
+                </div>
+            @endif
 
-                @if ($items->isNotEmpty())
-                    @if ($featured)
+            @if ($items->isNotEmpty())
+                @if ($featured)
                     <article class="feature reveal">
-                            <a class="media" href="{{ route('articles.show', $featured) }}" tabindex="-1" aria-hidden="true">
-                                @if ($featured->image)
-                                    <img src="{{ asset('storage/' . $featured->image) }}" alt="" loading="lazy">
-                                @else
-                                    <div class="ph">RK</div>
-                                @endif
-                            </a>
+                        <a class="media" href="{{ route('articles.show', $featured) }}" tabindex="-1" aria-hidden="true">
+                            @if ($featured->image)
+                                <img src="{{ asset('storage/' . $featured->image) }}" alt="" loading="lazy">
+                            @else
+                                <div class="ph">
+                                    <img src="{{ asset('images/logo-ruangkabar.png') }}" alt="RuangKabar">
+                                </div>
+                            @endif
+                        </a>
 
                         <div class="feature-body">
+                            <span class="feature-label">Berita Unggulan</span>
+
                             <a class="cat" href="{{ route('kategori.show', $featured->category) }}">{{ $featured->category->name }}</a>
 
                             <h2 class="feature-title">
@@ -1201,32 +1088,33 @@ a.pager-num:hover {
                                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
                             </span>
 
-                    @if ($canManage($featured))
-                        <div class="manage">
-                            <a href="{{ route('articles.edit', $featured) }}">Edit</a>
-                            <form action="{{ route('articles.destroy', $featured) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="danger" type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">Hapus</button>
-                            </form>
-                        </div>
-                    @endif
-
+                            @if ($canManage($featured))
+                                <div class="manage">
+                                    <a href="{{ route('articles.edit', $featured) }}">Edit</a>
+                                    <form action="{{ route('articles.destroy', $featured) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="danger" type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">Hapus</button>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                     </article>
-                    @endif
+                @endif
 
-                    @if ($rest->isNotEmpty())
-                        <div class="grid">
-                            @foreach ($rest as $article)
+                @if ($rest->isNotEmpty())
+                    <div class="grid">
+                        @foreach ($rest as $article)
                             <article class="card reveal">
-                            <a class="media" href="{{ route('articles.show', $article) }}" tabindex="-1" aria-hidden="true">
-                                @if ($article->image)
-                                    <img src="{{ asset('storage/' . $article->image) }}" alt="" loading="lazy">
-                                @else
-                                    <div class="ph">RK</div>
-                                @endif
-                            </a>
+                                <a class="media" href="{{ route('articles.show', $article) }}" tabindex="-1" aria-hidden="true">
+                                    @if ($article->image)
+                                        <img src="{{ asset('storage/' . $article->image) }}" alt="" loading="lazy">
+                                    @else
+                                        <div class="ph">
+                                            <img src="{{ asset('images/logo-ruangkabar.png') }}" alt="RuangKabar">
+                                        </div>
+                                    @endif
+                                </a>
 
                                 <div class="card-body">
                                     <a class="cat" href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
@@ -1237,32 +1125,31 @@ a.pager-num:hover {
 
                                     <p class="card-excerpt">{{ $str::limit(strip_tags($article->content), 110) }}</p>
 
-                            <div class="meta">
-                                <span>{{ $article->user->name ?? 'Redaksi' }}</span>
-                                @if ($article->created_at)
-                                    <time datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
-                                @endif
-                                @if ($article->status !== 'published')
-                                    <span class="badge-draft">{{ ucfirst($article->status) }}</span>
-                                @endif
-                            </div>
+                                    <div class="meta">
+                                        <span>{{ $article->user->name ?? 'Redaksi' }}</span>
+                                        @if ($article->created_at)
+                                            <time datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
+                                        @endif
+                                        @if ($article->status !== 'published')
+                                            <span class="badge-draft">{{ ucfirst($article->status) }}</span>
+                                        @endif
+                                    </div>
 
-                    @if ($canManage($article))
-                        <div class="manage">
-                            <a href="{{ route('articles.edit', $article) }}">Edit</a>
-                            <form action="{{ route('articles.destroy', $article) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="danger" type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">Hapus</button>
-                            </form>
-                        </div>
-                    @endif
-
+                                    @if ($canManage($article))
+                                        <div class="manage">
+                                            <a href="{{ route('articles.edit', $article) }}">Edit</a>
+                                            <form action="{{ route('articles.destroy', $article) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="danger" type="submit" onclick="return confirm('Yakin ingin menghapus artikel ini?')">Hapus</button>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </article>
-                            @endforeach
-                        </div>
-                    @endif
+                        @endforeach
+                    </div>
+                @endif
 
                 @if ($isPaginator && $articles->hasPages())
                     @php
@@ -1306,34 +1193,40 @@ a.pager-num:hover {
                         <span class="pager-status">Halaman {{ $current }} dari {{ $last }}</span>
                     </nav>
                 @endif
-                @else
-                    <div class="empty">
-                        <strong>{{ $searchTerm !== '' ? 'Berita tidak ditemukan' : 'Belum ada berita' }}</strong>
+            @else
+                <div class="empty">
+                    <span class="empty-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a2 2 0 0 1 2 2v13a1 1 0 0 0 1 1H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1z"/><path d="M18 9h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2"/><path d="M8 8h6M8 12h6M8 16h4"/></svg>
+                    </span>
 
-                        <p>
-                            @if ($searchTerm !== '')
-                                Tidak ada berita yang cocok dengan &ldquo;{{ $searchTerm }}&rdquo;. Coba gunakan kata kunci lain.
-                            @else
-                                Berita akan tampil di halaman ini setelah dipublikasikan.
-                            @endif
-                        </p>
+                    <strong>{{ $searchTerm !== '' ? 'Berita tidak ditemukan' : 'Belum ada berita' }}</strong>
 
-                        <div class="empty-actions">
-                            @if ($searchTerm !== '')
-                                <a class="btn" href="{{ route('articles.index') }}">Lihat semua berita</a>
-                            @endif
-                            <a class="btn btn--ghost" href="/">Kembali ke Beranda</a>
-                        </div>
+                    <p>
+                        @if ($searchTerm !== '')
+                            Tidak ada berita yang cocok dengan &ldquo;{{ $searchTerm }}&rdquo;. Coba gunakan kata kunci lain.
+                        @else
+                            Berita akan tampil di halaman ini setelah dipublikasikan.
+                        @endif
+                    </p>
+
+                    <div class="empty-actions">
+                        @if ($searchTerm !== '')
+                            <a class="btn" href="{{ route('articles.index') }}">Lihat semua berita</a>
+                        @endif
+                        <a class="btn btn--ghost" href="/">Kembali ke Beranda</a>
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </section>
     </main>
 
     <footer class="footer">
         <div class="wrap footer-grid">
             <div class="footer-brand">
-                <a class="brand" href="/">Ruang<span>Kabar</span></a>
+                <a class="rk-brand" href="/" aria-label="RuangKabar, ke beranda">
+                    <svg class="rk-brand__mark" aria-hidden="true" focusable="false"><use href="#rk-mark"/></svg>
+                    <span class="rk-brand__name">Ruang<span>Kabar</span></span>
+                </a>
                 <p class="footer-about">Portal berita dan informasi terkini.</p>
             </div>
 
@@ -1342,6 +1235,12 @@ a.pager-num:hover {
                 <ul class="footer-links">
                     <li><a href="/">Beranda</a></li>
                     <li><a href="{{ route('articles.index') }}">Semua Berita</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="footer-title">Kategori</h2>
+                <ul class="footer-links">
                     @foreach ($categories as $cat)
                         <li><a href="{{ route('kategori.show', $cat) }}">{{ $cat->name }}</a></li>
                     @endforeach
@@ -1376,77 +1275,6 @@ a.pager-num:hover {
 
     <script>
 (function () {
-    var header = document.getElementById('site-header');
-
-    if (header) {
-        var onScroll = function () {
-            header.classList.toggle('is-scrolled', window.scrollY > 8);
-        };
-
-        onScroll();
-        window.addEventListener('scroll', onScroll, { passive: true });
-    }
-
-    var navBar = document.querySelector('.site-header .bar');
-    var sWrap = document.getElementById('search-wrap');
-    var sToggle = document.getElementById('search-toggle');
-    var sForm = document.getElementById('nav-search');
-    var sInput = document.getElementById('nav-q');
-
-    if (navBar && sWrap && sToggle && sForm && sInput) {
-        var mq = window.matchMedia('(max-width: 1023px)');
-
-        var sizeSearch = function () {
-            var wr = sWrap.getBoundingClientRect();
-            var limit;
-
-            if (mq.matches) {
-                var br = navBar.getBoundingClientRect();
-                limit = wr.left - br.left - parseFloat(getComputedStyle(navBar).paddingLeft) - 8;
-            } else {
-                var brand = navBar.querySelector('.brand');
-                limit = wr.left - brand.getBoundingClientRect().right - 24;
-            }
-
-            sWrap.style.setProperty('--sw', Math.max(160, Math.min(limit, mq.matches ? 480 : 340)) + 'px');
-        };
-
-        var isOpen = function () {
-            return navBar.classList.contains('is-searching');
-        };
-
-        var openSearch = function () {
-            sizeSearch();
-            navBar.classList.add('is-searching');
-            sToggle.setAttribute('aria-expanded', 'true');
-            sToggle.setAttribute('aria-label', 'Tutup pencarian');
-            requestAnimationFrame(function () { sInput.focus({ preventScroll: true }); });
-        };
-
-        var closeSearch = function (returnFocus) {
-            navBar.classList.remove('is-searching');
-            sToggle.setAttribute('aria-expanded', 'false');
-            sToggle.setAttribute('aria-label', 'Cari berita');
-            if (returnFocus) sToggle.focus();
-        };
-
-        sToggle.addEventListener('click', function () {
-            if (isOpen()) { closeSearch(true); } else { openSearch(); }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && isOpen()) closeSearch(true);
-        });
-
-        document.addEventListener('click', function (e) {
-            if (isOpen() && !sWrap.contains(e.target)) closeSearch(false);
-        });
-
-        window.addEventListener('resize', function () {
-            if (isOpen()) sizeSearch();
-        });
-    }
-
     var items = document.querySelectorAll('.reveal');
     if (!items.length) return;
 
