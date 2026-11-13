@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -14,25 +15,30 @@ class CategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
-        public function create()
+    public function create()
     {
         return view('categories.create');
     }
 
-        public function store(Request $request)
+    public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:100|unique:categories,name',
         ]);
 
-        $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+        $category = Category::create([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+        ]);
 
-        Category::create($data);
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Kategori berhasil ditambahkan.',
+                'category' => $category,
+            ], 201);
+        }
 
-        return redirect('/categories')->with(
-            'success',
-            'Kategori berhasil ditambahkan.'
-        );
+        return redirect('/categories')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(Category $category)
@@ -40,29 +46,37 @@ class CategoryController extends Controller
         return view('categories.edit', compact('category'));
     }
 
-        public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:100|unique:categories,name,' . $category->id,
         ]);
 
-        $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+        $category->update([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+        ]);
 
-        $category->update($data);
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Kategori berhasil diperbarui.',
+                'category' => $category->fresh(),
+            ]);
+        }
 
-        return redirect('/categories')->with(
-            'success',
-            'Kategori berhasil diperbarui.'
-        );
+        return redirect('/categories')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-        public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
         $category->delete();
 
-        return redirect('/categories')->with(
-            'success',
-            'Kategori berhasil dihapus.'
-        );
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Kategori berhasil dihapus.',
+            ]);
+        }
+
+        return redirect('/categories')->with('success', 'Kategori berhasil dihapus.');
     }
 }

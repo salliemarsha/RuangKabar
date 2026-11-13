@@ -1,871 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.dashboard')
 
-    <title>Kategori - RuangKabar</title>
+@section('title', 'Kategori')
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-
-    <style>
-
-:root {
-    --emerald: #183C36;
-    --forest: #376B5C;
-    --gold: #B99A64;
-    --sand: #E7E0D2;
-    --ivory: #FAF8F3;
-    --white: #FFFFFF;
-    --text: #26332F;
-    --text-soft: #68736E;
-    --danger: #A3392C;
-    --danger-soft: rgba(163, 57, 44, 0.08);
-    --on-dark: rgba(250, 248, 243, 0.8);
-    --rule: rgba(24, 60, 54, 0.14);
-    --sans: 'Plus Jakarta Sans', Arial, sans-serif;
-    --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
-    --body: 'Inter', 'Plus Jakarta Sans', Arial, sans-serif;
-    --sidebar-w: 272px;
-    --r-md: 16px;
-    --r-lg: 28px;
-    --ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --t-fast: 200ms;
-    --t-ui: 300ms;
-}
-
-*, *::before, *::after { box-sizing: border-box; }
-
-[hidden] { display: none !important; }
-
-html { scroll-behavior: smooth; }
-
-body {
-    margin: 0;
-    font-family: var(--sans);
-    background: var(--ivory);
-    color: var(--text);
-    overflow-x: clip;
-    overflow-wrap: break-word;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-}
-
-body.menu-open { overflow: hidden; }
-
-a { color: inherit; }
-
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-summary:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 3px;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-.skip-link {
-    position: absolute;
-    left: 16px;
-    top: -64px;
-    z-index: 100;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--emerald);
-    background: var(--gold);
-    border-radius: 8px;
-    text-decoration: none;
-    transition: top var(--t-fast) var(--ease);
-}
-
-.skip-link:focus { top: 12px; }
-
-.admin {
-    display: grid;
-    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-    min-height: 100vh;
-    min-height: 100dvh;
-}
-
-.sidebar {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    color: var(--on-dark);
-    background: var(--emerald);
-}
-
-.sidebar-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 88px;
-    padding: 20px 24px 12px;
-}
-
-.brand {
-    display: inline-block;
-    font-family: var(--sans);
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--ivory);
-    text-decoration: none;
-}
-
-.brand span { color: var(--gold); }
-
-.brand .brand-sub {
-    display: block;
-    margin-top: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gold);
-}
-
-.sidebar-close {
-    display: none;
-    width: 40px;
-    height: 40px;
-    margin-right: -8px;
-    font-size: 22px;
-    line-height: 1;
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.1);
-    border: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background var(--t-fast) ease-out;
-}
-
-.sidebar-close:hover { background: rgba(250, 248, 243, 0.2); }
-
-.side-nav { flex: 1; padding: 8px 14px; }
-
-.nav-label {
-    margin: 22px 12px 8px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(250, 248, 243, 0.45);
-}
-
-.nav-label:first-child { margin-top: 8px; }
-
-.nav-group { margin: 0; padding: 0; list-style: none; }
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    margin-bottom: 2px;
-    padding: 0 14px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--on-dark);
-    text-decoration: none;
-    border-radius: 12px;
-    transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out;
-}
-
-.nav-link:hover { color: var(--ivory); background: rgba(250, 248, 243, 0.08); }
-
-.nav-link.is-active {
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.14);
-    box-shadow: inset 3px 0 0 var(--gold);
-}
-
-.sidebar-foot { padding: 14px; border-top: 1px solid rgba(250, 248, 243, 0.12); }
-.sidebar-foot .nav-link { font-size: 13px; margin-bottom: 0; color: rgba(250, 248, 243, 0.62); }
-
-.main { min-width: 0; display: flex; flex-direction: column; }
-
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 72px;
-    padding: 12px 40px;
-    background: rgba(250, 248, 243, 0.92);
-    border-bottom: 1px solid var(--rule);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-}
-
-.topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-
-.menu-toggle {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: border-color var(--t-fast) ease-out, background var(--t-fast) ease-out;
-}
-
-.menu-toggle:hover { border-color: var(--forest); }
-.menu-toggle:active { transform: scale(0.96); }
-.menu-toggle span { display: block; width: 18px; height: 2px; background: var(--emerald); border-radius: 2px; }
-
-.crumbs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-soft);
-}
-
-.crumbs li + li::before { content: "/"; margin-right: 8px; color: var(--gold); }
-.crumbs li:last-child { color: var(--emerald); }
-
-.topbar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-
-.user-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 5px 14px 5px 5px;
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-}
-
-.user-chip-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--emerald);
-    background: var(--gold);
-    border-radius: 50%;
-}
-
-.user-chip-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
-
-.user-name {
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--emerald);
-}
-
-.user-role {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-soft);
-}
-
-.logout-form { margin: 0; }
-
-.logout-btn {
-    height: 40px;
-    padding: 0 18px;
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--emerald);
-    background: transparent;
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    cursor: pointer;
-    transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out, border-color var(--t-fast) ease-out, transform 120ms ease-out;
-}
-
-.logout-btn:hover { color: var(--white); background: var(--emerald); border-color: var(--emerald); }
-.logout-btn:active { transform: scale(0.97); }
-
-.content { flex: 1; padding: 32px 40px 72px; }
-.content-inner { max-width: 1040px; margin: 0 auto; }
-
-.hero {
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 28px;
-    padding: 44px 48px;
-    color: var(--ivory);
-    background: var(--emerald);
-    border-radius: var(--r-lg);
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
-    top: -140px;
-    right: -100px;
-    width: 400px;
-    height: 400px;
-    background: var(--forest);
-    opacity: 0.45;
-    border-radius: 50%;
-}
-
-.hero::after {
-    content: "";
-    position: absolute;
-    right: 72px;
-    bottom: -64px;
-    width: 140px;
-    height: 140px;
-    border: 1px solid rgba(185, 154, 100, 0.5);
-    border-radius: 50%;
-}
-
-.hero-inner { position: relative; z-index: 1; animation: rise 560ms var(--ease) both; }
-
-.hero-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 18px;
-    padding: 8px 16px 8px 12px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--ivory);
-    background: rgba(250, 248, 243, 0.14);
-    border: 1px solid rgba(250, 248, 243, 0.25);
-    border-radius: 999px;
-}
-
-.hero-label::before { content: ""; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
-
-.hero-title {
-    max-width: 720px;
-    margin: 0 0 12px;
-    font-family: var(--serif);
-    font-size: clamp(30px, 4vw, 46px);
-    font-weight: 600;
-    line-height: 1.12;
-    letter-spacing: -0.015em;
-    overflow-wrap: anywhere;
-}
-
-.hero-lead {
-    max-width: 540px;
-    margin: 0;
-    font-family: var(--body);
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--on-dark);
-}
-
-.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin-top: 26px; }
-
-.hero-stat { font-family: var(--body); font-size: 14px; color: var(--on-dark); }
-.hero-stat strong { margin-right: 4px; font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--gold); }
-
-.back-link {
-    display: flex;
-    width: fit-content;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 20px;
-    padding: 6px 0;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--on-dark);
-    text-decoration: none;
-    transition: color var(--t-fast) ease-out;
-}
-
-.back-link svg { width: 16px; height: 16px; transition: transform var(--t-ui) var(--ease); }
-.back-link:hover { color: var(--gold); }
-.back-link:hover svg { transform: translateX(-3px); }
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 46px;
-    padding: 0 24px;
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--white);
-    background: var(--forest);
-    border: 1px solid transparent;
-    border-radius: 999px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background var(--t-fast) ease-out, color var(--t-fast) ease-out, border-color var(--t-fast) ease-out, transform 120ms ease-out;
-}
-
-.btn:hover { background: var(--emerald); }
-.btn:active { transform: scale(0.97); }
-.btn svg { width: 16px; height: 16px; flex: none; }
-
-.btn--gold { color: var(--emerald); background: var(--gold); }
-.btn--gold:hover { color: var(--emerald); background: #CBAE7C; }
-
-.btn--ghost { color: var(--emerald); background: transparent; border-color: var(--rule); }
-.btn--ghost:hover { color: var(--white); background: var(--emerald); border-color: var(--emerald); }
-
-.btn--danger { background: var(--danger); }
-.btn--danger:hover { background: #8A2E23; }
-
-.flash {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin: 0 0 24px;
-    padding: 14px 16px;
-    font-family: var(--body);
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--emerald);
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-left: 4px solid var(--forest);
-    border-radius: 14px;
-    animation: rise 400ms var(--ease) both;
-}
-
-.flash svg { flex: none; width: 20px; height: 20px; margin-top: 2px; color: var(--forest); }
-.flash p { flex: 1; margin: 0; }
-.flash strong { display: block; margin-bottom: 4px; font-family: var(--sans); font-size: 14px; }
-.flash ul { margin: 0; padding-left: 18px; }
-
-.flash--error { color: var(--danger); background: #FFFAF8; border-left-color: var(--danger); }
-.flash--error svg { color: var(--danger); }
-
-.flash-close {
-    flex: none;
-    width: 32px;
-    height: 32px;
-    margin: -4px -6px 0 0;
-    font-size: 20px;
-    line-height: 1;
-    color: var(--text-soft);
-    background: none;
-    border: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background var(--t-fast) ease-out, color var(--t-fast) ease-out;
-}
-
-.flash-close:hover { color: var(--emerald); background: var(--sand); }
-
-.toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px 20px;
-    margin-bottom: 18px;
-}
-
-.search {
-    position: relative;
-    flex: 1 1 280px;
-    max-width: 420px;
-}
-
-.search svg {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    width: 18px;
-    height: 18px;
-    color: var(--forest);
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-
-.search input {
-    display: block;
-    width: 100%;
-    height: 48px;
-    padding: 0 18px 0 46px;
-    font-family: var(--body);
-    font-size: 15px;
-    color: var(--emerald);
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    transition: border-color var(--t-fast) ease-out, box-shadow var(--t-fast) ease-out;
-}
-
-.search input::placeholder { color: var(--text-soft); }
-
-.search input:focus {
-    outline: none;
-    border-color: var(--forest);
-    box-shadow: 0 0 0 3px rgba(185, 154, 100, 0.4);
-}
-
-.result-info { margin: 0; font-family: var(--body); font-size: 14px; color: var(--text-soft); }
-.result-info strong { font-weight: 600; color: var(--text); }
-
-.slug {
-    display: inline-block;
-    max-width: 100%;
-    padding: 4px 10px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 12.5px;
-    color: var(--forest);
-    background: rgba(55, 107, 92, 0.1);
-    border-radius: 8px;
-    overflow-wrap: anywhere;
-}
-
-.act-row { display: flex; align-items: center; gap: 8px; }
-
-.inline-form { margin: 0; }
-
-.act {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    height: 38px;
-    padding: 0 14px;
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--emerald);
-    text-decoration: none;
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    cursor: pointer;
-    transition: color var(--t-fast) ease-out, background var(--t-fast) ease-out, border-color var(--t-fast) ease-out, transform 120ms ease-out;
-}
-
-.act svg { width: 15px; height: 15px; }
-.act:active { transform: scale(0.96); }
-.act--edit:hover { color: var(--white); background: var(--emerald); border-color: var(--emerald); }
-.act--delete { color: var(--danger); }
-.act--delete:hover { color: var(--white); background: var(--danger); border-color: var(--danger); }
-
-.no-results,
-.empty {
-    padding: 64px 28px;
-    text-align: center;
-    background: var(--sand);
-    border-radius: var(--r-lg);
-}
-
-.no-results strong,
-.empty strong {
-    display: block;
-    margin-bottom: 8px;
-    font-family: var(--serif);
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--emerald);
-}
-
-.no-results p,
-.empty p {
-    max-width: 440px;
-    margin: 0 auto;
-    font-family: var(--body);
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-soft);
-}
-
-.empty .btn { margin-top: 22px; }
-
-.dialog {
-    width: min(440px, calc(100vw - 32px));
-    padding: 32px 28px 24px;
-    color: var(--text);
-    background: var(--white);
-    border: 0;
-    border-radius: var(--r-lg);
-    box-shadow: 0 30px 70px -20px rgba(24, 60, 54, 0.55);
-}
-
-.dialog[open] { animation: pop 300ms var(--ease) both; }
-
-.dialog::backdrop {
-    background: rgba(24, 60, 54, 0.55);
-    -webkit-backdrop-filter: blur(3px);
-    backdrop-filter: blur(3px);
-}
-
-.dialog-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    margin-bottom: 18px;
-    color: var(--danger);
-    background: var(--danger-soft);
-    border-radius: 50%;
-}
-
-.dialog-icon svg { width: 24px; height: 24px; }
-
-.dialog h2 {
-    margin: 0 0 8px;
-    font-family: var(--serif);
-    font-size: 26px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: var(--emerald);
-}
-
-.dialog p { margin: 0; font-family: var(--body); font-size: 15px; line-height: 1.7; color: var(--text-soft); }
-.dialog p strong { font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
-
-.dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-
-.form-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 24px;
-    align-items: start;
-}
-
-.card {
-    padding: 32px;
-    background: var(--white);
-    border: 1px solid rgba(24, 60, 54, 0.08);
-    border-radius: 22px;
-}
-
-.field label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--emerald);
-}
-
-.field input {
-    display: block;
-    width: 100%;
-    height: 52px;
-    padding: 0 18px;
-    font-family: var(--body);
-    font-size: 16px;
-    color: var(--emerald);
-    background: var(--ivory);
-    border: 1px solid var(--rule);
-    border-radius: 14px;
-    transition: border-color var(--t-fast) ease-out, box-shadow var(--t-fast) ease-out, background var(--t-fast) ease-out;
-}
-
-.field input:hover { border-color: rgba(24, 60, 54, 0.3); }
-
-.field input:focus {
-    outline: none;
-    background: var(--white);
-    border-color: var(--forest);
-    box-shadow: 0 0 0 3px rgba(185, 154, 100, 0.4);
-}
-
-.field input.is-invalid { border-color: var(--danger); background: #FFFAF8; }
-.field input.is-invalid:focus { box-shadow: 0 0 0 3px rgba(163, 57, 44, 0.2); }
-
-.hint { margin: 10px 0 0; font-family: var(--body); font-size: 13.5px; line-height: 1.6; color: var(--text-soft); }
-.field-error { margin: 10px 0 0; font-family: var(--body); font-size: 13.5px; font-weight: 500; color: var(--danger); }
-
-.form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 12px;
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid var(--rule);
-}
-
-.aside-card {
-    position: relative;
-    overflow: hidden;
-    padding: 28px;
-    color: var(--ivory);
-    background: var(--emerald);
-    border-radius: 22px;
-}
-
-.aside-card::before {
-    content: "";
-    position: absolute;
-    top: -70px;
-    right: -70px;
-    width: 180px;
-    height: 180px;
-    background: var(--forest);
-    opacity: 0.45;
-    border-radius: 50%;
-}
-
-.aside-card > * { position: relative; }
-
-.aside-title {
-    margin: 0 0 14px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
-}
-
-.preview {
-    margin: 0 0 6px;
-    font-family: var(--serif);
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1.25;
-    overflow-wrap: anywhere;
-}
-
-.preview-slug {
-    display: block;
-    margin-bottom: 20px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 13px;
-    color: var(--on-dark);
-    overflow-wrap: anywhere;
-}
-
-.aside-note {
-    margin: 0;
-    padding-top: 16px;
-    font-family: var(--body);
-    font-size: 13.5px;
-    line-height: 1.7;
-    color: var(--on-dark);
-    border-top: 1px solid rgba(250, 248, 243, 0.14);
-}
-
-.aside-note + .aside-note { padding-top: 10px; border-top: 0; }
-.aside-note strong { color: var(--ivory); font-weight: 600; overflow-wrap: anywhere; }
-
-.scrim { display: none; }
-
-@keyframes rise {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: none; }
-}
-
-@keyframes pop {
-    from { opacity: 0; transform: translateY(12px) scale(0.97); }
-    to   { opacity: 1; transform: none; }
-}
-
-@media (max-width: 1023px) {
-    .admin { grid-template-columns: minmax(0, 1fr); }
-
-    .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 40;
-        width: min(300px, 86vw);
-        height: auto;
-        visibility: hidden;
-        transform: translateX(-100%);
-        transition: transform 280ms var(--ease), visibility 0s linear 280ms;
-    }
-
-    .sidebar.is-open { visibility: visible; transform: none; transition: transform 280ms var(--ease); }
-    .sidebar-close { display: inline-flex; align-items: center; justify-content: center; }
-
-    .scrim {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 30;
-        background: rgba(24, 60, 54, 0.5);
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 250ms ease, visibility 0s linear 250ms;
-    }
-
-    .scrim.is-visible { opacity: 1; visibility: visible; transition: opacity 250ms ease; }
-
-    .menu-toggle { display: flex; }
-    .topbar { padding: 12px 24px; }
-    .content { padding: 24px 24px 56px; }
-    .hero { padding: 36px 32px; }
-    .form-layout { grid-template-columns: minmax(0, 1fr); }
-}
-
-@media (max-width: 719px) {
-    .topbar { padding: 10px 16px; gap: 10px; }
-    .user-chip-text { display: none; }
-    .user-chip { padding: 5px; }
-    .logout-btn { padding: 0 14px; }
-    .content { padding: 16px 16px 48px; }
-    .hero { padding: 28px 22px; border-radius: 22px; }
-    .hero::after { display: none; }
-    .hero-actions .btn { width: 100%; }
-    .toolbar { flex-direction: column; align-items: stretch; }
-    .search { max-width: none; flex-basis: auto; }
-    .card { padding: 22px 18px; border-radius: 18px; }
-    .form-actions { flex-direction: column; align-items: stretch; }
-    .form-actions .btn { width: 100%; }
-    .dialog-actions .btn { flex: 1 1 100%; }
-}
-
-@media (max-width: 359px) {
-    .content { padding: 12px 12px 40px; }
-    .hero { padding: 24px 16px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-
-    *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-    }
-}
-
-
+@push('styles')
+<style>
 .panel {
     overflow: hidden;
     background: var(--white);
@@ -898,6 +36,7 @@ summary:focus-visible {
 .table tbody tr:last-child td { border-bottom: 0; }
 .table tbody tr { transition: background var(--t-fast) ease-out; }
 .table tbody tr:hover { background: rgba(231, 224, 210, 0.3); }
+.table tbody tr.is-hit { animation: row-hit 1800ms ease-out both; }
 
 .cell-name { display: flex; align-items: center; gap: 14px; min-width: 0; }
 
@@ -939,6 +78,151 @@ summary:focus-visible {
 
 .col-actions-cell .act-row { justify-content: flex-end; }
 
+body.mdl-lock { overflow: hidden; }
+
+.mdl {
+    width: min(460px, calc(100vw - 24px));
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    padding: 0;
+    margin: auto;
+    overflow: auto;
+    color: var(--text);
+    background: var(--white);
+    border: 0;
+    border-radius: 26px;
+    box-shadow: 0 30px 70px -24px rgba(24, 60, 54, 0.5);
+}
+
+.mdl[open] { animation: pop 300ms var(--ease) both; }
+
+.mdl::backdrop {
+    background: rgba(24, 60, 54, 0.38);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    animation: mdl-fade 250ms ease-out both;
+}
+
+.mdl--sm { width: min(420px, calc(100vw - 24px)); }
+
+.mdl-wrap { padding: 28px 28px 24px; }
+
+.mdl-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+
+.mdl-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.mdl-title {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--emerald);
+}
+
+.mdl-close {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: -6px -8px 0 0;
+    padding: 0;
+    color: var(--text-soft);
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    transition: background var(--t-fast) ease-out, color var(--t-fast) ease-out;
+}
+
+.mdl-close:hover { color: var(--emerald); background: var(--sand); }
+.mdl-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.mdl-close svg { width: 18px; height: 18px; }
+
+.mdl-alert {
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    font-family: var(--body);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--danger);
+    background: #FFFAF8;
+    border: 1px solid rgba(163, 57, 44, 0.25);
+    border-left: 4px solid var(--danger);
+    border-radius: 12px;
+}
+
+.mdl-slug { font-weight: 600; color: var(--forest); overflow-wrap: anywhere; }
+
+.mdl-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.mdl-actions .btn:disabled { cursor: not-allowed; opacity: 0.7; }
+
+.mdl-text { margin: 0; font-family: var(--body); font-size: 15px; line-height: 1.7; color: var(--text-soft); }
+.mdl-text strong { font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
+
+.mdl-spin {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: mdl-rot 700ms linear infinite;
+}
+
+.is-busy .mdl-spin { display: inline-block; }
+
+.toasts {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(380px, calc(100vw - 32px));
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    font-family: var(--body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--emerald);
+    pointer-events: auto;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--forest);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px -18px rgba(24, 60, 54, 0.45);
+    animation: rise 350ms var(--ease) both;
+}
+
+.toast svg { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--forest); }
+.toast p { flex: 1; min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.toast--error { color: var(--danger); background: #FFFAF8; border-left-color: var(--danger); }
+.toast--error svg { color: var(--danger); }
+.toast.is-leaving { opacity: 0; transform: translateY(8px); transition: opacity 250ms ease-out, transform 250ms ease-out; }
+
+@keyframes mdl-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mdl-rot { to { transform: rotate(360deg); } }
+@keyframes row-hit { 0%, 55% { background: rgba(185, 154, 100, 0.28); } 100% { background: transparent; } }
+
 @media (max-width: 719px) {
     .table thead { display: none; }
     .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
@@ -967,105 +251,26 @@ summary:focus-visible {
     .col-actions-cell .act-row > *, .col-actions-cell .act { flex: 1; justify-content: center; }
     .col-actions-cell .inline-form { display: flex; }
     .cell-link { display: block; margin: 4px 0 0; }
+
+    .mdl-wrap { padding: 22px 18px 18px; }
+    .mdl-title { font-size: 23px; }
+    .mdl-actions { flex-direction: column-reverse; }
+    .mdl-actions .btn { width: 100%; justify-content: center; }
+    .toasts { right: 16px; bottom: 16px; left: 16px; width: auto; }
 }
+</style>
+@endpush
 
-    </style>
-</head>
-<body>
-
-    <a class="skip-link" href="#konten">Lewati ke konten utama</a>
-
-    <div class="admin">
-
-        <aside class="sidebar" id="sidebar" aria-label="Navigasi admin">
-            <div class="sidebar-top">
-                <a class="brand" href="/">
-                    Ruang<span>Kabar</span>
-                    <span class="brand-sub">Panel Admin</span>
-                </a>
-
-                <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Tutup menu">&times;</button>
-            </div>
-
-            <nav class="side-nav" aria-label="Menu admin">
-                <ul class="nav-group">
-                    <li>
-                        <a class="nav-link {{ request()->is('admin/dashboard') ? 'is-active' : '' }}" href="/admin/dashboard" {!! request()->is('admin/dashboard') ? 'aria-current="page"' : '' !!}>Dashboard</a>
-                    </li>
-                </ul>
-
-                <p class="nav-label">Konten</p>
-                <ul class="nav-group">
-                    <li>
-                        <a class="nav-link {{ request()->is('articles*') ? 'is-active' : '' }}" href="{{ route('articles.index') }}" {!! request()->is('articles*') ? 'aria-current="page"' : '' !!}>Artikel</a>
-                    </li>
-                    <li>
-                        <a class="nav-link {{ request()->is('categories*') ? 'is-active' : '' }}" href="{{ route('categories.index') }}" {!! request()->is('categories*') ? 'aria-current="page"' : '' !!}>Kategori</a>
-                    </li>
-                    <li>
-                        <a class="nav-link {{ request()->is('tags*') ? 'is-active' : '' }}" href="{{ route('tags.index') }}" {!! request()->is('tags*') ? 'aria-current="page"' : '' !!}>Tag</a>
-                    </li>
-                </ul>
-
-                <p class="nav-label">Pengelolaan</p>
-                <ul class="nav-group">
-                    <li>
-                        <a class="nav-link {{ request()->is('comments*') ? 'is-active' : '' }}" href="{{ route('comments.index') }}" {!! request()->is('comments*') ? 'aria-current="page"' : '' !!}>Komentar</a>
-                    </li>
-                    <li>
-                        <a class="nav-link {{ request()->is('reports/*') ? 'is-active' : '' }}" href="{{ route('reports.articles') }}" {!! request()->is('reports/*') ? 'aria-current="page"' : '' !!}>Laporan</a>
-                    </li>
-                </ul>
-            </nav>
-
-            <div class="sidebar-foot">
-                <a class="nav-link" href="/">&larr;&nbsp;Lihat beranda</a>
-            </div>
-        </aside>
-
-        <div class="scrim" id="scrim"></div>
-
-        <div class="main">
-
-            <header class="topbar">
-                <div class="topbar-left">
-                    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="sidebar">
-                        <span></span><span></span><span></span>
-                    </button>
-
-                    <ol class="crumbs">
-                        <li>Admin</li>
-                        <li>Kategori</li>
-                    </ol>
-                </div>
-
-                <div class="topbar-right">
-                    <div class="user-chip">
-                        <span class="user-chip-avatar" aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr(auth()->user()->name, 0, 1)) }}</span>
-                        <span class="user-chip-text">
-                            <span class="user-name">{{ auth()->user()->name }}</span>
-                            <span class="user-role">{{ auth()->user()->role }}</span>
-                        </span>
-                    </div>
-
-                    <form class="logout-form" action="/logout" method="POST">
-                        @csrf
-                        <button class="logout-btn" type="submit">Logout</button>
-                    </form>
-                </div>
-            </header>
-
-            <main class="content" id="konten">
-                <div class="content-inner">
-
+@section('content')
+                <ol class="crumbs" aria-label="Breadcrumb"><li>Admin</li><li>Kategori</li></ol>
                     <section class="hero" aria-labelledby="page-title">
                         <div class="hero-inner">
                             <span class="hero-label">KATEGORI</span>
                             <h1 class="hero-title" id="page-title">Kelola Kategori</h1>
                             <p class="hero-lead">Kelompokkan berita ke dalam kategori agar pembaca mudah menemukannya.</p>
                             <div class="hero-actions">
-                                <a class="btn btn--gold" href="{{ route('categories.create') }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Tambah Kategori</a>
-                                <span class="hero-stat"><strong>{{ $categories->count() }}</strong> kategori terdaftar</span>
+                                <a class="btn btn--gold" href="{{ route('categories.create') }}" data-open-create id="open-create"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Tambah Kategori</a>
+                                <span class="hero-stat" id="hero-stat"><strong>{{ $categories->count() }}</strong> kategori terdaftar</span>
                             </div>
                         </div>
                     </section>
@@ -1086,6 +291,7 @@ summary:focus-visible {
                         </div>
                     @endif
 
+                    <div id="cat-area">
                     @if ($categories->count())
                         <div class="toolbar">
                             <div class="search">
@@ -1107,7 +313,7 @@ summary:focus-visible {
                                 </thead>
                                 <tbody>
                                     @foreach ($categories as $category)
-                                        <tr data-search="{{ \Illuminate\Support\Str::lower($category->name . ' ' . $category->slug) }}">
+                                        <tr data-id="{{ $category->id }}" data-search="{{ \Illuminate\Support\Str::lower($category->name . ' ' . $category->slug) }}">
                                             <td data-label="Nama Kategori">
                                                 <div class="cell-name">
                                                     <span class="cell-mark" aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($category->name, 0, 1)) }}</span>
@@ -1120,7 +326,7 @@ summary:focus-visible {
                                             </td>
                                             <td class="col-actions-cell">
                                                 <div class="act-row">
-                                                    <a class="act act--edit" href="{{ route('categories.edit', $category) }}" aria-label="Edit kategori {{ $category->name }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/></svg> Edit</a>
+                                                    <a class="act act--edit" href="{{ route('categories.edit', $category) }}" data-edit data-name="{{ $category->name }}" data-action="{{ route('categories.update', $category) }}" aria-label="Edit kategori {{ $category->name }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/></svg> Edit</a>
                                                     <form class="inline-form" action="{{ route('categories.destroy', $category) }}" method="POST" data-confirm data-kind="kategori" data-name="{{ $category->name }}">
                                                         @csrf
                                                         @method('DELETE')
@@ -1143,144 +349,430 @@ summary:focus-visible {
                         <div class="empty">
                             <strong>Belum ada kategori.</strong>
                             <p>Tambahkan kategori pertama agar artikel dapat dikelompokkan dan ditemukan pembaca.</p>
-                            <a class="btn" href="{{ route('categories.create') }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Tambah Kategori Pertama</a>
+                            <a class="btn" href="{{ route('categories.create') }}" data-open-create><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Tambah Kategori Pertama</a>
                         </div>
                     @endif
+                    </div>
 
-                    <dialog class="dialog" id="confirm-dialog" aria-labelledby="dlg-title" aria-describedby="dlg-text">
-                        <div class="dialog-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg></div>
-                        <h2 id="dlg-title">Hapus <span id="dlg-kind"></span>?</h2>
-                        <p id="dlg-text">&ldquo;<strong id="dlg-name"></strong>&rdquo; akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
-                        <div class="dialog-actions">
-                            <button class="btn btn--ghost" type="button" id="dlg-cancel">Batal</button>
-                            <button class="btn btn--danger" type="button" id="dlg-confirm">Ya, Hapus</button>
+                    <dialog class="mdl" id="cat-modal" aria-labelledby="cat-title">
+                        <div class="mdl-wrap">
+                            <div class="mdl-head">
+                                <div>
+                                    <span class="mdl-eyebrow" id="cat-eyebrow">Kategori baru</span>
+                                    <h2 class="mdl-title" id="cat-title">Tambah Kategori</h2>
+                                </div>
+                                <button class="mdl-close" type="button" id="cat-close" aria-label="Tutup"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg></button>
+                            </div>
+
+                            <form id="cat-form" action="{{ route('categories.store') }}" method="POST" novalidate>
+                                @csrf
+
+                                <p class="mdl-alert" id="cat-alert" role="alert" hidden></p>
+
+                                <div class="field">
+                                    <label for="cat-name">Nama Kategori</label>
+                                    <input type="text" id="cat-name" name="name" maxlength="100" required autocomplete="off" aria-describedby="cat-hint">
+                                    <p class="field-error" id="cat-error" hidden></p>
+                                    <p class="hint" id="cat-hint">Slug: <span class="mdl-slug" id="cat-slug">-</span></p>
+                                </div>
+
+                                <div class="mdl-actions">
+                                    <button class="btn btn--ghost" type="button" id="cat-cancel">Batal</button>
+                                    <button class="btn" type="submit" id="cat-submit"><span class="mdl-spin" aria-hidden="true"></span><span id="cat-submit-text">Simpan</span></button>
+                                </div>
+                            </form>
                         </div>
                     </dialog>
 
+                    <dialog class="mdl mdl--sm" id="confirm-dialog" aria-labelledby="dlg-title" aria-describedby="dlg-text">
+                        <div class="mdl-wrap">
+                            <div class="dialog-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg></div>
+                            <h2 class="mdl-title" id="dlg-title">Hapus kategori?</h2>
+                            <p class="mdl-text" id="dlg-text" style="margin-top: 8px;">&ldquo;<strong id="dlg-name"></strong>&rdquo; akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
+                            <div class="mdl-actions">
+                                <button class="btn btn--ghost" type="button" id="dlg-cancel">Batal</button>
+                                <button class="btn btn--danger" type="button" id="dlg-confirm"><span class="mdl-spin" aria-hidden="true"></span><span id="dlg-confirm-text">Hapus</span></button>
+                            </div>
+                        </div>
+                    </dialog>
 
-                </div>
-            </main>
+                    <div class="toasts" id="toasts" aria-live="polite"></div>
+@endsection
 
-        </div>
+@push('scripts')
+<script>
+(function () {
+    var area = document.getElementById('cat-area');
+    var modal = document.getElementById('cat-modal');
+    var form = document.getElementById('cat-form');
+    var nameInput = document.getElementById('cat-name');
+    var errorEl = document.getElementById('cat-error');
+    var alertEl = document.getElementById('cat-alert');
+    var slugEl = document.getElementById('cat-slug');
+    var titleEl = document.getElementById('cat-title');
+    var eyebrowEl = document.getElementById('cat-eyebrow');
+    var submitBtn = document.getElementById('cat-submit');
+    var submitText = document.getElementById('cat-submit-text');
+    var cancelBtn = document.getElementById('cat-cancel');
+    var closeBtn = document.getElementById('cat-close');
+    var confirmDlg = document.getElementById('confirm-dialog');
+    var dlgName = document.getElementById('dlg-name');
+    var dlgConfirm = document.getElementById('dlg-confirm');
+    var dlgConfirmText = document.getElementById('dlg-confirm-text');
+    var dlgCancel = document.getElementById('dlg-cancel');
+    var toasts = document.getElementById('toasts');
 
-    </div>
+    var storeUrl = form.getAttribute('action');
+    var indexUrl = '{{ route('categories.index') }}';
+    var mode = 'create';
+    var editUrl = null;
+    var pendingDelete = null;
+    var opener = null;
+    var busy = false;
 
-    <script>
-        (function () {
-            var sidebar = document.getElementById('sidebar');
-            var scrim = document.getElementById('scrim');
-            var toggle = document.getElementById('menuToggle');
-            var closeBtn = document.getElementById('sidebarClose');
+    if (typeof modal.showModal !== 'function') { return; }
 
-            if (sidebar && scrim && toggle && closeBtn) {
-                var openMenu = function () {
-                    sidebar.classList.add('is-open');
-                    scrim.classList.add('is-visible');
-                    document.body.classList.add('menu-open');
-                    toggle.setAttribute('aria-expanded', 'true');
-                    closeBtn.focus();
-                };
+    var slugify = function (value) {
+        return value
+            .normalize('NFD')
+            .replace(/[̀-ͯ]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    };
 
-                var closeMenu = function (returnFocus) {
-                    sidebar.classList.remove('is-open');
-                    scrim.classList.remove('is-visible');
-                    document.body.classList.remove('menu-open');
-                    toggle.setAttribute('aria-expanded', 'false');
-                    if (returnFocus) { toggle.focus(); }
-                };
+    var toast = function (message, type) {
+        var el = document.createElement('div');
+        el.className = 'toast' + (type === 'error' ? ' toast--error' : '');
+        el.setAttribute('role', type === 'error' ? 'alert' : 'status');
 
-                toggle.addEventListener('click', openMenu);
-                closeBtn.addEventListener('click', function () { closeMenu(true); });
-                scrim.addEventListener('click', function () { closeMenu(true); });
+        var icon = type === 'error'
+            ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5l8 14H2z"/><path d="M10 8v4M10 14.5v.01"/></svg>'
+            : '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.5l2.5 2.5 4.5-5"/></svg>';
 
-                document.addEventListener('keydown', function (event) {
-                    if (event.key === 'Escape' && sidebar.classList.contains('is-open')) { closeMenu(true); }
-                });
+        el.innerHTML = icon;
+        var p = document.createElement('p');
+        p.textContent = message;
+        el.appendChild(p);
+        toasts.appendChild(el);
 
-                window.addEventListener('resize', function () {
-                    if (window.innerWidth >= 1024 && sidebar.classList.contains('is-open')) { closeMenu(false); }
-                });
+        window.setTimeout(function () {
+            el.classList.add('is-leaving');
+            window.setTimeout(function () { if (el.parentNode) { el.parentNode.removeChild(el); } }, 280);
+        }, type === 'error' ? 6000 : 4000);
+    };
+
+    var lockScroll = function (on) { document.body.classList.toggle('mdl-lock', on); };
+
+    var setBusy = function (value, btn, label, busyLabel, labelEl) {
+        busy = value;
+        btn.disabled = value;
+        btn.classList.toggle('is-busy', value);
+        btn.setAttribute('aria-busy', value ? 'true' : 'false');
+        labelEl.textContent = value ? busyLabel : label;
+    };
+
+    var send = function (url, method, token, payload) {
+        var headers = {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': token || ''
+        };
+        var options = { method: method, headers: headers, credentials: 'same-origin' };
+
+        if (payload) {
+            headers['Content-Type'] = 'application/json';
+            options.body = JSON.stringify(payload);
+        }
+
+        return fetch(url, options).then(function (res) {
+            var type = res.headers.get('content-type') || '';
+            var isJson = type.indexOf('json') !== -1;
+
+            if (!isJson) {
+                return { ok: false, status: res.redirected ? 401 : res.status, data: null, invalid: true };
             }
 
-            var flashClose = document.querySelectorAll('[data-flash-close]');
-            flashClose.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var box = btn.closest('.flash');
-                    if (box) { box.hidden = true; }
-                });
+            return res.json().then(function (data) {
+                return { ok: res.ok, status: res.status, data: data };
+            }, function () {
+                return { ok: false, status: res.status, data: null, invalid: true };
             });
+        });
+    };
 
-            var filterInput = document.getElementById('filter');
-            if (filterInput) {
-                var items = [].slice.call(document.querySelectorAll('[data-search]'));
-                var groups = [].slice.call(document.querySelectorAll('[data-group]'));
-                var info = document.getElementById('result-info');
-                var none = document.getElementById('no-results');
-                var noun = filterInput.getAttribute('data-noun');
-                var wrapper = document.getElementById('results');
+    var describe = function (result) {
+        if (result.status === 419) { return 'Sesi Anda telah berakhir. Muat ulang halaman lalu coba lagi.'; }
+        if (result.status === 401 || (result.invalid && result.status === 401)) { return 'Anda perlu masuk kembali untuk melanjutkan.'; }
+        if (result.status === 403) { return 'Anda tidak memiliki izin untuk melakukan tindakan ini.'; }
+        if (result.status === 404) { return 'Kategori tidak ditemukan. Mungkin sudah dihapus.'; }
+        if (result.status === 429) { return 'Terlalu banyak permintaan. Coba lagi sebentar lagi.'; }
+        if (result.status >= 500) { return 'Terjadi kesalahan pada server. Coba lagi nanti.'; }
+        if (result.data && result.data.message) { return result.data.message; }
+        return 'Permintaan tidak dapat diproses. Coba lagi.';
+    };
 
-                filterInput.addEventListener('input', function () {
-                    var q = filterInput.value.trim().toLowerCase();
-                    var shown = 0;
+    var applyFilter = function () {
+        var input = document.getElementById('filter');
+        if (!input) { return; }
 
-                    items.forEach(function (el) {
-                        var match = !q || el.getAttribute('data-search').indexOf(q) !== -1;
-                        el.hidden = !match;
-                        if (match) { shown++; }
-                    });
+        var q = input.value.trim().toLowerCase();
+        var items = [].slice.call(area.querySelectorAll('[data-search]'));
+        var info = document.getElementById('result-info');
+        var none = document.getElementById('no-results');
+        var wrapper = document.getElementById('results');
+        var shown = 0;
 
-                    groups.forEach(function (g) {
-                        g.hidden = !g.querySelector('[data-search]:not([hidden])');
-                    });
+        items.forEach(function (el) {
+            var match = !q || el.getAttribute('data-search').indexOf(q) !== -1;
+            el.hidden = !match;
+            if (match) { shown++; }
+        });
 
-                    info.innerHTML = 'Menampilkan <strong>' + shown + '</strong> dari ' + items.length + ' ' + noun;
-                    if (none) { none.hidden = shown !== 0; }
-                    if (wrapper) { wrapper.hidden = shown === 0; }
-                });
-            }
+        info.innerHTML = 'Menampilkan <strong>' + shown + '</strong> dari ' + items.length + ' ' + input.getAttribute('data-noun');
+        if (none) { none.hidden = shown !== 0; }
+        if (wrapper) { wrapper.hidden = shown === 0; }
+    };
 
-            var dialog = document.getElementById('confirm-dialog');
-            if (dialog) {
-                var pending = null;
-                var canModal = typeof dialog.showModal === 'function';
+    var refreshList = function (highlightId) {
+        var current = document.getElementById('filter');
+        var query = current ? current.value : '';
 
-                document.addEventListener('submit', function (event) {
-                    var form = event.target;
-                    if (!form.hasAttribute || !form.hasAttribute('data-confirm')) { return; }
+        return fetch(indexUrl, {
+            headers: { 'Accept': 'text/html', 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin'
+        }).then(function (res) {
+            if (!res.ok || res.redirected) { throw new Error('refresh'); }
+            return res.text();
+        }).then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            var fresh = doc.getElementById('cat-area');
+            var freshStat = doc.getElementById('hero-stat');
+            if (!fresh) { throw new Error('refresh'); }
 
-                    var name = form.getAttribute('data-name');
-                    var kind = form.getAttribute('data-kind');
+            area.innerHTML = fresh.innerHTML;
+            if (freshStat) { document.getElementById('hero-stat').innerHTML = freshStat.innerHTML; }
 
-                    if (!canModal) {
-                        if (!window.confirm('Yakin ingin menghapus ' + kind + ' "' + name + '"?')) { event.preventDefault(); }
-                        return;
+            var input = document.getElementById('filter');
+            if (input) { input.value = query; }
+            applyFilter();
+
+            if (highlightId) {
+                var row = area.querySelector('tr[data-id="' + highlightId + '"]');
+                if (row) {
+                    if (row.hidden && input) {
+                        input.value = '';
+                        applyFilter();
                     }
+                    row.classList.add('is-hit');
+                    row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            }
+            return true;
+        }).catch(function () {
+            toast('Perubahan tersimpan, tetapi daftar gagal dimuat ulang. Muat ulang halaman untuk melihat data terbaru.', 'error');
+            return false;
+        });
+    };
 
-                    event.preventDefault();
-                    pending = form;
-                    document.getElementById('dlg-kind').textContent = kind;
-                    document.getElementById('dlg-name').textContent = name;
-                    dialog.showModal();
-                });
+    var clearErrors = function () {
+        errorEl.hidden = true;
+        errorEl.textContent = '';
+        alertEl.hidden = true;
+        alertEl.textContent = '';
+        nameInput.classList.remove('is-invalid');
+        nameInput.removeAttribute('aria-invalid');
+        nameInput.setAttribute('aria-describedby', 'cat-hint');
+    };
 
-                document.getElementById('dlg-cancel').addEventListener('click', function () { dialog.close(); });
+    var showFieldError = function (message) {
+        errorEl.textContent = message;
+        errorEl.hidden = false;
+        nameInput.classList.add('is-invalid');
+        nameInput.setAttribute('aria-invalid', 'true');
+        nameInput.setAttribute('aria-describedby', 'cat-hint cat-error');
+        nameInput.focus();
+    };
 
-                document.getElementById('dlg-confirm').addEventListener('click', function () {
-                    var form = pending;
-                    pending = null;
-                    dialog.close();
-                    if (form) { form.submit(); }
-                });
+    var updateSlug = function () {
+        slugEl.textContent = slugify(nameInput.value.trim()) || '-';
+    };
 
-                dialog.addEventListener('click', function (event) {
-                    if (event.target === dialog) { dialog.close(); }
-                });
+    var openModal = function (config, trigger) {
+        mode = config.mode;
+        editUrl = config.url || null;
+        opener = trigger || null;
+        clearErrors();
+        nameInput.value = config.name || '';
+        updateSlug();
+        titleEl.textContent = config.title;
+        eyebrowEl.textContent = config.eyebrow;
+        submitText.textContent = config.submit;
+        submitText.setAttribute('data-label', config.submit);
+        modal.showModal();
+        lockScroll(true);
 
-                dialog.addEventListener('close', function () { pending = null; });
+        window.requestAnimationFrame(function () {
+            nameInput.focus();
+            nameInput.select();
+        });
+    };
+
+    var closeModal = function () {
+        if (busy) { return; }
+        if (modal.open) { modal.close(); }
+    };
+
+    modal.addEventListener('close', function () {
+        lockScroll(false);
+        var target = opener && document.body.contains(opener) ? opener : document.getElementById('open-create');
+        opener = null;
+        if (target) { target.focus(); }
+    });
+
+    modal.addEventListener('cancel', function (event) { if (busy) { event.preventDefault(); } });
+    modal.addEventListener('click', function (event) { if (event.target === modal) { closeModal(); } });
+    cancelBtn.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    nameInput.addEventListener('input', function () {
+        updateSlug();
+        if (nameInput.classList.contains('is-invalid')) { clearErrors(); }
+    });
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (busy) { return; }
+
+        clearErrors();
+
+        var url = mode === 'edit' ? editUrl : storeUrl;
+        var method = mode === 'edit' ? 'PUT' : 'POST';
+        var token = form.querySelector('input[name="_token"]').value;
+        var label = submitText.getAttribute('data-label') || 'Simpan';
+
+        setBusy(true, submitBtn, label, 'Menyimpan...', submitText);
+
+        send(url, method, token, { name: nameInput.value }).then(function (result) {
+            if (result.ok) {
+                var id = result.data && result.data.category ? result.data.category.id : null;
+                var message = result.data && result.data.message ? result.data.message : 'Kategori berhasil disimpan.';
+                setBusy(false, submitBtn, label, 'Menyimpan...', submitText);
+                modal.close();
+                toast(message, 'success');
+                return refreshList(id);
             }
 
-        })();
-    </script>
+            setBusy(false, submitBtn, label, 'Menyimpan...', submitText);
 
-</body>
-</html>
+            if (result.status === 422 && result.data && result.data.errors) {
+                var errors = result.data.errors;
+                if (errors.name && errors.name.length) { showFieldError(errors.name[0]); return; }
+                var first = Object.keys(errors)[0];
+                alertEl.textContent = first ? errors[first][0] : describe(result);
+                alertEl.hidden = false;
+                return;
+            }
+
+            alertEl.textContent = describe(result);
+            alertEl.hidden = false;
+
+            if (result.status === 404) { refreshList(); }
+        }).catch(function () {
+            setBusy(false, submitBtn, label, 'Menyimpan...', submitText);
+            alertEl.textContent = 'Koneksi bermasalah. Periksa jaringan Anda lalu coba lagi.';
+            alertEl.hidden = false;
+        });
+    });
+
+    var closeConfirm = function () {
+        if (busy) { return; }
+        if (confirmDlg.open) { confirmDlg.close(); }
+    };
+
+    confirmDlg.addEventListener('close', function () {
+        lockScroll(false);
+        pendingDelete = null;
+        var target = opener && document.body.contains(opener) ? opener : document.getElementById('open-create');
+        opener = null;
+        if (target) { target.focus(); }
+    });
+
+    confirmDlg.addEventListener('cancel', function (event) { if (busy) { event.preventDefault(); } });
+    confirmDlg.addEventListener('click', function (event) { if (event.target === confirmDlg) { closeConfirm(); } });
+    dlgCancel.addEventListener('click', closeConfirm);
+
+    dlgConfirm.addEventListener('click', function () {
+        if (busy || !pendingDelete) { return; }
+
+        var target = pendingDelete;
+        var token = target.form.querySelector('input[name="_token"]').value;
+
+        setBusy(true, dlgConfirm, 'Hapus', 'Menghapus...', dlgConfirmText);
+
+        send(target.form.getAttribute('action'), 'DELETE', token).then(function (result) {
+            setBusy(false, dlgConfirm, 'Hapus', 'Menghapus...', dlgConfirmText);
+
+            if (result.ok) {
+                confirmDlg.close();
+                toast(result.data && result.data.message ? result.data.message : 'Kategori berhasil dihapus.', 'success');
+                return refreshList();
+            }
+
+            confirmDlg.close();
+            toast(describe(result), 'error');
+            if (result.status === 404) { refreshList(); }
+        }).catch(function () {
+            setBusy(false, dlgConfirm, 'Hapus', 'Menghapus...', dlgConfirmText);
+            confirmDlg.close();
+            toast('Koneksi bermasalah. Kategori belum dihapus, coba lagi.', 'error');
+        });
+    });
+
+    var modified = function (event) { return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1; };
+
+    document.addEventListener('click', function (event) {
+        var createBtn = event.target.closest('[data-open-create]');
+        if (createBtn && !modified(event)) {
+            event.preventDefault();
+            if (busy) { return; }
+            openModal({ mode: 'create', title: 'Tambah Kategori', eyebrow: 'Kategori baru', submit: 'Simpan', name: '' }, createBtn);
+            return;
+        }
+
+        var editBtn = event.target.closest('[data-edit]');
+        if (editBtn && !modified(event)) {
+            event.preventDefault();
+            if (busy) { return; }
+            openModal({
+                mode: 'edit',
+                title: 'Edit Kategori',
+                eyebrow: 'Ubah kategori',
+                submit: 'Simpan Perubahan',
+                name: editBtn.getAttribute('data-name'),
+                url: editBtn.getAttribute('data-action')
+            }, editBtn);
+        }
+    });
+
+    document.addEventListener('submit', function (event) {
+        var target = event.target;
+        if (!target.hasAttribute || !target.hasAttribute('data-confirm')) { return; }
+
+        event.preventDefault();
+        if (busy) { return; }
+
+        pendingDelete = { form: target };
+        opener = target.querySelector('button');
+        dlgName.textContent = target.getAttribute('data-name');
+        confirmDlg.showModal();
+        lockScroll(true);
+        dlgCancel.focus();
+    });
+
+    document.addEventListener('input', function (event) {
+        if (event.target && event.target.id === 'filter') { applyFilter(); }
+    });
+})();
+</script>
+@endpush
