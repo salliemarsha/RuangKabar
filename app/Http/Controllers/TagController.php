@@ -28,7 +28,14 @@ class TagController extends Controller
 
         $data['slug'] = Str::slug($data['name']);
 
-        Tag::create($data);
+        $tag = Tag::create($data);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Tag berhasil ditambahkan.',
+                'tag' => $tag,
+            ], 201);
+        }
 
         return redirect('/tags')->with(
             'success',
@@ -51,15 +58,28 @@ class TagController extends Controller
 
         $tag->update($data);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Tag berhasil diperbarui.',
+                'tag' => $tag->fresh(),
+            ]);
+        }
+
         return redirect('/tags')->with(
             'success',
             'Tag berhasil diperbarui.'
         );
     }
 
-    public function destroy(Tag $tag)
+    public function destroy(Request $request, Tag $tag)
     {
         $tag->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Tag berhasil dihapus.',
+            ]);
+        }
 
         return redirect('/tags')->with(
             'success',
