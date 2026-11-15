@@ -236,7 +236,7 @@ select.f-control {
 
 .donut-tooltip {
     position: absolute;
-    top: -42px;
+    top: 0;
     left: 50%;
     z-index: 5;
     min-width: 150px;
@@ -250,16 +250,28 @@ select.f-control {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translate(-50%, 5px);
-    transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+    transform: translate(-50%, -100%);
+    transition: opacity 160ms ease, visibility 160ms ease;
 }
+
 .donut-tooltip.is-visible {
     opacity: 1;
     visibility: visible;
-    transform: translate(-50%, 0);
 }
-.donut-tooltip strong { display: block; font-size: 13px; font-weight: 800; }
-.donut-tooltip span { display: block; margin-top: 3px; font-size: 11.5px; color: var(--on-dark); white-space: nowrap; }
+
+.donut-tooltip strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.donut-tooltip span {
+    display: block;
+    margin-top: 3px;
+    font-size: 11.5px;
+    color: var(--on-dark);
+    white-space: nowrap;
+}
 
 .legend { margin: 18px 0 0; padding: 0; list-style: none; }
 .legend li {
@@ -844,6 +856,7 @@ select.f-control {
     @endforeach
 @endsection
 
+
 @push('scripts')
 <script>
 (function () {
@@ -857,15 +870,21 @@ select.f-control {
 
     document.querySelectorAll('[data-donut]').forEach(function (donut) {
         const panel = donut.closest('.panel');
-
         if (!panel) return;
 
         const tooltip = donut.querySelector('.donut-tooltip');
         const tooltipTitle = tooltip ? tooltip.querySelector('strong') : null;
         const tooltipDetail = tooltip ? tooltip.querySelector('span') : null;
+        const centerTotal = donut.querySelector('.donut-total');
+        const originalTotal = centerTotal ? centerTotal.textContent : '';
 
-        const segments = Array.from(donut.querySelectorAll('[data-donut-index]'));
-        const legends = Array.from(panel.querySelectorAll('[data-legend-index]'));
+        const segments = Array.from(
+            donut.querySelectorAll('[data-donut-index]')
+        );
+
+        const legends = Array.from(
+            panel.querySelectorAll('[data-legend-index]')
+        );
 
         let pinnedIndex = null;
 
@@ -885,6 +904,8 @@ select.f-control {
             segments.forEach(function (segment) {
                 segment.classList.remove('is-active');
                 segment.setAttribute('aria-pressed', 'false');
+                segment.style.opacity = '1';
+                segment.style.filter = '';
             });
 
             legends.forEach(function (legend) {
@@ -899,7 +920,42 @@ select.f-control {
             }
         }
 
-        function showItem(index, pin) {
+        function resetCenter() {
+            if (centerTotal) {
+                centerTotal.textContent = originalTotal;
+            }
+        }
+
+        function positionTooltip(event) {
+            if (!tooltip) return;
+
+            const bounds = donut.getBoundingClientRect();
+            const tooltipWidth = tooltip.offsetWidth;
+            const tooltipHeight = tooltip.offsetHeight;
+
+            let pointerX = bounds.width / 2;
+            let pointerY = 8;
+
+            if (event && Number.isFinite(event.clientX)) {
+                pointerX = event.clientX - bounds.left;
+                pointerY = event.clientY - bounds.top;
+            }
+
+            const minLeft = tooltipWidth / 2 + 4;
+            const maxLeft = bounds.width - tooltipWidth / 2 - 4;
+
+            const left = Math.min(
+                Math.max(pointerX, minLeft),
+                Math.max(minLeft, maxLeft)
+            );
+
+            const top = Math.max(pointerY - tooltipHeight - 14, 4);
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        }
+
+        function showItem(index, pin, event) {
             const segment = findSegment(index);
             const legend = findLegend(index);
 
@@ -907,6 +963,11 @@ select.f-control {
 
             clearActive();
 
+            segments.forEach(function (item) {
+                item.style.opacity = '0.2';
+            });
+
+            segment.style.opacity = '1';
             segment.classList.add('is-active');
             segment.setAttribute('aria-pressed', pin ? 'true' : 'false');
 
@@ -915,8 +976,13 @@ select.f-control {
                 legend.setAttribute('aria-pressed', pin ? 'true' : 'false');
             }
 
+            if (centerTotal) {
+                centerTotal.textContent = segment.dataset.value;
+            }
+
             if (tooltipTitle && tooltipDetail) {
                 tooltipTitle.textContent = segment.dataset.label || '';
+
                 tooltipDetail.textContent =
                     segment.dataset.value + ' ' +
                     segment.dataset.unit + ' • ' +
@@ -924,6 +990,7 @@ select.f-control {
             }
 
             if (tooltip) {
+                positionTooltip(event);
                 tooltip.classList.add('is-visible');
             }
 
@@ -934,31 +1001,48 @@ select.f-control {
 
         function restorePinned() {
             if (pinnedIndex !== null) {
-                showItem(pinnedIndex, true);
+                showItem(pinnedIndex, true, null);
             } else {
                 clearActive();
                 hideTooltip();
+                resetCenter();
             }
         }
 
-        function togglePinned(index) {
+        function togglePinned(index, event) {
             const selectedIndex = String(index);
 
             if (pinnedIndex === selectedIndex) {
                 pinnedIndex = null;
                 clearActive();
                 hideTooltip();
+                resetCenter();
             } else {
-                showItem(selectedIndex, true);
+                showItem(selectedIndex, true, event);
             }
+        }
+
+        function handleEscape(event) {
+            if (event.key !== 'Escape') return;
+
+            pinnedIndex = null;
+            clearActive();
+            hideTooltip();
+            resetCenter();
         }
 
         segments.forEach(function (segment) {
             const index = segment.dataset.donutIndex;
 
-            segment.addEventListener('pointerenter', function () {
+            segment.addEventListener('pointerenter', function (event) {
                 if (pinnedIndex === null) {
-                    showItem(index, false);
+                    showItem(index, false, event);
+                }
+            });
+
+            segment.addEventListener('pointermove', function (event) {
+                if (pinnedIndex === null) {
+                    positionTooltip(event);
                 }
             });
 
@@ -968,9 +1052,9 @@ select.f-control {
                 }
             });
 
-            segment.addEventListener('focus', function () {
+            segment.addEventListener('focus', function (event) {
                 if (pinnedIndex === null) {
-                    showItem(index, false);
+                    showItem(index, false, event);
                 }
             });
 
@@ -980,20 +1064,16 @@ select.f-control {
                 }
             });
 
-            segment.addEventListener('click', function () {
-                togglePinned(index);
+            segment.addEventListener('click', function (event) {
+                togglePinned(index, event);
             });
+
+            segment.addEventListener('keydown', handleEscape);
 
             segment.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
-                    togglePinned(index);
-                }
-
-                if (event.key === 'Escape') {
-                    pinnedIndex = null;
-                    clearActive();
-                    hideTooltip();
+                    togglePinned(index, event);
                 }
             });
         });
@@ -1001,9 +1081,15 @@ select.f-control {
         legends.forEach(function (legend) {
             const index = legend.dataset.legendIndex;
 
-            legend.addEventListener('pointerenter', function () {
+            legend.addEventListener('pointerenter', function (event) {
                 if (pinnedIndex === null) {
-                    showItem(index, false);
+                    showItem(index, false, event);
+                }
+            });
+
+            legend.addEventListener('pointermove', function (event) {
+                if (pinnedIndex === null) {
+                    positionTooltip(event);
                 }
             });
 
@@ -1013,9 +1099,9 @@ select.f-control {
                 }
             });
 
-            legend.addEventListener('focus', function () {
+            legend.addEventListener('focus', function (event) {
                 if (pinnedIndex === null) {
-                    showItem(index, false);
+                    showItem(index, false, event);
                 }
             });
 
@@ -1025,20 +1111,16 @@ select.f-control {
                 }
             });
 
-            legend.addEventListener('click', function () {
-                togglePinned(index);
+            legend.addEventListener('click', function (event) {
+                togglePinned(index, event);
             });
+
+            legend.addEventListener('keydown', handleEscape);
 
             legend.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
-                    togglePinned(index);
-                }
-
-                if (event.key === 'Escape') {
-                    pinnedIndex = null;
-                    clearActive();
-                    hideTooltip();
+                    togglePinned(index, event);
                 }
             });
         });
@@ -1051,6 +1133,7 @@ select.f-control {
                 pinnedIndex = null;
                 clearActive();
                 hideTooltip();
+                resetCenter();
             }
         });
     });
