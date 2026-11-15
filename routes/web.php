@@ -1,8 +1,10 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\PengelolaanPenggunaController;
 use App\Http\Controllers\PenulisController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\RegisterController;
@@ -33,9 +35,12 @@ Route::get('/kategori/{category:slug}', [PublicCategoryController::class, 'show'
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
+
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/pengaturan-akun', [AccountController::class, 'edit'])
         ->name('account.settings');
@@ -46,47 +51,64 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/pengaturan-akun/password', [AccountController::class, 'updatePassword'])
         ->name('account.password.update');
 });
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware('auth', 'role:admin');
-Route::get('/admin/users', [AdminController::class, 'userIndex'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.users.index');
-Route::get('/admin/users/data', [AdminController::class, 'users'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.users.data');
-Route::get('/admin/users/{user}/edit', [AdminController::class, 'editUser'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.users.edit');
-Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.users.update');
-Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.users.destroy');
-Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])->middleware('auth', 'role:penulis');
-Route::get('/beranda', [PenggunaController::class, 'beranda'])->middleware(['auth', 'role:pengguna']);
-Route::resource('/categories', CategoryController::class)->middleware(['auth', 'role:admin']);
-Route::resource('/tags', TagController::class)->middleware(['auth', 'role:admin']);
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+    ->middleware(['auth', 'role:admin']);
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/users', [PengelolaanPenggunaController::class, 'index'])
+            ->name('users.index');
+
+        Route::put('/users/{user}', [PengelolaanPenggunaController::class, 'update'])
+            ->name('users.update');
+
+        Route::patch('/users/{user}/status', [PengelolaanPenggunaController::class, 'status'])
+            ->name('users.status');
+
+        Route::patch('/users/{user}/password', [PengelolaanPenggunaController::class, 'password'])
+            ->name('users.password');
+
+        Route::delete('/users/{user}', [PengelolaanPenggunaController::class, 'destroy'])
+            ->name('users.destroy');
+    });
+
+Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])
+    ->middleware('auth', 'role:penulis');
+
+Route::get('/beranda', [PenggunaController::class, 'beranda'])
+    ->middleware(['auth', 'role:pengguna']);
+
+Route::resource('/categories', CategoryController::class)
+    ->middleware(['auth', 'role:admin']);
+
+Route::resource('/tags', TagController::class)
+    ->middleware(['auth', 'role:admin']);
+
 Route::get('/reports/articles', [ReportController::class, 'articles'])
     ->middleware(['auth', 'role:admin'])
     ->name('reports.articles');
-Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+
+Route::get('/articles', [ArticleController::class, 'index'])
+    ->name('articles.index');
 
 Route::middleware(['auth', 'role:admin,penulis'])->group(function () {
+    Route::get('/articles/create', [ArticleController::class, 'create'])
+        ->name('articles.create');
 
-Route::get('/articles/create', [ArticleController::class, 'create'])
-    ->name('articles.create');
+    Route::post('/articles', [ArticleController::class, 'store'])
+        ->name('articles.store');
 
-Route::post('/articles', [ArticleController::class, 'store'])
-    ->name('articles.store');
+    Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])
+        ->name('articles.edit');
 
-Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])
-    ->name('articles.edit');
+    Route::put('/articles/{article}', [ArticleController::class, 'update'])
+        ->name('articles.update');
 
-Route::put('/articles/{article}', [ArticleController::class, 'update'])
-    ->name('articles.update');
-
-Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])
-    ->name('articles.destroy');
+    Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])
+        ->name('articles.destroy');
 });
 
 Route::get('/articles/{article}', [ArticleController::class, 'show'])
