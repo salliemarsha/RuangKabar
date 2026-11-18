@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -10,9 +11,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <script>document.documentElement.classList.add('js');</script>
 
@@ -320,12 +319,21 @@
             justify-content: center;
             width: 46px;
             height: 46px;
+            overflow: hidden;
             font-family: var(--sans);
             font-size: 16px;
             font-weight: 700;
             line-height: 1;
             color: var(--ivory);
             background: var(--emerald);
+            border-radius: 50%;
+        }
+
+        .avatar img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             border-radius: 50%;
         }
 
@@ -794,7 +802,6 @@
             border-radius: 20px;
         }
 
-
         .comment-replies {
             margin: 18px 0 0 12px;
             padding-left: 22px;
@@ -857,7 +864,6 @@
                 width: 100%;
             }
         }
-
 
         .back-link {
             display: inline-flex;
@@ -1195,11 +1201,6 @@
                 margin-bottom: 44px;
             }
 
-            .related {
-                margin-bottom: 56px;
-                padding: 56px 0 64px;
-            }
-
             .cards,
             .cards--1,
             .cards--2 {
@@ -1460,6 +1461,7 @@
         $relatedTitle = $sameCategory->count() === $related->count() ? 'Berita Terkait' : 'Baca Juga';
         $authorName = $article->user->name ?? 'Redaksi';
         $footerCategories = \App\Models\Category::orderBy('name')->get();
+
         $visibleComments = $article->comments
             ->where('status', 'approved')
             ->whereNull('parent_id')
@@ -1492,22 +1494,32 @@
             <nav class="crumbs" aria-label="Breadcrumb">
                 <ol>
                     <li><a href="/">Beranda</a></li>
-                    <li><a href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
-                    </li>
+                    <li><a href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a></li>
                     <li><span aria-current="page">{{ $article->title }}</span></li>
                 </ol>
             </nav>
 
             <header class="detail-head">
-                <a class="detail-cat"
-                    href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
+                <a class="detail-cat" href="{{ route('kategori.show', $article->category) }}">
+                    {{ $article->category->name }}
+                </a>
 
                 <h1 class="detail-title">{{ $article->title }}</h1>
 
                 <div class="detail-meta">
                     <div class="byline">
-                        <span class="avatar"
-                            aria-hidden="true">{{ $str::upper($str::substr($authorName, 0, 1)) }}</span>
+                        <span class="avatar" aria-hidden="true">
+                            @if ($article->user?->profile_photo)
+                                <img
+                                    src="{{ asset('storage/' . $article->user->profile_photo) }}"
+                                    alt=""
+                                    loading="lazy"
+                                >
+                            @else
+                                {{ $str::upper($str::substr($authorName, 0, 1)) }}
+                            @endif
+                        </span>
+
                         <span class="byline-text">
                             <span>Ditulis oleh</span>
                             <strong>{{ $authorName }}</strong>
@@ -1516,11 +1528,15 @@
 
                     <ul class="facts">
                         @if ($article->created_at)
-                            <li><time
-                                    datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
+                            <li>
+                                <time datetime="{{ $article->created_at->toDateString() }}">
+                                    {{ $article->created_at->locale('id')->translatedFormat('d F Y') }}
+                                </time>
                             </li>
                         @endif
+
                         <li>{{ $readMinutes }} menit baca</li>
+
                         @if ($article->status !== 'published')
                             <li><span class="badge-draft">{{ ucfirst($article->status) }}</span></li>
                         @endif
@@ -1564,31 +1580,29 @@
 
                     <div class="share-list">
                         <a class="share-btn" href="{{ $shareWa }}" target="_blank" rel="noopener noreferrer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M3 21l1.65-4.9A8.5 8.5 0 1 1 8 19.4L3 21z" />
-                                <path
-                                    d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.2-1.4-2-1-.9.7a3.6 3.6 0 0 1-1.6-1.6l.7-.9-1-2L9 9.5z" />
+                                <path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.2-1.4-2-1-.9.7a3.6 3.6 0 0 1-1.6-1.6l.7-.9-1-2L9 9.5z" />
                             </svg>
                             WhatsApp
                         </a>
+
                         <a class="share-btn" href="{{ $shareFb }}" target="_blank" rel="noopener noreferrer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z" />
                             </svg>
                             Facebook
                         </a>
+
                         <a class="share-btn" href="{{ $shareX }}" target="_blank" rel="noopener noreferrer">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M5 4l14 16M19 4L5 20" />
                             </svg>
                             X
                         </a>
+
                         <button class="share-btn" type="button" id="copy-link" data-url="{{ $url }}">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1" />
                                 <path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" />
                             </svg>
@@ -1598,7 +1612,6 @@
 
                     <p class="share-status" id="share-status" role="status" aria-live="polite"></p>
                 </section>
-
 
                 <section class="comments" id="komentar" aria-labelledby="comments-title">
                     <h2 class="comments-title" id="comments-title">
@@ -1621,8 +1634,7 @@
 
                                 <div class="field">
                                     <label for="comment">Tulis komentar</label>
-                                    <textarea id="comment" name="comment" rows="5" required
-                                        placeholder="Tulis komentar Anda...">{{ old('parent_id') ? '' : old('comment') }}</textarea>
+                                    <textarea id="comment" name="comment" rows="5" required placeholder="Tulis komentar Anda...">{{ old('parent_id') ? '' : old('comment') }}</textarea>
 
                                     @error('comment')
                                         @if (!old('parent_id'))
@@ -1662,7 +1674,15 @@
 
                                 <article class="comment-item">
                                     <span class="avatar" aria-hidden="true">
-                                        {{ $str::upper($str::substr($commenter, 0, 1)) }}
+                                        @if ($comment->user?->profile_photo)
+                                            <img
+                                                src="{{ asset('storage/' . $comment->user->profile_photo) }}"
+                                                alt=""
+                                                loading="lazy"
+                                            >
+                                        @else
+                                            {{ $str::upper($str::substr($commenter, 0, 1)) }}
+                                        @endif
                                     </span>
 
                                     <div>
@@ -1687,7 +1707,15 @@
 
                                                     <article class="reply-item">
                                                         <span class="avatar" aria-hidden="true">
-                                                            {{ $str::upper($str::substr($replyName, 0, 1)) }}
+                                                            @if ($reply->user?->profile_photo)
+                                                                <img
+                                                                    src="{{ asset('storage/' . $reply->user->profile_photo) }}"
+                                                                    alt=""
+                                                                    loading="lazy"
+                                                                >
+                                                            @else
+                                                                {{ $str::upper($str::substr($replyName, 0, 1)) }}
+                                                            @endif
                                                         </span>
 
                                                         <div>
@@ -1720,8 +1748,7 @@
                                                         Balas komentar
                                                     </label>
 
-                                                    <textarea id="reply-{{ $comment->id }}" name="comment" rows="3" required
-                                                        placeholder="Tulis balasan Anda...">{{ (string) old('parent_id') === (string) $comment->id ? old('comment') : '' }}</textarea>
+                                                    <textarea id="reply-{{ $comment->id }}" name="comment" rows="3" required placeholder="Tulis balasan Anda...">{{ (string) old('parent_id') === (string) $comment->id ? old('comment') : '' }}</textarea>
 
                                                     @if ((string) old('parent_id') === (string) $comment->id)
                                                         @error('comment')
@@ -1758,10 +1785,10 @@
                 <div class="wrap">
                     <div class="related-head">
                         <h2 class="section-title" id="related-title">{{ $relatedTitle }}</h2>
+
                         <a class="more-link" href="{{ route('articles.index') }}">
                             Lihat semua berita
-                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M3 8h10M9 4l4 4-4 4" />
                             </svg>
                         </a>
@@ -1781,8 +1808,9 @@
                                 </a>
 
                                 <div class="card-body">
-                                    <a class="cat"
-                                        href="{{ route('kategori.show', $item->category) }}">{{ $item->category->name }}</a>
+                                    <a class="cat" href="{{ route('kategori.show', $item->category) }}">
+                                        {{ $item->category->name }}
+                                    </a>
 
                                     <h3 class="title">
                                         <a href="{{ route('articles.show', $item) }}">{{ $item->title }}</a>
@@ -1792,9 +1820,11 @@
 
                                     <div class="meta">
                                         <span>{{ $item->user->name ?? 'Redaksi' }}</span>
+
                                         @if ($item->created_at)
-                                            <time
-                                                datetime="{{ $item->created_at->toDateString() }}">{{ $item->created_at->locale('id')->translatedFormat('d F Y') }}</time>
+                                            <time datetime="{{ $item->created_at->toDateString() }}">
+                                                {{ $item->created_at->locale('id')->translatedFormat('d F Y') }}
+                                            </time>
                                         @endif
                                     </div>
                                 </div>
@@ -1815,6 +1845,7 @@
                     </svg>
                     <span class="rk-brand__name">Ruang<span>Kabar</span></span>
                 </a>
+
                 <p class="footer-about">Portal berita dan informasi terkini.</p>
             </div>
 
@@ -1899,6 +1930,7 @@
                     status.textContent = text;
                     status.classList.toggle('is-error', !!isError);
                     clearTimeout(statusTimer);
+
                     statusTimer = setTimeout(function () {
                         status.textContent = '';
                         status.classList.remove('is-error');
@@ -1913,8 +1945,13 @@
                     ta.style.opacity = '0';
                     document.body.appendChild(ta);
                     ta.select();
+
                     var ok = false;
-                    try { ok = document.execCommand('copy'); } catch (e) { }
+
+                    try {
+                        ok = document.execCommand('copy');
+                    } catch (e) {}
+
                     document.body.removeChild(ta);
                     return ok;
                 };
@@ -1932,8 +1969,12 @@
 
                     if (navigator.clipboard && window.isSecureContext) {
                         navigator.clipboard.writeText(url).then(
-                            function () { report(true); },
-                            function () { report(fallbackCopy(url)); }
+                            function () {
+                                report(true);
+                            },
+                            function () {
+                                report(fallbackCopy(url));
+                            }
                         );
                     } else {
                         report(fallbackCopy(url));
@@ -1942,10 +1983,13 @@
             }
 
             var items = document.querySelectorAll('.reveal');
+
             if (!items.length) return;
 
             if (!('IntersectionObserver' in window)) {
-                items.forEach(function (el) { el.classList.add('is-visible'); });
+                items.forEach(function (el) {
+                    el.classList.add('is-visible');
+                });
                 return;
             }
 
@@ -1953,13 +1997,20 @@
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
+
                         (function (el) {
-                            setTimeout(function () { el.style.transitionDelay = ''; }, 900);
+                            setTimeout(function () {
+                                el.style.transitionDelay = '';
+                            }, 900);
                         })(entry.target);
+
                         io.unobserve(entry.target);
                     }
                 });
-            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+            }, {
+                rootMargin: '0px 0px -8% 0px',
+                threshold: 0.05
+            });
 
             items.forEach(function (el, i) {
                 el.style.transitionDelay = (i % 3) * 80 + 'ms';
@@ -1969,5 +2020,4 @@
     </script>
 
 </body>
-
 </html>

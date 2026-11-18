@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
@@ -64,13 +66,29 @@ class AccountController extends Controller
             ]);
         }
 
+        // Salin foto ke folder publik untuk dukungan hosting.
+        $source = storage_path('app/public/'.$newPhoto);
+        $destination = public_path('storage/'.$newPhoto);
+
+        if (!is_dir(dirname($destination))) {
+            mkdir(dirname($destination), 0755, true);
+        }
+
+        if (!copy($source, $destination)) {
+            Storage::disk('public')->delete($newPhoto);
+
+            return back()->withErrors([
+                'profile_photo' => 'Foto profil gagal disimpan ke folder publik.',
+            ]);
+        }
+
         $oldPhoto = $user->profile_photo;
 
         $user->profile_photo = $newPhoto;
         $user->save();
 
         if ($oldPhoto && $oldPhoto !== $newPhoto) {
-            Storage::disk('public')->delete($oldPhoto);
+            $this->deleteProfilePhotoFiles($oldPhoto);
         }
 
         return redirect()
@@ -83,7 +101,7 @@ class AccountController extends Controller
         $user = $request->user();
 
         if ($user->profile_photo) {
-            Storage::disk('public')->delete($user->profile_photo);
+            $this->deleteProfilePhotoFiles($user->profile_photo);
 
             $user->profile_photo = null;
             $user->save();
@@ -92,6 +110,17 @@ class AccountController extends Controller
         return redirect()
             ->route('account.settings')
             ->with('success', 'Foto profil berhasil dihapus.');
+    }
+
+    private function deleteProfilePhotoFiles(string $path): void
+    {
+        Storage::disk('public')->delete($path);
+
+        $publicFile = public_path('storage/'.$path);
+
+        if (is_file($publicFile)) {
+            unlink($publicFile);
+        }
     }
 
     public function updatePassword(Request $request)
@@ -135,19 +164,23 @@ class AccountController extends Controller
         $profilePhoto = $user->profile_photo;
 
         DB::transaction(function () use ($user) {
-            $user->articles()->update([
-                'user_id' => null,
-            ]);
-
+            // Hapus komentar milik akun.
             $user->comments()->delete();
 
-            $user->delete();
+            // Pertahankan artikel dan relasinya.
+            // Anonimkan identitas pemilik artikel.
+            $user->name = 'Akun Dihapus';
+            $user->email = 'deleted-'.$user->id.'@ruangkabar.invalid';
+            $user->password = Hash::make(Str::random(64));
+            $user->profile_photo = null;
+
+            $user->save();
         });
 
         Auth::logout();
 
         if ($profilePhoto) {
-            Storage::disk('public')->delete($profilePhoto);
+            $this->deleteProfilePhotoFiles($profilePhoto);
         }
 
         $request->session()->invalidate();
@@ -156,7 +189,7 @@ class AccountController extends Controller
         return redirect('/')
             ->with(
                 'success',
-                'Akun Anda berhasil dihapus. Artikel yang pernah diterbitkan tetap tersedia dengan nama penulis tidak aktif.'
+                'Akun berhasil dihapus. Artikel yang pernah dibuat tetap tersedia dengan nama penulis Akun Dihapus.'
             );
     }
 }

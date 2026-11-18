@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="RuangKabar, portal berita dan informasi terkini.">
 
-    <title>RuangKabar-Portal Berita dan Informasi Terkini</title>
+    <title>RuangKabar - Portal Berita dan Informasi Terkini</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
