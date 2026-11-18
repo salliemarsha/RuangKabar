@@ -14,75 +14,97 @@ class PengelolaanPenggunaController extends Controller
 {
     private const ROLES = ['admin', 'penulis', 'pengguna'];
 
+    private ?bool $statusColumnExists = null;
+
     private function ensureAdmin(): void
     {
-        abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
+        abort_unless(
+            auth()->check() && auth()->user()->role === 'admin',
+            403
+        );
     }
 
     private function ensureManageableUser(User $user): void
     {
-        abort_if(
-            $user->role === 'admin',
-            403,
-            'Akun admin dilindungi dan tidak dapat dikelola melalui halaman ini.'
-        );
+        abort_if($user->role === 'admin', 403);
     }
 
     private function hasStatus(): bool
     {
-        static $has = null;
+        if ($this->statusColumnExists === null) {
+            $this->statusColumnExists = Schema::hasColumn('users', 'is_active');
+        }
 
-        return $has ??= Schema::hasColumn('users', 'is_active');
+        return $this->statusColumnExists;
     }
 
     public function index(Request $request)
     {
         $this->ensureAdmin();
 
+        $search = trim((string) $request->query('search', ''));
+        $role = (string) $request->query('role', '');
+        $status = (string) $request->query('status', '');
         $hasStatus = $this->hasStatus();
 
-        $rawSearch = $request->query('search');
-        $search = is_string($rawSearch) ? trim($rawSearch) : '';
+        if (! in_array($role, ['', ...self::ROLES], true)) {
+            $role = '';
+        }
 
-        $role = in_array($request->query('role'), self::ROLES, true)
-            ? $request->query('role')
-            : '';
+        if (! in_array($status, ['', 'active', 'inactive'], true)) {
+            $status = '';
+        }
 
-        $status = $hasStatus && in_array($request->query('status'), ['active', 'inactive'], true)
-            ? $request->query('status')
-            : '';
+        if (! $hasStatus) {
+            $status = '';
+        }
 
-        $columns = ['id', 'name', 'username', 'role', 'created_at'];
+        $columns = [
+            'id',
+            'name',
+            'email',
+            'role',
+            'profile_photo',
+            'created_at',
+        ];
 
         if ($hasStatus) {
             $columns[] = 'is_active';
         }
 
-        $users = User::query()
+        $query = User::query()
             ->select($columns)
-            ->withCount(['articles', 'comments'])
-            ->when($search !== '', function ($query) use ($search) {
-                $like = '%' . addcslashes($search, '%\_\\') . '%';
+            ->withCount(['articles', 'comments']);
 
-                $query->where(function ($query) use ($like) {
-                    $query->where('name', 'like', $like)
-                        ->orWhere('username', 'like', $like);
-                });
-            })
-            ->when($role !== '', fn ($query) => $query->where('role', $role))
-            ->when($status !== '', fn ($query) => $query->where('is_active', $status === 'active'))
-            ->orderBy('id')
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $like = '%'.$search.'%';
+
+                $q->where('name', 'like', $like)
+                    ->orWhere('email', 'like', $like);
+            });
+        }
+
+        if ($role !== '') {
+            $query->where('role', $role);
+        }
+
+        if ($hasStatus && $status !== '') {
+            $query->where('is_active', $status === 'active' ? 1 : 0);
+        }
+
+        $users = $query
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString();
 
-        if ($users->isEmpty() && $users->currentPage() > 1) {
-            return redirect()->route('admin.users.index', array_merge(
-                $request->query(),
-                ['page' => $users->lastPage()]
-            ));
+        if ($users->currentPage() > $users->lastPage()) {
+            return redirect()->to($users->url($users->lastPage()));
         }
 
-        $byRole = User::selectRaw('role, COUNT(*) as total')
+        $byRole = User::query()
+            ->selectRaw('role, COUNT(*) as total')
             ->groupBy('role')
             ->pluck('total', 'role');
 
@@ -107,31 +129,22 @@ class PengelolaanPenggunaController extends Controller
         $this->ensureManageableUser($user);
 
         $validated = $request->validateWithBag('editUser', [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => [
-                'required',
-                'string',
-                'max:255',
-                'alpha_dash',
-                Rule::unique('users', 'username')->ignore($user->id),
-            ],
+            'name' => ['required', 'string', 'max:100'],
             'role' => ['required', Rule::in(['penulis', 'pengguna'])],
         ], [
-            'name.required' => 'Nama wajib diisi.',
-            'name.max' => 'Nama maksimal 255 karakter.',
-            'username.required' => 'Username wajib diisi.',
-            'username.unique' => 'Username sudah digunakan akun lain.',
-            'username.alpha_dash' => 'Username hanya boleh berisi huruf, angka, strip, dan garis bawah.',
-            'role.required' => 'Peran wajib dipilih.',
-            'role.in' => 'Peran yang dipilih tidak valid.',
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 100 karakter.',
+            'role.required' => 'Role wajib dipilih.',
+            'role.in' => 'Role yang dipilih tidak valid.',
         ]);
 
         $user->name = $validated['name'];
-        $user->username = $validated['username'];
         $user->role = $validated['role'];
         $user->save();
 
-        return back()->with('success', 'Data pengguna berhasil diperbarui.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
     public function status(Request $request, User $user)
@@ -139,26 +152,24 @@ class PengelolaanPenggunaController extends Controller
         $this->ensureAdmin();
         $this->ensureManageableUser($user);
 
-        if (! $this->hasStatus()) {
-            return back()->with(
-                'error',
-                'Fitur status akun belum aktif. Jalankan migration kolom is_active terlebih dahulu.'
-            );
-        }
+        abort_if((int) $user->id === (int) auth()->id(), 403);
+        abort_unless($this->hasStatus(), 404);
 
         $validated = $request->validate([
-            'status' => ['required', 'in:active,inactive'],
+            'status' => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
         $user->is_active = $validated['status'] === 'active';
         $user->save();
 
-        return back()->with(
-            'success',
-            $user->is_active
-                ? 'Akun ' . $user->name . ' berhasil diaktifkan.'
-                : 'Akun ' . $user->name . ' berhasil dinonaktifkan.'
-        );
+        return redirect()
+            ->route('admin.users.index')
+            ->with(
+                'success',
+                $user->is_active
+                    ? 'Akun berhasil diaktifkan.'
+                    : 'Akun berhasil dinonaktifkan.'
+            );
     }
 
     public function password(Request $request, User $user)
@@ -170,14 +181,16 @@ class PengelolaanPenggunaController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'password.required' => 'Password baru wajib diisi.',
-            'password.min' => 'Password baru minimal 8 karakter.',
+            'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
         $user->password = Hash::make($validated['password']);
         $user->save();
 
-        return back()->with('success', 'Password ' . $user->name . ' berhasil direset.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Password pengguna berhasil direset.');
     }
 
     public function destroy(User $user)
@@ -185,39 +198,25 @@ class PengelolaanPenggunaController extends Controller
         $this->ensureAdmin();
         $this->ensureManageableUser($user);
 
-        $articles = $user->articles()->count();
-        $comments = $user->comments()->count();
+        abort_if((int) $user->id === (int) auth()->id(), 403);
 
-        if ($articles > 0 || $comments > 0) {
-            $reasons = [];
-
-            if ($articles > 0) {
-                $reasons[] = $articles . ' artikel';
-            }
-
-            if ($comments > 0) {
-                $reasons[] = $comments . ' komentar';
-            }
-
-            return back()->with(
-                'error',
-                'Akun ' . $user->name . ' tidak dapat dihapus karena masih memiliki ' .
-                implode(' dan ', $reasons) .
-                '. Nonaktifkan akun untuk mempertahankan data historis.'
-            );
+        if ($user->articles()->exists()) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('error', 'Akun tidak dapat dihapus karena masih memiliki artikel.');
         }
 
         try {
+            $user->comments()->delete();
             $user->delete();
         } catch (QueryException $e) {
-            report($e);
-
-            return back()->with(
-                'error',
-                'Akun tidak dapat dihapus karena masih terhubung dengan data lain.'
-            );
+            return redirect()
+                ->route('admin.users.index')
+                ->with('error', 'Akun tidak dapat dihapus karena masih memiliki data terkait.');
         }
 
-        return back()->with('success', 'Pengguna berhasil dihapus.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Akun pengguna berhasil dihapus.');
     }
 }

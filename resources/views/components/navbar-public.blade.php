@@ -9,6 +9,9 @@
     $navDashLabel = in_array($navRole, ['admin', 'penulis'], true) ? 'Dashboard' : 'Akun Saya';
     $navHomeActive = request()->is('/');
     $navNewsActive = request()->routeIs('articles.*') || request()->routeIs('kategori.*');
+    $navPhotoUrl = ($navUser && $navUser->profile_photo)
+        ? asset('storage/' . $navUser->profile_photo)
+        : null;
 @endphp
 
 <style>
@@ -175,6 +178,14 @@
         font-weight: 800;
         color: var(--rk-emerald);
         background: var(--rk-gold);
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .rk-nav__avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         border-radius: 50%;
     }
 
@@ -476,7 +487,13 @@
                 <div class="rk-nav__actions">
                     @auth
                         <div class="rk-nav__chip">
-                            <span class="rk-nav__avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr($navUser->name, 0, 1)) }}</span>
+                            <span class="rk-nav__avatar" aria-hidden="true">
+                                @if ($navPhotoUrl)
+                                    <img src="{{ $navPhotoUrl }}" alt="">
+                                @else
+                                    {{ mb_strtoupper(mb_substr($navUser->name, 0, 1)) }}
+                                @endif
+                            </span>
                             <span class="rk-nav__name">{{ $navUser->name }}</span>
                         </div>
 

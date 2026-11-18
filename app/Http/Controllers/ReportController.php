@@ -151,7 +151,7 @@ class ReportController extends Controller
         $rows = $users->values()->map(fn ($user, $i) => [
             $i + 1,
             $user->name,
-            $user->username,
+            $user->email,
             ['badge' => $roleLabels[$user->role] ?? ucfirst((string) $user->role), 'tone' => $user->role],
             $user->articles_count,
             $user->comments_count,
@@ -186,7 +186,7 @@ class ReportController extends Controller
                 'columns' => [
                     ['label' => 'No.', 'class' => 'col-no'],
                     ['label' => 'Nama', 'class' => 'col-main'],
-                    ['label' => 'Username'],
+                    ['label' => 'Email'],
                     ['label' => 'Peran'],
                     ['label' => 'Artikel', 'class' => 'col-num'],
                     ['label' => 'Komentar', 'class' => 'col-num'],

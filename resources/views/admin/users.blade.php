@@ -13,10 +13,19 @@
         $initial = fn ($name) => \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($name, 0, 1));
 
         $reopen = null;
+
         if (old('_modal') === 'edit' && $errors->editUser->any()) {
-            $reopen = ['modal' => 'edit', 'user' => (int) old('_user'), 'self' => (int) old('_user') === $me];
+            $reopen = [
+                'modal' => 'edit',
+                'user' => (int) old('_user'),
+                'self' => (int) old('_user') === (int) $me,
+            ];
         } elseif (old('_modal') === 'password' && $errors->resetPassword->any()) {
-            $reopen = ['modal' => 'password', 'user' => (int) old('_user'), 'self' => (int) old('_user') === $me];
+            $reopen = [
+                'modal' => 'password',
+                'user' => (int) old('_user'),
+                'self' => (int) old('_user') === (int) $me,
+            ];
         }
     @endphp
 
@@ -31,13 +40,16 @@
         <div class="hero-inner">
             <span class="hero-label">PENGGUNA</span>
             <h1 class="hero-title" id="page-title">Pengelolaan Pengguna</h1>
-            <p class="hero-lead">Kelola seluruh akun RuangKabar: ubah data dan peran, aktifkan atau nonaktifkan akun, reset password, dan hapus akun.</p>
+            <p class="hero-lead">Kelola seluruh akun RuangKabar: ubah nama dan peran, aktifkan atau nonaktifkan akun, reset password, dan hapus akun.</p>
         </div>
     </section>
 
     @if (session('success'))
         <div class="flash" role="status">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.5l2.5 2.5 4.5-5"/></svg>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="10" r="8"/>
+                <path d="M6.5 10.5l2.5 2.5 4.5-5"/>
+            </svg>
             <p>{{ session('success') }}</p>
             <button class="flash-close" type="button" data-flash-close aria-label="Tutup pemberitahuan">&times;</button>
         </div>
@@ -45,7 +57,10 @@
 
     @if (session('error') || $errors->getBag('default')->any())
         <div class="flash flash--error" role="alert">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5l8 14H2z"/><path d="M10 8v4M10 14.5v.01"/></svg>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 2.5l8 14H2z"/>
+                <path d="M10 8v4M10 14.5v.01"/>
+            </svg>
             <p>{{ session('error') ?? $errors->getBag('default')->first() }}</p>
             <button class="flash-close" type="button" data-flash-close aria-label="Tutup pemberitahuan">&times;</button>
         </div>
@@ -53,7 +68,10 @@
 
     @unless ($hasStatus)
         <div class="flash flash--note" role="note">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6.5v4M10 13.5v.01"/></svg>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="10" r="8"/>
+                <path d="M10 6.5v4M10 13.5v.01"/>
+            </svg>
             <p>Fitur status akun belum aktif karena kolom <strong>is_active</strong> belum ada. Jalankan <strong>php artisan migrate</strong> untuk mengaktifkannya. Fitur lainnya tetap berfungsi.</p>
         </div>
     @endunless
@@ -64,16 +82,19 @@
             <span class="ustat-value">{{ $n($totalAll) }}</span>
             <span class="ustat-note">{{ $inactive !== null ? $n($inactive) . ' akun nonaktif' : 'Seluruh akun terdaftar' }}</span>
         </article>
+
         <article class="ustat">
             <span class="ustat-label">Admin</span>
             <span class="ustat-value">{{ $n($byRole['admin'] ?? 0) }}</span>
             <span class="ustat-note">Pengelola portal</span>
         </article>
+
         <article class="ustat">
             <span class="ustat-label">Penulis</span>
             <span class="ustat-value">{{ $n($byRole['penulis'] ?? 0) }}</span>
             <span class="ustat-note">Penulis artikel</span>
         </article>
+
         <article class="ustat">
             <span class="ustat-label">Pengguna</span>
             <span class="ustat-value">{{ $n($byRole['pengguna'] ?? 0) }}</span>
@@ -83,9 +104,12 @@
 
     <form class="filter" action="{{ route('admin.users.index') }}" method="GET" role="search">
         <div class="search">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-            <label class="sr-only" for="f-search">Cari nama atau username</label>
-            <input id="f-search" type="search" name="search" value="{{ $search }}" placeholder="Cari nama atau username" autocomplete="off">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="9" cy="9" r="6"/>
+                <path d="M14 14l4 4"/>
+            </svg>
+            <label class="sr-only" for="f-search">Cari nama atau email</label>
+            <input id="f-search" type="search" name="search" value="{{ $search }}" placeholder="Cari nama atau email" autocomplete="off">
         </div>
 
         <label class="sr-only" for="f-role">Filter role</label>
@@ -129,7 +153,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Nama</th>
-                            <th scope="col">Username</th>
+                            <th scope="col">Alamat Email</th>
                             <th scope="col">Role</th>
                             @if ($hasStatus)
                                 <th scope="col">Status</th>
@@ -146,13 +170,19 @@
                                 $isAdmin = $u->role === 'admin';
                                 $hasArticles = (int) $u->articles_count > 0;
                                 $active = $hasStatus ? (bool) ($u->is_active ?? true) : true;
-                                $joined = $u->created_at ? $u->created_at->locale('id')->translatedFormat('d M Y') : '-';
+                                $joined = $u->created_at
+                                    ? $u->created_at->locale('id')->translatedFormat('d M Y')
+                                    : '-';
+                                $photoUrl = $u->profile_photo
+                                    ? asset('storage/' . ltrim($u->profile_photo, '/'))
+                                    : null;
                             @endphp
 
                             <tr
                                 data-id="{{ $u->id }}"
                                 data-name="{{ $u->name }}"
-                                data-username="{{ $u->username }}"
+                                data-email="{{ $u->email }}"
+                                data-photo="{{ $photoUrl }}"
                                 data-role="{{ $u->role }}"
                                 data-role-label="{{ $roleLabels[$u->role] ?? ucfirst($u->role) }}"
                                 data-status="{{ $hasStatus ? ($active ? 'Aktif' : 'Nonaktif') : '' }}"
@@ -166,7 +196,14 @@
                             >
                                 <td data-label="Nama">
                                     <div class="u-name">
-                                        <span class="u-avatar" aria-hidden="true">{{ $initial($u->name) }}</span>
+                                        <span class="u-avatar" aria-hidden="true">
+                                            @if ($photoUrl)
+                                                <img src="{{ $photoUrl }}" alt="" loading="lazy">
+                                            @else
+                                                {{ $initial($u->name) }}
+                                            @endif
+                                        </span>
+
                                         <span class="u-title">
                                             {{ $u->name }}
                                             @if ($isSelf)
@@ -176,8 +213,8 @@
                                     </div>
                                 </td>
 
-                                <td data-label="Username">
-                                    <span class="slug">{{ $u->username }}</span>
+                                <td data-label="Alamat Email">
+                                    <span class="slug">{{ $u->email ?: '-' }}</span>
                                 </td>
 
                                 <td data-label="Role">
@@ -186,7 +223,9 @@
 
                                 @if ($hasStatus)
                                     <td data-label="Status">
-                                        <span class="sbadge {{ $active ? 'sbadge--on' : 'sbadge--off' }}">{{ $active ? 'Aktif' : 'Nonaktif' }}</span>
+                                        <span class="sbadge {{ $active ? 'sbadge--on' : 'sbadge--off' }}">
+                                            {{ $active ? 'Aktif' : 'Nonaktif' }}
+                                        </span>
                                     </td>
                                 @endif
 
@@ -195,36 +234,56 @@
                                 <td class="col-end">
                                     <div class="act-row">
                                         <button class="act" type="button" data-act="detail" title="Lihat detail" aria-label="Lihat detail {{ $u->name }}">
-                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>
+                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/>
+                                                <circle cx="8" cy="8" r="2"/>
+                                            </svg>
                                             <span class="act__t">Detail</span>
                                         </button>
 
                                         @unless ($isAdmin)
                                             <button class="act act--edit" type="button" data-act="edit" title="Edit" aria-label="Edit {{ $u->name }}">
-                                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/></svg>
+                                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                    <path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/>
+                                                </svg>
                                                 <span class="act__t">Edit</span>
                                             </button>
 
                                             <button class="act act--key" type="button" data-act="password" title="Reset password" aria-label="Reset password {{ $u->name }}">
-                                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="10.5" r="2.5"/><path d="M7.4 8.6L13 3M11 5l1.5 1.5"/></svg>
+                                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                    <circle cx="5.5" cy="10.5" r="2.5"/>
+                                                    <path d="M7.4 8.6L13 3M11 5l1.5 1.5"/>
+                                                </svg>
                                                 <span class="act__t">Password</span>
                                             </button>
                                         @endunless
 
                                         @if ($hasStatus && ! $isSelf && ! $isAdmin)
-                                            <form class="inline-form" action="{{ route('admin.users.status', $u) }}" method="POST"
-                                                data-confirm data-variant="{{ $active ? 'warn' : 'ok' }}"
+                                            <form
+                                                class="inline-form"
+                                                action="{{ route('admin.users.status', $u) }}"
+                                                method="POST"
+                                                data-confirm
+                                                data-variant="{{ $active ? 'warn' : 'ok' }}"
                                                 data-title="{{ $active ? 'Nonaktifkan akun?' : 'Aktifkan akun?' }}"
                                                 data-text="{{ $active ? 'Akun ini tidak akan bisa login atau mengakses halaman yang memerlukan login sampai diaktifkan kembali.' : 'Akun ini akan bisa login dan menggunakan RuangKabar kembali.' }}"
-                                                data-label="{{ $active ? 'Ya, Nonaktifkan' : 'Ya, Aktifkan' }}" data-snippet="{{ $u->name }}">
+                                                data-label="{{ $active ? 'Ya, Nonaktifkan' : 'Ya, Aktifkan' }}"
+                                                data-snippet="{{ $u->name }}"
+                                            >
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="status" value="{{ $active ? 'inactive' : 'active' }}">
+
                                                 <button class="act {{ $active ? 'act--warn' : 'act--ok' }}" type="submit" title="{{ $active ? 'Nonaktifkan' : 'Aktifkan' }}" aria-label="{{ $active ? 'Nonaktifkan' : 'Aktifkan' }} akun {{ $u->name }}">
                                                     @if ($active)
-                                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M4.2 11.8l7.6-7.6"/></svg>
+                                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                                                            <circle cx="8" cy="8" r="5.5"/>
+                                                            <path d="M4.2 11.8l7.6-7.6"/>
+                                                        </svg>
                                                     @else
-                                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>
+                                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <path d="M3 8.5l3.2 3.2L13 4.8"/>
+                                                        </svg>
                                                     @endif
                                                     <span class="act__t">{{ $active ? 'Nonaktifkan' : 'Aktifkan' }}</span>
                                                 </button>
@@ -232,14 +291,24 @@
                                         @endif
 
                                         @if (! $isSelf && ! $isAdmin && ! $hasArticles)
-                                            <form class="inline-form" action="{{ route('admin.users.destroy', $u) }}" method="POST"
-                                                data-confirm data-variant="danger" data-title="Hapus pengguna?"
-                                                data-text="Akun akan dihapus secara permanen{{ $u->comments_count > 0 ? ', termasuk ' . $u->comments_count . ' komentar miliknya' : '' }}. Tindakan ini tidak dapat dibatalkan."
-                                                data-label="Ya, Hapus" data-snippet="{{ $u->name }}">
+                                            <form
+                                                class="inline-form"
+                                                action="{{ route('admin.users.destroy', $u) }}"
+                                                method="POST"
+                                                data-confirm
+                                                data-variant="danger"
+                                                data-title="Hapus pengguna?"
+                                                data-text="Akun akan dihapus secara permanen. Komentar milik akun ini juga akan dihapus. Tindakan ini tidak dapat dibatalkan."
+                                                data-label="Ya, Hapus"
+                                                data-snippet="{{ $u->name }}"
+                                            >
                                                 @csrf
                                                 @method('DELETE')
+
                                                 <button class="act act--delete" type="submit" title="Hapus" aria-label="Hapus pengguna {{ $u->name }}">
-                                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg>
+                                                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/>
+                                                    </svg>
                                                     <span class="act__t">Hapus</span>
                                                 </button>
                                             </form>
@@ -263,7 +332,9 @@
             @php
                 $current = $users->currentPage();
                 $last = $users->lastPage();
-                $window = collect(range(1, $last))->filter(fn ($p) => $p === 1 || $p === $last || abs($p - $current) <= 1)->values();
+                $window = collect(range(1, $last))
+                    ->filter(fn ($p) => $p === 1 || $p === $last || abs($p - $current) <= 1)
+                    ->values();
                 $previous = null;
             @endphp
 
@@ -279,6 +350,7 @@
                         @if ($previous !== null && $page - $previous > 1)
                             <li class="pager-gap" aria-hidden="true">&hellip;</li>
                         @endif
+
                         <li>
                             @if ($page === $current)
                                 <span class="pager-num is-current" aria-current="page">{{ $page }}</span>
@@ -286,6 +358,7 @@
                                 <a class="pager-num" href="{{ $users->url($page) }}" aria-label="Halaman {{ $page }}">{{ $page }}</a>
                             @endif
                         </li>
+
                         @php $previous = $page; @endphp
                     @endforeach
                 </ul>
@@ -317,52 +390,72 @@
             <span class="u-avatar u-avatar--lg" id="dt-avatar" aria-hidden="true"></span>
             <div>
                 <h2 id="dt-title"></h2>
-                <p class="dt-user" id="dt-username"></p>
+                <p class="dt-user" id="dt-email"></p>
             </div>
         </div>
+
         <dl class="dt-meta">
-            <div><dt>Role</dt><dd id="dt-role"></dd></div>
-            <div id="dt-status-box"><dt>Status akun</dt><dd id="dt-status"></dd></div>
-            <div><dt>Bergabung</dt><dd id="dt-joined"></dd></div>
-            <div><dt>Artikel</dt><dd id="dt-articles"></dd></div>
-            <div><dt>Komentar</dt><dd id="dt-comments"></dd></div>
+            <div>
+                <dt>Role</dt>
+                <dd id="dt-role"></dd>
+            </div>
+            <div id="dt-status-box">
+                <dt>Status akun</dt>
+                <dd id="dt-status"></dd>
+            </div>
+            <div>
+                <dt>Bergabung</dt>
+                <dd id="dt-joined"></dd>
+            </div>
+            <div>
+                <dt>Artikel</dt>
+                <dd id="dt-articles"></dd>
+            </div>
+            <div>
+                <dt>Komentar</dt>
+                <dd id="dt-comments"></dd>
+            </div>
         </dl>
+
         <p class="dt-note">Password tidak ditampilkan. Gunakan Reset Password untuk membuat password baru.</p>
-        <div class="dialog-actions"><button class="btn btn--ghost" type="button" data-close>Tutup</button></div>
+
+        <div class="dialog-actions">
+            <button class="btn btn--ghost" type="button" data-close>Tutup</button>
+        </div>
     </dialog>
 
     <dialog class="dialog dialog--form" id="edit-dialog" aria-labelledby="edit-title">
         <h2 id="edit-title">Edit pengguna</h2>
-        <p class="dlg-lead">Ubah nama, username, atau role akun.</p>
+        <p class="dlg-lead">Ubah nama lengkap atau role akun. Alamat email tidak dapat diubah melalui halaman ini.</p>
 
         <form id="edit-form" method="POST" action="" data-loading data-loading-text="Menyimpan…">
             @csrf
             @method('PUT')
+
             <input type="hidden" name="_modal" value="edit">
             <input type="hidden" name="_user" id="edit-user-id" value="{{ old('_modal') === 'edit' ? old('_user') : '' }}">
 
             <div class="field">
-                <label for="edit-name">Nama</label>
-                <input id="edit-name" type="text" name="name" maxlength="255" required value="{{ old('_modal') === 'edit' ? old('name') : '' }}" class="{{ $errors->editUser->has('name') ? 'is-invalid' : '' }}">
-                @if ($errors->editUser->has('name'))<p class="field-error">{{ $errors->editUser->first('name') }}</p>@endif
-            </div>
-
-            <div class="field">
-                <label for="edit-username">Username</label>
-                <input id="edit-username" type="text" name="username" maxlength="255" required autocapitalize="none" spellcheck="false" value="{{ old('_modal') === 'edit' ? old('username') : '' }}" class="{{ $errors->editUser->has('username') ? 'is-invalid' : '' }}">
-                @if ($errors->editUser->has('username'))<p class="field-error">{{ $errors->editUser->first('username') }}</p>@endif
-                <p class="hint">Hanya huruf, angka, strip, dan garis bawah. Harus unik.</p>
+                <label for="edit-name">Nama Lengkap</label>
+                <input id="edit-name" type="text" name="name" maxlength="100" required autocomplete="name" value="{{ old('_modal') === 'edit' ? old('name') : '' }}" class="{{ $errors->editUser->has('name') ? 'is-invalid' : '' }}">
+                @if ($errors->editUser->has('name'))
+                    <p class="field-error">{{ $errors->editUser->first('name') }}</p>
+                @endif
             </div>
 
             <div class="field">
                 <label for="edit-role">Role</label>
                 <select id="edit-role" name="role" required class="{{ $errors->editUser->has('role') ? 'is-invalid' : '' }}">
-                    @foreach ($roleLabels as $key => $label)
-                        <option value="{{ $key }}" @selected(old('_modal') === 'edit' && old('role') === $key)>{{ $label }}</option>
-                    @endforeach
+                    <option value="penulis" @selected(old('_modal') === 'edit' && old('role') === 'penulis')>Penulis</option>
+                    <option value="pengguna" @selected(old('_modal') === 'edit' && old('role') === 'pengguna')>Pengguna</option>
                 </select>
+
                 <input type="hidden" name="role" id="edit-role-hidden" disabled>
-                @if ($errors->editUser->has('role'))<p class="field-error">{{ $errors->editUser->first('role') }}</p>@endif
+
+                @if ($errors->editUser->has('role'))
+                    <p class="field-error">{{ $errors->editUser->first('role') }}</p>
+                @endif
+
                 <p class="hint" id="edit-role-note" hidden>Anda tidak dapat mengubah role akun Anda sendiri.</p>
             </div>
 
@@ -380,13 +473,16 @@
         <form id="password-form" method="POST" action="" data-loading data-loading-text="Menyimpan…" autocomplete="off">
             @csrf
             @method('PATCH')
+
             <input type="hidden" name="_modal" value="password">
             <input type="hidden" name="_user" id="pw-user-id" value="{{ old('_modal') === 'password' ? old('_user') : '' }}">
 
             <div class="field">
                 <label for="pw-new">Password baru</label>
                 <input id="pw-new" type="password" name="password" minlength="8" required autocomplete="new-password" class="{{ $errors->resetPassword->has('password') ? 'is-invalid' : '' }}">
-                @if ($errors->resetPassword->has('password'))<p class="field-error">{{ $errors->resetPassword->first('password') }}</p>@endif
+                @if ($errors->resetPassword->has('password'))
+                    <p class="field-error">{{ $errors->resetPassword->first('password') }}</p>
+                @endif
                 <p class="hint">Minimal 8 karakter.</p>
             </div>
 
@@ -403,10 +499,17 @@
     </dialog>
 
     <dialog class="dialog" id="confirm-dialog" aria-labelledby="cf-title" aria-describedby="cf-text">
-        <div class="dialog-icon" id="cf-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5l6 10.5H2z"/><path d="M8 6.5v3M8 11.5v.01"/></svg></div>
+        <div class="dialog-icon" id="cf-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 2.5l6 10.5H2z"/>
+                <path d="M8 6.5v3M8 11.5v.01"/>
+            </svg>
+        </div>
+
         <h2 id="cf-title"></h2>
         <blockquote class="cf-quote" id="cf-quote"></blockquote>
         <p id="cf-text"></p>
+
         <div class="dialog-actions">
             <button class="btn btn--ghost" type="button" id="cf-cancel" autofocus>Batal</button>
             <button class="btn" type="button" id="cf-confirm"></button>
@@ -455,7 +558,8 @@
 .col-end .act-row { justify-content: flex-end; flex-wrap: wrap; }
 
 .u-name { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.u-avatar { display: flex; flex: none; align-items: center; justify-content: center; width: 38px; height: 38px; font-size: 14px; font-weight: 800; color: var(--emerald); background: var(--gold); border-radius: 50%; }
+.u-avatar { display: flex; flex: none; align-items: center; justify-content: center; width: 38px; height: 38px; overflow: hidden; font-size: 14px; font-weight: 800; color: var(--emerald); background: var(--gold); border-radius: 50%; }
+.u-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 .u-avatar--lg { width: 56px; height: 56px; font-family: var(--serif); font-size: 24px; font-weight: 600; }
 .u-title { font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--emerald); overflow-wrap: anywhere; }
 .u-me { display: inline-block; margin-left: 6px; padding: 2px 8px; font-family: var(--sans); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--forest); background: rgba(55, 107, 92, 0.12); border-radius: 999px; vertical-align: middle; }
@@ -500,7 +604,7 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
 .dialog .hint { font-size: 13px; }
 .dt-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
 .dt-head h2 { margin: 0; font-size: 24px; overflow-wrap: anywhere; }
-.dt-user { margin-top: 2px !important; font-size: 14px !important; }
+.dt-user { margin-top: 2px !important; font-size: 14px !important; overflow-wrap: anywhere; }
 .dt-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; margin: 0 0 16px; padding: 18px; background: var(--ivory); border: 1px solid var(--rule); border-radius: 16px; }
 .dt-meta dt { margin-bottom: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); }
 .dt-meta dd { margin: 0; font-family: var(--body); font-size: 15px; font-weight: 600; color: var(--emerald); }
@@ -559,118 +663,150 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
 @push('scripts')
 <script>
 (function () {
-    var byId = function (id) { return document.getElementById(id); };
+    var byId = function (id) {
+        return document.getElementById(id);
+    };
+
     var canModal = typeof document.createElement('dialog').showModal === 'function';
     var tpl = @json(route('admin.users.update', ['user' => '__ID__']));
     var tplPw = @json(route('admin.users.password', ['user' => '__ID__']));
     var reopen = @json($reopen);
 
-    var openDialog = function (d) {
-        if (canModal && d) {
-            d.showModal();
+    var openDialog = function (dialog) {
+        if (canModal && dialog) {
+            dialog.showModal();
         }
     };
 
-    var clearErrors = function (d) {
-        [].forEach.call(d.querySelectorAll('.field-error'), function (e) { e.remove(); });
-        [].forEach.call(d.querySelectorAll('.is-invalid'), function (e) { e.classList.remove('is-invalid'); });
+    var clearErrors = function (dialog) {
+        [].forEach.call(dialog.querySelectorAll('.field-error'), function (element) {
+            element.remove();
+        });
+
+        [].forEach.call(dialog.querySelectorAll('.is-invalid'), function (element) {
+            element.classList.remove('is-invalid');
+        });
     };
 
-    [].forEach.call(document.querySelectorAll('dialog [data-close]'), function (btn) {
-        btn.addEventListener('click', function () {
-            btn.closest('dialog').close();
+    [].forEach.call(document.querySelectorAll('dialog [data-close]'), function (button) {
+        button.addEventListener('click', function () {
+            button.closest('dialog').close();
         });
     });
 
     var detail = byId('detail-dialog');
 
     var fillDetail = function (tr) {
-        var d = tr.dataset;
-        byId('dt-avatar').textContent = d.name.charAt(0).toUpperCase();
-        byId('dt-title').textContent = d.name;
-        byId('dt-username').textContent = '@' + d.username;
-        byId('dt-role').textContent = d.roleLabel;
-        byId('dt-status').textContent = d.status;
-        byId('dt-status-box').hidden = !d.status;
-        byId('dt-joined').textContent = d.joined;
-        byId('dt-articles').textContent = d.articles + ' artikel';
-        byId('dt-comments').textContent = d.comments + ' komentar';
+        var data = tr.dataset;
+        var avatar = byId('dt-avatar');
+        var fallback = data.name.charAt(0).toUpperCase();
+
+        avatar.replaceChildren();
+
+        if (data.photo) {
+            var img = document.createElement('img');
+            img.src = data.photo;
+            img.alt = '';
+            img.loading = 'lazy';
+
+            img.addEventListener('error', function () {
+                avatar.replaceChildren();
+                avatar.textContent = fallback;
+            });
+
+            avatar.appendChild(img);
+        } else {
+            avatar.textContent = fallback;
+        }
+
+        byId('dt-title').textContent = data.name;
+        byId('dt-email').textContent = data.email || '-';
+        byId('dt-role').textContent = data.roleLabel;
+        byId('dt-status').textContent = data.status;
+        byId('dt-status-box').hidden = !data.status;
+        byId('dt-joined').textContent = data.joined;
+        byId('dt-articles').textContent = data.articles + ' artikel';
+        byId('dt-comments').textContent = data.comments + ' komentar';
     };
 
     var edit = byId('edit-dialog');
     var editForm = byId('edit-form');
 
     var setEditRole = function (isSelf, role) {
-        var sel = byId('edit-role');
-        var hid = byId('edit-role-hidden');
+        var select = byId('edit-role');
+        var hidden = byId('edit-role-hidden');
 
-        sel.disabled = isSelf;
-        hid.disabled = !isSelf;
-        hid.value = role || sel.value;
+        select.disabled = isSelf;
+        hidden.disabled = !isSelf;
+        hidden.value = role || select.value;
+
         byId('edit-role-note').hidden = !isSelf;
     };
 
     var fillEdit = function (tr) {
-        var d = tr.dataset;
+        var data = tr.dataset;
 
-        if (d.admin === '1') {
+        if (data.admin === '1') {
             return;
         }
 
         clearErrors(edit);
-        editForm.action = d.updateUrl;
-        byId('edit-user-id').value = d.id;
-        byId('edit-name').value = d.name;
-        byId('edit-username').value = d.username;
-        byId('edit-role').value = d.role;
-        setEditRole(d.self === '1', d.role);
+
+        editForm.action = data.updateUrl;
+        byId('edit-user-id').value = data.id;
+        byId('edit-name').value = data.name;
+        byId('edit-role').value = data.role;
+
+        setEditRole(data.self === '1', data.role);
     };
 
-    var pw = byId('password-dialog');
-    var pwForm = byId('password-form');
+    var passwordDialog = byId('password-dialog');
+    var passwordForm = byId('password-form');
 
     var fillPassword = function (tr) {
-        var d = tr.dataset;
+        var data = tr.dataset;
 
-        if (d.admin === '1') {
+        if (data.admin === '1') {
             return;
         }
 
-        clearErrors(pw);
-        pwForm.action = d.passwordUrl;
-        byId('pw-user-id').value = d.id;
-        byId('pw-name').textContent = d.name;
+        clearErrors(passwordDialog);
+
+        passwordForm.action = data.passwordUrl;
+        byId('pw-user-id').value = data.id;
+        byId('pw-name').textContent = data.name;
         byId('pw-new').value = '';
         byId('pw-confirm').value = '';
     };
 
     document.addEventListener('click', function (event) {
-        var btn = event.target.closest ? event.target.closest('[data-act]') : null;
+        var button = event.target.closest ? event.target.closest('[data-act]') : null;
 
-        if (!btn) {
+        if (!button) {
             return;
         }
 
-        var tr = btn.closest('tr');
+        var tr = button.closest('tr');
+
         if (!tr) {
             return;
         }
 
-        var act = btn.getAttribute('data-act');
+        var action = button.getAttribute('data-act');
 
-        if (act === 'detail') {
+        if (action === 'detail') {
             fillDetail(tr);
             openDialog(detail);
         }
 
-        if (act === 'edit' && tr.dataset.admin !== '1') {
+        if (action === 'edit' && tr.dataset.admin !== '1') {
             fillEdit(tr);
             openDialog(edit);
         }
 
-        if (act === 'password' && tr.dataset.admin !== '1') {
+        if (action === 'password' && tr.dataset.admin !== '1') {
             fillPassword(tr);
-            openDialog(pw);
+            openDialog(passwordDialog);
         }
     });
 
@@ -683,15 +819,16 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
                 setEditRole(!!reopen.self, row.dataset.role);
                 openDialog(edit);
             } else if (reopen.modal === 'password') {
-                pwForm.action = tplPw.replace('__ID__', reopen.user);
+                passwordForm.action = tplPw.replace('__ID__', reopen.user);
                 byId('pw-name').textContent = row.dataset.name;
-                openDialog(pw);
+                openDialog(passwordDialog);
             }
         }
     }
 
     [].forEach.call(document.querySelectorAll('form[data-loading]'), function (form) {
         var submit = form.querySelector('button[type="submit"]');
+
         if (!submit) {
             return;
         }
@@ -711,8 +848,8 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
         });
     });
 
-    var cf = byId('confirm-dialog');
-    var cfConfirm = byId('cf-confirm');
+    var confirmDialog = byId('confirm-dialog');
+    var confirmButton = byId('cf-confirm');
     var pending = null;
 
     document.addEventListener('submit', function (event) {
@@ -726,6 +863,7 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
             if (!window.confirm(form.getAttribute('data-title') + ' ' + form.getAttribute('data-text'))) {
                 event.preventDefault();
             }
+
             return;
         }
 
@@ -733,43 +871,54 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
         pending = form;
 
         var variant = form.getAttribute('data-variant');
+
         byId('cf-title').textContent = form.getAttribute('data-title');
         byId('cf-text').textContent = form.getAttribute('data-text');
         byId('cf-quote').textContent = form.getAttribute('data-snippet') || '';
-        byId('cf-icon').className = 'dialog-icon' + (variant === 'warn' ? ' is-warn' : (variant === 'ok' ? ' is-ok' : ''));
-        cfConfirm.textContent = form.getAttribute('data-label');
-        cfConfirm.className = 'btn ' + (variant === 'danger' ? 'btn--danger' : (variant === 'warn' ? 'btn--warn' : ''));
-        cfConfirm.disabled = false;
-        cf.showModal();
+        byId('cf-icon').className = 'dialog-icon' + (
+            variant === 'warn'
+                ? ' is-warn'
+                : (variant === 'ok' ? ' is-ok' : '')
+        );
+
+        confirmButton.textContent = form.getAttribute('data-label');
+        confirmButton.className = 'btn ' + (
+            variant === 'danger'
+                ? 'btn--danger'
+                : (variant === 'warn' ? 'btn--warn' : '')
+        );
+        confirmButton.disabled = false;
+
+        confirmDialog.showModal();
     });
 
     byId('cf-cancel').addEventListener('click', function () {
-        cf.close();
+        confirmDialog.close();
     });
 
-    cfConfirm.addEventListener('click', function () {
+    confirmButton.addEventListener('click', function () {
         if (!pending) {
             return;
         }
 
-        cfConfirm.disabled = true;
-        cfConfirm.textContent = 'Memproses…';
+        confirmButton.disabled = true;
+        confirmButton.textContent = 'Memproses…';
         pending.submit();
     });
 
-    cf.addEventListener('cancel', function (event) {
-        if (cfConfirm.disabled) {
+    confirmDialog.addEventListener('cancel', function (event) {
+        if (confirmButton.disabled) {
             event.preventDefault();
         }
     });
 
-    cf.addEventListener('click', function (event) {
-        if (event.target === cf && !cfConfirm.disabled) {
-            cf.close();
+    confirmDialog.addEventListener('click', function (event) {
+        if (event.target === confirmDialog && !confirmButton.disabled) {
+            confirmDialog.close();
         }
     });
 
-    cf.addEventListener('close', function () {
+    confirmDialog.addEventListener('close', function () {
         pending = null;
     });
 
@@ -781,10 +930,10 @@ a.pager-btn:hover, a.pager-num:hover { color: var(--white); background: var(--em
 
     window.addEventListener('pageshow', function (event) {
         if (event.persisted) {
-            cfConfirm.disabled = false;
+            confirmButton.disabled = false;
 
-            if (cf.open) {
-                cf.close();
+            if (confirmDialog.open) {
+                confirmDialog.close();
             }
         }
     });

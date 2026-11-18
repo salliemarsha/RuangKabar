@@ -1,10 +1,10 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PengelolaanPenggunaController;
+use App\Http\Controllers\Admin\AuthorApplicationController as AdminAuthorApplicationController;
 use App\Http\Controllers\PenulisController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\RegisterController;
@@ -15,6 +15,8 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AuthorApplicationController;
 use App\Models\Article;
 use App\Models\Category;
 
@@ -25,7 +27,9 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    $categories = Category::orderBy('name')->get();
+    $categories = Category::where('is_active', true)
+        ->orderBy('name')
+        ->get();
 
     return view('home', compact('articles', 'categories'));
 });
@@ -33,32 +37,67 @@ Route::get('/', function () {
 Route::get('/kategori/{category:slug}', [PublicCategoryController::class, 'show'])
     ->name('kategori.show');
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login', [AuthController::class, 'showLogin'])
+    ->name('login');
+
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
+Route::get('/register', [RegisterController::class, 'showRegister'])
+    ->name('register');
+
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/pengaturan-akun', [AccountController::class, 'edit'])
         ->name('account.settings');
 
     Route::patch('/pengaturan-akun/profil', [AccountController::class, 'updateProfile'])
         ->name('account.profile.update');
 
+    Route::post('/pengaturan-akun/foto-profil', [AccountController::class, 'updateProfilePhoto'])
+        ->name('account.profile-photo.update');
+
+    Route::delete('/pengaturan-akun/foto-profil', [AccountController::class, 'deleteProfilePhoto'])
+        ->name('account.profile-photo.destroy');
+
     Route::patch('/pengaturan-akun/password', [AccountController::class, 'updatePassword'])
         ->name('account.password.update');
+
+    Route::delete('/pengaturan-akun', [AccountController::class, 'destroy'])
+        ->name('account.destroy');
+
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])
+        ->name('notifications.read');
+
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])
+        ->name('notifications.read-all');
+
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])
+        ->name('notifications.destroy');
+
+    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])
+        ->name('notifications.destroy-all');
 });
 
+Route::post('/pengajuan-penulis', [AuthorApplicationController::class, 'store'])
+    ->middleware(['auth', 'role:pengguna'])
+    ->name('author-applications.store');
+
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
-    ->middleware(['auth', 'role:admin']);
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.dashboard');
 
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+        Route::get('/articles', [ArticleController::class, 'adminIndex'])
+            ->name('articles.index');
+
         Route::get('/users', [PengelolaanPenggunaController::class, 'index'])
             ->name('users.index');
 
@@ -73,13 +112,35 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::delete('/users/{user}', [PengelolaanPenggunaController::class, 'destroy'])
             ->name('users.destroy');
+
+        Route::get('/author-applications', [AdminAuthorApplicationController::class, 'index'])
+            ->name('author-applications.index');
+
+        Route::patch('/author-applications/{authorApplication}/approve', [AdminAuthorApplicationController::class, 'approve'])
+            ->name('author-applications.approve');
+
+        Route::patch('/author-applications/{authorApplication}/reject', [AdminAuthorApplicationController::class, 'reject'])
+            ->name('author-applications.reject');
     });
 
-Route::get('/penulis/dashboard', [PenulisController::class, 'dashboard'])
-    ->middleware('auth', 'role:penulis');
+Route::middleware(['auth', 'role:penulis'])
+    ->prefix('penulis')
+    ->name('penulis.')
+    ->group(function () {
+        Route::get('/dashboard', [PenulisController::class, 'dashboard'])
+            ->name('dashboard');
+
+        Route::get('/articles', [ArticleController::class, 'writerIndex'])
+            ->name('articles.index');
+    });
 
 Route::get('/beranda', [PenggunaController::class, 'beranda'])
-    ->middleware(['auth', 'role:pengguna']);
+    ->middleware(['auth', 'role:pengguna'])
+    ->name('pengguna.beranda');
+
+Route::patch('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('categories.toggle-status');
 
 Route::resource('/categories', CategoryController::class)
     ->middleware(['auth', 'role:admin']);
@@ -115,17 +176,16 @@ Route::get('/articles/{article}', [ArticleController::class, 'show'])
     ->name('articles.show');
 
 Route::post('/comments', [CommentController::class, 'store'])
-    ->middleware(['auth', 'role:pengguna'])
+    ->middleware('auth')
     ->name('comments.store');
 
-Route::get('/comments', [CommentController::class, 'index'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('comments.index');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/comments', [CommentController::class, 'index'])
+        ->name('comments.index');
 
-Route::put('/comments/{comment}', [CommentController::class, 'update'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('comments.update');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])
+        ->name('comments.update');
 
-Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('comments.destroy');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
+        ->name('comments.destroy');
+});

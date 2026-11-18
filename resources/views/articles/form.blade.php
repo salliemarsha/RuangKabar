@@ -40,6 +40,11 @@
                     <p class="field-error" id="title-error">{{ $message }}</p>
                 @enderror
 
+                <p class="title-hint" id="title-hint" aria-live="polite">
+                    <span id="title-char-count">0</span> karakter
+                    <span class="title-warn-msg" id="title-warn-msg"> &mdash; Judul cukup panjang. Pertimbangkan untuk mempersingkat agar tampil lebih optimal.</span>
+                </p>
+
                 <p class="slug-line">
                     <span class="slug-label">Slug</span>
                     <span class="slug" id="slug-preview" data-initial="{{ $initialSlug }}">{{ $initialSlug !== '' ? $initialSlug : 'otomatis-dari-judul' }}</span>
@@ -215,6 +220,10 @@
 .slug-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 0; }
 .slug-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); }
 .count { margin: 10px 0 0; font-family: var(--body); font-size: 13px; color: var(--text-soft); }
+.title-hint { margin: 8px 0 0; font-family: var(--body); font-size: 13px; color: var(--text-soft); }
+.title-warn-msg { display: none; }
+.title-hint.is-warn { color: #A36B00; font-weight: 500; }
+.title-hint.is-warn .title-warn-msg { display: inline; }
 
 .status-opts { display: grid; gap: 10px; }
 .status-opt { position: relative; display: flex; align-items: center; gap: 14px; margin: 0; padding: 14px 16px; background: var(--ivory); border: 1px solid var(--rule); border-radius: 16px; cursor: pointer; transition: border-color var(--t-fast) ease-out, background var(--t-fast) ease-out, box-shadow var(--t-fast) ease-out; }
@@ -298,6 +307,20 @@
 
         title.addEventListener('input', syncSlug);
         if (!slug.getAttribute('data-initial') && title.value) { syncSlug(); }
+    }
+
+    var titleHint = byId('title-hint');
+    var titleCount = byId('title-char-count');
+    var TITLE_IDEAL = 70;
+
+    if (title && titleHint && titleCount) {
+        var updateTitleHint = function () {
+            var len = title.value.length;
+            titleCount.textContent = len;
+            titleHint.classList.toggle('is-warn', len > TITLE_IDEAL);
+        };
+        title.addEventListener('input', updateTitleHint);
+        updateTitleHint();
     }
 
     if (content && words) {

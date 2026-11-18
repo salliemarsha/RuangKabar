@@ -29,6 +29,7 @@ class CategoryController extends Controller
         $category = Category::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
+            'is_active' => true,
         ]);
 
         if ($request->expectsJson()) {
@@ -38,7 +39,10 @@ class CategoryController extends Controller
             ], 201);
         }
 
-        return redirect('/categories')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect('/categories')->with(
+            'success',
+            'Kategori berhasil ditambahkan.'
+        );
     }
 
     public function edit(Category $category)
@@ -64,11 +68,48 @@ class CategoryController extends Controller
             ]);
         }
 
-        return redirect('/categories')->with('success', 'Kategori berhasil diperbarui.');
+        return redirect('/categories')->with(
+            'success',
+            'Kategori berhasil diperbarui.'
+        );
+    }
+
+    public function toggleStatus(Request $request, Category $category)
+    {
+        $category->update([
+            'is_active' => ! $category->is_active,
+        ]);
+
+        $message = $category->is_active
+            ? 'Kategori berhasil diaktifkan.'
+            : 'Kategori berhasil dinonaktifkan.';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $message,
+                'category' => $category->fresh(),
+            ]);
+        }
+
+        return redirect('/categories')->with('success', $message);
     }
 
     public function destroy(Request $request, Category $category)
     {
+        $articleCount = $category->articles()->count();
+
+        if ($articleCount > 0) {
+            $message = "Kategori tidak dapat dihapus karena masih digunakan oleh {$articleCount} artikel. Silakan ubah kategori artikel terkait terlebih dahulu.";
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $message,
+                ], 422);
+            }
+
+            return redirect('/categories')->with('error', $message);
+        }
+
         $category->delete();
 
         if ($request->expectsJson()) {
@@ -77,6 +118,9 @@ class CategoryController extends Controller
             ]);
         }
 
-        return redirect('/categories')->with('success', 'Kategori berhasil dihapus.');
+        return redirect('/categories')->with(
+            'success',
+            'Kategori berhasil dihapus.'
+        );
     }
 }

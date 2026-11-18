@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Category extends Model
 {
     protected $table = 'categories';
+
     protected $fillable = [
         'name',
         'slug',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public $timestamps = false;

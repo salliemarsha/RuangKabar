@@ -1,3 +1,4 @@
+
 @extends('layouts.dashboard')
 
 @section('title', 'Kategori')
@@ -76,7 +77,79 @@
 
 .cell-link:hover { color: var(--emerald); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
 
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.status-badge::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+}
+
+.status-badge--active {
+    color: #276344;
+    background: #EAF5ED;
+}
+
+.status-badge--active::before { background: #3B9460; }
+
+.status-badge--inactive {
+    color: #8A5146;
+    background: #F9EEEA;
+}
+
+.status-badge--inactive::before { background: #B66B5B; }
+
 .col-actions-cell .act-row { justify-content: flex-end; }
+
+.status-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 8px 11px;
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--forest);
+    cursor: pointer;
+    background: #EDF3EE;
+    border: 1px solid rgba(39, 99, 68, 0.16);
+    border-radius: 10px;
+    transition: background var(--t-fast) ease-out, border-color var(--t-fast) ease-out;
+}
+
+.status-action:hover {
+    background: #DFEBE1;
+    border-color: rgba(39, 99, 68, 0.3);
+}
+
+.status-action--activate {
+    color: #8A5146;
+    background: #F9EEEA;
+    border-color: rgba(163, 57, 44, 0.16);
+}
+
+.status-action--activate:hover {
+    background: #F3E2DC;
+    border-color: rgba(163, 57, 44, 0.3);
+}
+
+.status-action:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
 
 body.mdl-lock { overflow: hidden; }
 
@@ -247,9 +320,11 @@ body.mdl-lock { overflow: hidden; }
         color: var(--text-soft);
     }
 
-    .col-actions-cell .act-row { justify-content: stretch; }
+    .col-actions-cell .act-row { justify-content: stretch; flex-wrap: wrap; }
     .col-actions-cell .act-row > *, .col-actions-cell .act { flex: 1; justify-content: center; }
     .col-actions-cell .inline-form { display: flex; }
+    .col-actions-cell .inline-form .act { width: 100%; }
+    .status-action { width: 100%; }
     .cell-link { display: block; margin: 4px 0 0; }
 
     .mdl-wrap { padding: 22px 18px 18px; }
@@ -262,141 +337,190 @@ body.mdl-lock { overflow: hidden; }
 @endpush
 
 @section('content')
-                <ol class="crumbs" aria-label="Breadcrumb"><li>Admin</li><li>Kategori</li></ol>
-                    <section class="hero" aria-labelledby="page-title">
-                        <div class="hero-inner">
-                            <span class="hero-label">KATEGORI</span>
-                            <h1 class="hero-title" id="page-title">Kelola Kategori</h1>
-                            <p class="hero-lead">Kelompokkan berita ke dalam kategori agar pembaca mudah menemukannya.</p>
-                            <div class="hero-actions">
-                                <a class="btn btn--gold" href="{{ route('categories.create') }}" data-open-create id="open-create"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Tambah Kategori</a>
-                                <span class="hero-stat" id="hero-stat"><strong>{{ $categories->count() }}</strong> kategori terdaftar</span>
-                            </div>
-                        </div>
-                    </section>
+    <ol class="crumbs" aria-label="Breadcrumb">
+        <li>Admin</li>
+        <li>Kategori</li>
+    </ol>
 
-                    @if (session('success'))
-                        <div class="flash" role="status">
-                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.5l2.5 2.5 4.5-5"/></svg>
-                            <p>{{ session('success') }}</p>
-                            <button class="flash-close" type="button" data-flash-close aria-label="Tutup pemberitahuan">&times;</button>
-                        </div>
-                    @endif
+    <section class="hero" aria-labelledby="page-title">
+        <div class="hero-inner">
+            <span class="hero-label">KATEGORI</span>
+            <h1 class="hero-title" id="page-title">Kelola Kategori</h1>
+            <p class="hero-lead">Kelompokkan berita ke dalam kategori agar pembaca mudah menemukannya.</p>
+            <div class="hero-actions">
+                <a class="btn btn--gold" href="{{ route('categories.create') }}" data-open-create id="open-create">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                    Tambah Kategori
+                </a>
+                <span class="hero-stat" id="hero-stat"><strong>{{ $categories->count() }}</strong> kategori terdaftar</span>
+            </div>
+        </div>
+    </section>
 
-                    @if (session('error'))
-                        <div class="flash flash--error" role="alert">
-                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5l8 14H2z"/><path d="M10 8v4M10 14.5v.01"/></svg>
-                            <p>{{ session('error') }}</p>
-                            <button class="flash-close" type="button" data-flash-close aria-label="Tutup pemberitahuan">&times;</button>
-                        </div>
-                    @endif
+    @if (session('success'))
+        <div class="flash" role="status">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.5l2.5 2.5 4.5-5"/></svg>
+            <p>{{ session('success') }}</p>
+            <button class="flash-close" type="button" data-flash-close aria-label="Tutup pemberitahuan">&times;</button>
+        </div>
+    @endif
 
-                    <div id="cat-area">
-                    @if ($categories->count())
-                        <div class="toolbar">
-                            <div class="search">
-                            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-                            <label class="sr-only" for="filter">Cari kategori</label>
-                            <input id="filter" type="search" placeholder="Cari nama atau slug kategori" data-noun="kategori" autocomplete="off">
-                        </div>
-                            <p class="result-info" id="result-info" aria-live="polite">Menampilkan <strong>{{ $categories->count() }}</strong> dari {{ $categories->count() }} kategori</p>
-                        </div>
+    @if (session('error'))
+        <div class="flash flash--error" role="alert">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5l8 14H2z"/><path d="M10 8v4M10 14.5v.01"/></svg>
+            <p>{{ session('error') }}</p>
+            <button class="flash-close" type="button" data-flash-close aria-label="Tutup pemberitahuan">&times;</button>
+        </div>
+    @endif
 
-                        <div class="panel" id="results">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nama Kategori</th>
-                                        <th scope="col">Slug</th>
-                                        <th scope="col" class="col-actions">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($categories as $category)
-                                        <tr data-id="{{ $category->id }}" data-search="{{ \Illuminate\Support\Str::lower($category->name . ' ' . $category->slug) }}">
-                                            <td data-label="Nama Kategori">
-                                                <div class="cell-name">
-                                                    <span class="cell-mark" aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($category->name, 0, 1)) }}</span>
-                                                    <span class="cell-title">{{ $category->name }}</span>
-                                                </div>
-                                            </td>
-                                            <td data-label="Slug">
-                                                <span class="slug">{{ $category->slug }}</span>
-                                                <a class="cell-link" href="{{ route('kategori.show', $category) }}" target="_blank" rel="noopener">Lihat halaman &nearr;</a>
-                                            </td>
-                                            <td class="col-actions-cell">
-                                                <div class="act-row">
-                                                    <a class="act act--edit" href="{{ route('categories.edit', $category) }}" data-edit data-name="{{ $category->name }}" data-action="{{ route('categories.update', $category) }}" aria-label="Edit kategori {{ $category->name }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/></svg> Edit</a>
-                                                    <form class="inline-form" action="{{ route('categories.destroy', $category) }}" method="POST" data-confirm data-kind="kategori" data-name="{{ $category->name }}">
-                                                        @csrf
-                                                        @method('DELETE')
+    <div id="cat-area">
+        @if ($categories->count())
+            <div class="toolbar">
+                <div class="search">
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+                    <label class="sr-only" for="filter">Cari kategori</label>
+                    <input id="filter" type="search" placeholder="Cari nama, slug, atau status kategori" data-noun="kategori" autocomplete="off">
+                </div>
+            </div>
 
-                                                        <button class="act act--delete" type="submit" aria-label="Hapus kategori {{ $category->name }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg> Hapus</button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="panel" id="results">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nama Kategori</th>
+                            <th scope="col">Slug</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="col-actions">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($categories as $category)
+                            <tr data-id="{{ $category->id }}" data-search="{{ \Illuminate\Support\Str::lower($category->name . ' ' . $category->slug . ' ' . ($category->is_active ? 'aktif' : 'nonaktif')) }}">
+                                <td data-label="Nama Kategori">
+                                    <div class="cell-name">
+                                        <span class="cell-mark" aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($category->name, 0, 1)) }}</span>
+                                        <span class="cell-title">{{ $category->name }}</span>
+                                    </div>
+                                </td>
 
-                        <div class="no-results" id="no-results" hidden>
-                            <strong>Kategori tidak ditemukan.</strong>
-                            <p>Coba kata kunci lain atau hapus pencarian untuk melihat semua kategori.</p>
-                        </div>
-                    @else
-                        <div class="empty">
-                            <strong>Belum ada kategori.</strong>
-                            <p>Tambahkan kategori pertama agar artikel dapat dikelompokkan dan ditemukan pembaca.</p>
-                            <a class="btn" href="{{ route('categories.create') }}" data-open-create><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Tambah Kategori Pertama</a>
-                        </div>
-                    @endif
-                    </div>
+                                <td data-label="Slug">
+                                    <span class="slug">{{ $category->slug }}</span>
+                                    @if ($category->is_active)
+                                        <a class="cell-link" href="{{ route('kategori.show', $category) }}" target="_blank" rel="noopener">Lihat halaman &nearr;</a>
+                                    @else
+                                        <span class="cell-link" style="color: var(--text-soft); cursor: default;">Tidak ditampilkan</span>
+                                    @endif
+                                </td>
 
-                    <dialog class="mdl" id="cat-modal" aria-labelledby="cat-title">
-                        <div class="mdl-wrap">
-                            <div class="mdl-head">
-                                <div>
-                                    <span class="mdl-eyebrow" id="cat-eyebrow">Kategori baru</span>
-                                    <h2 class="mdl-title" id="cat-title">Tambah Kategori</h2>
-                                </div>
-                                <button class="mdl-close" type="button" id="cat-close" aria-label="Tutup"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg></button>
-                            </div>
+                                <td data-label="Status">
+                                    @if ($category->is_active)
+                                        <span class="status-badge status-badge--active">Aktif</span>
+                                    @else
+                                        <span class="status-badge status-badge--inactive">Nonaktif</span>
+                                    @endif
+                                </td>
 
-                            <form id="cat-form" action="{{ route('categories.store') }}" method="POST" novalidate>
-                                @csrf
+                                <td class="col-actions-cell" data-label="Aksi">
+                                    <div class="act-row">
+                                        <form class="inline-form" action="{{ route('categories.toggle-status', $category) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            @if ($category->is_active)
+                                                <button class="status-action" type="submit" aria-label="Nonaktifkan kategori {{ $category->name }}">Nonaktifkan</button>
+                                            @else
+                                                <button class="status-action status-action--activate" type="submit" aria-label="Aktifkan kategori {{ $category->name }}">Aktifkan</button>
+                                            @endif
+                                        </form>
 
-                                <p class="mdl-alert" id="cat-alert" role="alert" hidden></p>
+                                        <a class="act act--edit" href="{{ route('categories.edit', $category) }}" data-edit data-name="{{ $category->name }}" data-action="{{ route('categories.update', $category) }}" aria-label="Edit kategori {{ $category->name }}">
+                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2.5l2.5 2.5L5.5 13H3v-2.5z"/></svg>
+                                            Edit
+                                        </a>
 
-                                <div class="field">
-                                    <label for="cat-name">Nama Kategori</label>
-                                    <input type="text" id="cat-name" name="name" maxlength="100" required autocomplete="off" aria-describedby="cat-hint">
-                                    <p class="field-error" id="cat-error" hidden></p>
-                                    <p class="hint" id="cat-hint">Slug: <span class="mdl-slug" id="cat-slug">-</span></p>
-                                </div>
+                                        <form class="inline-form" action="{{ route('categories.destroy', $category) }}" method="POST" data-confirm data-kind="kategori" data-name="{{ $category->name }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="act act--delete" type="submit" aria-label="Hapus kategori {{ $category->name }}">
+                                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg>
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-                                <div class="mdl-actions">
-                                    <button class="btn btn--ghost" type="button" id="cat-cancel">Batal</button>
-                                    <button class="btn" type="submit" id="cat-submit"><span class="mdl-spin" aria-hidden="true"></span><span id="cat-submit-text">Simpan</span></button>
-                                </div>
-                            </form>
-                        </div>
-                    </dialog>
+            <div class="no-results" id="no-results" hidden>
+                <strong>Kategori tidak ditemukan.</strong>
+                <p>Coba kata kunci lain atau hapus pencarian untuk melihat semua kategori.</p>
+            </div>
+        @else
+            <div class="empty">
+                <strong>Belum ada kategori.</strong>
+                <p>Tambahkan kategori pertama agar artikel dapat dikelompokkan dan ditemukan pembaca.</p>
+                <a class="btn" href="{{ route('categories.create') }}" data-open-create>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                    Tambah Kategori Pertama
+                </a>
+            </div>
+        @endif
+    </div>
 
-                    <dialog class="mdl mdl--sm" id="confirm-dialog" aria-labelledby="dlg-title" aria-describedby="dlg-text">
-                        <div class="mdl-wrap">
-                            <div class="dialog-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg></div>
-                            <h2 class="mdl-title" id="dlg-title">Hapus kategori?</h2>
-                            <p class="mdl-text" id="dlg-text" style="margin-top: 8px;">&ldquo;<strong id="dlg-name"></strong>&rdquo; akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
-                            <div class="mdl-actions">
-                                <button class="btn btn--ghost" type="button" id="dlg-cancel">Batal</button>
-                                <button class="btn btn--danger" type="button" id="dlg-confirm"><span class="mdl-spin" aria-hidden="true"></span><span id="dlg-confirm-text">Hapus</span></button>
-                            </div>
-                        </div>
-                    </dialog>
+    <dialog class="mdl" id="cat-modal" aria-labelledby="cat-title">
+        <div class="mdl-wrap">
+            <div class="mdl-head">
+                <div>
+                    <span class="mdl-eyebrow" id="cat-eyebrow">Kategori baru</span>
+                    <h2 class="mdl-title" id="cat-title">Tambah Kategori</h2>
+                </div>
+                <button class="mdl-close" type="button" id="cat-close" aria-label="Tutup">
+                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg>
+                </button>
+            </div>
 
-                    <div class="toasts" id="toasts" aria-live="polite"></div>
+            <form id="cat-form" action="{{ route('categories.store') }}" method="POST" novalidate>
+                @csrf
+                <p class="mdl-alert" id="cat-alert" role="alert" hidden></p>
+
+                <div class="field">
+                    <label for="cat-name">Nama Kategori</label>
+                    <input type="text" id="cat-name" name="name" maxlength="100" required autocomplete="off" aria-describedby="cat-hint">
+                    <p class="field-error" id="cat-error" hidden></p>
+                    <p class="hint" id="cat-hint">Slug: <span class="mdl-slug" id="cat-slug">-</span></p>
+                </div>
+
+                <div class="mdl-actions">
+                    <button class="btn btn--ghost" type="button" id="cat-cancel">Batal</button>
+                    <button class="btn" type="submit" id="cat-submit">
+                        <span class="mdl-spin" aria-hidden="true"></span>
+                        <span id="cat-submit-text">Simpan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog class="mdl mdl--sm" id="confirm-dialog" aria-labelledby="dlg-title" aria-describedby="dlg-text">
+        <div class="mdl-wrap">
+            <div class="dialog-icon">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 8.5h6.6l.7-8.5"/></svg>
+            </div>
+            <h2 class="mdl-title" id="dlg-title">Hapus kategori?</h2>
+            <p class="mdl-text" id="dlg-text" style="margin-top: 8px;">&ldquo;<strong id="dlg-name"></strong>&rdquo; akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="mdl-actions">
+                <button class="btn btn--ghost" type="button" id="dlg-cancel">Batal</button>
+                <button class="btn btn--danger" type="button" id="dlg-confirm">
+                    <span class="mdl-spin" aria-hidden="true"></span>
+                    <span id="dlg-confirm-text">Hapus</span>
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
 @endsection
 
 @push('scripts')
@@ -435,7 +559,7 @@ body.mdl-lock { overflow: hidden; }
     var slugify = function (value) {
         return value
             .normalize('NFD')
-            .replace(/[̀-ͯ]/g, '')
+            .replace(/[\u0300-\u036f]/g, '')
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
@@ -458,11 +582,15 @@ body.mdl-lock { overflow: hidden; }
 
         window.setTimeout(function () {
             el.classList.add('is-leaving');
-            window.setTimeout(function () { if (el.parentNode) { el.parentNode.removeChild(el); } }, 280);
+            window.setTimeout(function () {
+                if (el.parentNode) { el.parentNode.removeChild(el); }
+            }, 280);
         }, type === 'error' ? 6000 : 4000);
     };
 
-    var lockScroll = function (on) { document.body.classList.toggle('mdl-lock', on); };
+    var lockScroll = function (on) {
+        document.body.classList.toggle('mdl-lock', on);
+    };
 
     var setBusy = function (value, btn, label, busyLabel, labelEl) {
         busy = value;
@@ -478,7 +606,12 @@ body.mdl-lock { overflow: hidden; }
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-TOKEN': token || ''
         };
-        var options = { method: method, headers: headers, credentials: 'same-origin' };
+
+        var options = {
+            method: method,
+            headers: headers,
+            credentials: 'same-origin'
+        };
 
         if (payload) {
             headers['Content-Type'] = 'application/json';
@@ -490,7 +623,12 @@ body.mdl-lock { overflow: hidden; }
             var isJson = type.indexOf('json') !== -1;
 
             if (!isJson) {
-                return { ok: false, status: res.redirected ? 401 : res.status, data: null, invalid: true };
+                return {
+                    ok: false,
+                    status: res.redirected ? 401 : res.status,
+                    data: null,
+                    invalid: true
+                };
             }
 
             return res.json().then(function (data) {
@@ -529,7 +667,10 @@ body.mdl-lock { overflow: hidden; }
             if (match) { shown++; }
         });
 
-        info.innerHTML = 'Menampilkan <strong>' + shown + '</strong> dari ' + items.length + ' ' + input.getAttribute('data-noun');
+        if (info) {
+            info.innerHTML = 'Menampilkan <strong>' + shown + '</strong> dari ' + items.length + ' ' + input.getAttribute('data-noun');
+        }
+
         if (none) { none.hidden = shown !== 0; }
         if (wrapper) { wrapper.hidden = shown === 0; }
     };
@@ -539,7 +680,10 @@ body.mdl-lock { overflow: hidden; }
         var query = current ? current.value : '';
 
         return fetch(indexUrl, {
-            headers: { 'Accept': 'text/html', 'X-Requested-With': 'XMLHttpRequest' },
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             credentials: 'same-origin'
         }).then(function (res) {
             if (!res.ok || res.redirected) { throw new Error('refresh'); }
@@ -548,26 +692,35 @@ body.mdl-lock { overflow: hidden; }
             var doc = new DOMParser().parseFromString(html, 'text/html');
             var fresh = doc.getElementById('cat-area');
             var freshStat = doc.getElementById('hero-stat');
+
             if (!fresh) { throw new Error('refresh'); }
 
             area.innerHTML = fresh.innerHTML;
-            if (freshStat) { document.getElementById('hero-stat').innerHTML = freshStat.innerHTML; }
+
+            var currentStat = document.getElementById('hero-stat');
+            if (freshStat && currentStat) {
+                currentStat.innerHTML = freshStat.innerHTML;
+            }
 
             var input = document.getElementById('filter');
             if (input) { input.value = query; }
+
             applyFilter();
 
             if (highlightId) {
                 var row = area.querySelector('tr[data-id="' + highlightId + '"]');
+
                 if (row) {
                     if (row.hidden && input) {
                         input.value = '';
                         applyFilter();
                     }
+
                     row.classList.add('is-hit');
                     row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }
             }
+
             return true;
         }).catch(function () {
             toast('Perubahan tersimpan, tetapi daftar gagal dimuat ulang. Muat ulang halaman untuk melihat data terbaru.', 'error');
@@ -602,13 +755,16 @@ body.mdl-lock { overflow: hidden; }
         mode = config.mode;
         editUrl = config.url || null;
         opener = trigger || null;
+
         clearErrors();
         nameInput.value = config.name || '';
         updateSlug();
+
         titleEl.textContent = config.title;
         eyebrowEl.textContent = config.eyebrow;
         submitText.textContent = config.submit;
         submitText.setAttribute('data-label', config.submit);
+
         modal.showModal();
         lockScroll(true);
 
@@ -625,13 +781,23 @@ body.mdl-lock { overflow: hidden; }
 
     modal.addEventListener('close', function () {
         lockScroll(false);
-        var target = opener && document.body.contains(opener) ? opener : document.getElementById('open-create');
+
+        var target = opener && document.body.contains(opener)
+            ? opener
+            : document.getElementById('open-create');
+
         opener = null;
         if (target) { target.focus(); }
     });
 
-    modal.addEventListener('cancel', function (event) { if (busy) { event.preventDefault(); } });
-    modal.addEventListener('click', function (event) { if (event.target === modal) { closeModal(); } });
+    modal.addEventListener('cancel', function (event) {
+        if (busy) { event.preventDefault(); }
+    });
+
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) { closeModal(); }
+    });
+
     cancelBtn.addEventListener('click', closeModal);
     closeBtn.addEventListener('click', closeModal);
 
@@ -656,10 +822,14 @@ body.mdl-lock { overflow: hidden; }
         send(url, method, token, { name: nameInput.value }).then(function (result) {
             if (result.ok) {
                 var id = result.data && result.data.category ? result.data.category.id : null;
-                var message = result.data && result.data.message ? result.data.message : 'Kategori berhasil disimpan.';
+                var message = result.data && result.data.message
+                    ? result.data.message
+                    : 'Kategori berhasil disimpan.';
+
                 setBusy(false, submitBtn, label, 'Menyimpan...', submitText);
                 modal.close();
                 toast(message, 'success');
+
                 return refreshList(id);
             }
 
@@ -667,7 +837,12 @@ body.mdl-lock { overflow: hidden; }
 
             if (result.status === 422 && result.data && result.data.errors) {
                 var errors = result.data.errors;
-                if (errors.name && errors.name.length) { showFieldError(errors.name[0]); return; }
+
+                if (errors.name && errors.name.length) {
+                    showFieldError(errors.name[0]);
+                    return;
+                }
+
                 var first = Object.keys(errors)[0];
                 alertEl.textContent = first ? errors[first][0] : describe(result);
                 alertEl.hidden = false;
@@ -693,13 +868,23 @@ body.mdl-lock { overflow: hidden; }
     confirmDlg.addEventListener('close', function () {
         lockScroll(false);
         pendingDelete = null;
-        var target = opener && document.body.contains(opener) ? opener : document.getElementById('open-create');
+
+        var target = opener && document.body.contains(opener)
+            ? opener
+            : document.getElementById('open-create');
+
         opener = null;
         if (target) { target.focus(); }
     });
 
-    confirmDlg.addEventListener('cancel', function (event) { if (busy) { event.preventDefault(); } });
-    confirmDlg.addEventListener('click', function (event) { if (event.target === confirmDlg) { closeConfirm(); } });
+    confirmDlg.addEventListener('cancel', function (event) {
+        if (busy) { event.preventDefault(); }
+    });
+
+    confirmDlg.addEventListener('click', function (event) {
+        if (event.target === confirmDlg) { closeConfirm(); }
+    });
+
     dlgCancel.addEventListener('click', closeConfirm);
 
     dlgConfirm.addEventListener('click', function () {
@@ -721,6 +906,7 @@ body.mdl-lock { overflow: hidden; }
 
             confirmDlg.close();
             toast(describe(result), 'error');
+
             if (result.status === 404) { refreshList(); }
         }).catch(function () {
             setBusy(false, dlgConfirm, 'Hapus', 'Menghapus...', dlgConfirmText);
@@ -729,21 +915,34 @@ body.mdl-lock { overflow: hidden; }
         });
     });
 
-    var modified = function (event) { return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1; };
+    var modified = function (event) {
+        return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1;
+    };
 
     document.addEventListener('click', function (event) {
         var createBtn = event.target.closest('[data-open-create]');
+
         if (createBtn && !modified(event)) {
             event.preventDefault();
             if (busy) { return; }
-            openModal({ mode: 'create', title: 'Tambah Kategori', eyebrow: 'Kategori baru', submit: 'Simpan', name: '' }, createBtn);
+
+            openModal({
+                mode: 'create',
+                title: 'Tambah Kategori',
+                eyebrow: 'Kategori baru',
+                submit: 'Simpan',
+                name: ''
+            }, createBtn);
+
             return;
         }
 
         var editBtn = event.target.closest('[data-edit]');
+
         if (editBtn && !modified(event)) {
             event.preventDefault();
             if (busy) { return; }
+
             openModal({
                 mode: 'edit',
                 title: 'Edit Kategori',
@@ -757,6 +956,7 @@ body.mdl-lock { overflow: hidden; }
 
     document.addEventListener('submit', function (event) {
         var target = event.target;
+
         if (!target.hasAttribute || !target.hasAttribute('data-confirm')) { return; }
 
         event.preventDefault();
@@ -765,13 +965,16 @@ body.mdl-lock { overflow: hidden; }
         pendingDelete = { form: target };
         opener = target.querySelector('button');
         dlgName.textContent = target.getAttribute('data-name');
+
         confirmDlg.showModal();
         lockScroll(true);
         dlgCancel.focus();
     });
 
     document.addEventListener('input', function (event) {
-        if (event.target && event.target.id === 'filter') { applyFilter(); }
+        if (event.target && event.target.id === 'filter') {
+            applyFilter();
+        }
     });
 })();
 </script>

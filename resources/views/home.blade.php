@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="RuangKabar, portal berita dan informasi terkini.">
 
-    <title>RuangKabar</title>
+    <title>RuangKabar-Portal Berita dan Informasi Terkini</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
 
     <script>document.documentElement.classList.add('js');</script>
 
@@ -466,7 +469,7 @@
             box-shadow: 0 0 0 3px rgba(55, 107, 92, 0.18);
         }
 
-        .search > svg {
+        .search>svg {
             flex: none;
             width: 18px;
             height: 18px;
@@ -765,8 +768,13 @@
         }
 
         @keyframes fill {
-            from { transform: scaleX(0); }
-            to   { transform: scaleX(1); }
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
         }
 
         .js .reveal {
@@ -1068,6 +1076,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <a class="skip-link" href="#konten">Lewati ke konten utama</a>
@@ -1083,14 +1092,17 @@
         @endphp
 
         @if ($slides->count())
-            <section class="headline wrap" id="headline" aria-roledescription="carousel" aria-label="Berita utama" data-interval="5000">
+            <section class="headline wrap" id="headline" aria-roledescription="carousel" aria-label="Berita utama"
+                data-interval="5000">
                 <div class="headline__stage">
                     <div aria-live="off">
                         @foreach ($slides as $i => $article)
-                            <article class="slide {{ $i === 0 ? 'is-active' : '' }}" role="group" aria-roledescription="slide" aria-label="{{ $i + 1 }} dari {{ $slides->count() }}" @if ($i !== 0) aria-hidden="true" @endif>
+                            <article class="slide {{ $i === 0 ? 'is-active' : '' }}" role="group" aria-roledescription="slide"
+                                aria-label="{{ $i + 1 }} dari {{ $slides->count() }}" @if ($i !== 0) aria-hidden="true" @endif>
                                 <div class="slide__media">
                                     @if ($article->image)
-                                        <img src="{{ asset('storage/' . $article->image) }}" alt="" @if ($i === 0) fetchpriority="high" @endif>
+                                        <img src="{{ asset('storage/' . $article->image) }}" alt="" @if ($i === 0)
+                                        fetchpriority="high" @endif>
                                     @else
                                         <div class="ph">
                                             <img src="{{ asset('images/logo-ruangkabar.png') }}" alt="RuangKabar">
@@ -1099,7 +1111,8 @@
                                 </div>
 
                                 <div class="slide__body">
-                                    <a class="slide__cat" href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
+                                    <a class="slide__cat"
+                                        href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
 
                                     <h2 class="slide__title">
                                         <a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a>
@@ -1107,11 +1120,15 @@
 
                                     <div class="slide__meta">
                                         @if ($article->created_at)
-                                            <time class="slide__date" datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
+                                            <time class="slide__date"
+                                                datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
                                         @endif
                                         <a class="btn btn--gold" href="{{ route('articles.show', $article) }}">
                                             Baca Selengkapnya
-                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M3 8h10M9 4l4 4-4 4" />
+                                            </svg>
                                         </a>
                                     </div>
                                 </div>
@@ -1123,16 +1140,24 @@
                         <div class="headline__controls">
                             <div class="headline__dots" role="group" aria-label="Pilih berita utama">
                                 @foreach ($slides as $i => $article)
-                                    <button class="dot {{ $i === 0 ? 'is-active' : '' }}" type="button" aria-label="Berita {{ $i + 1 }}" @if ($i === 0) aria-current="true" @endif><span></span></button>
+                                    <button class="dot {{ $i === 0 ? 'is-active' : '' }}" type="button"
+                                        aria-label="Berita {{ $i + 1 }}" @if ($i === 0) aria-current="true"
+                                        @endif><span></span></button>
                                 @endforeach
                             </div>
 
                             <div class="headline__arrows">
                                 <button class="arrow" type="button" data-dir="-1" aria-label="Berita sebelumnya">
-                                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 3L5 9l6 6"/></svg>
+                                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M11 3L5 9l6 6" />
+                                    </svg>
                                 </button>
                                 <button class="arrow" type="button" data-dir="1" aria-label="Berita berikutnya">
-                                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3l6 6-6 6"/></svg>
+                                    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M7 3l6 6-6 6" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -1144,7 +1169,11 @@
         <section class="finder wrap" aria-label="Cari dan jelajahi berita">
             <div class="finder__card">
                 <form class="search" action="{{ route('articles.index') }}" method="GET" role="search">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        aria-hidden="true">
+                        <circle cx="9" cy="9" r="6" />
+                        <path d="M14 14l4 4" />
+                    </svg>
                     <label class="sr-only" for="q">Cari berita</label>
                     <input id="q" type="search" name="search" placeholder="Cari berita">
                     <button class="btn" type="submit">Cari</button>
@@ -1156,7 +1185,8 @@
                         <nav aria-label="Kategori berita">
                             <ul class="chips">
                                 @foreach ($categories as $category)
-                                    <li><a class="chip" href="{{ route('kategori.show', $category) }}">{{ $category->name }}</a></li>
+                                    <li><a class="chip" href="{{ route('kategori.show', $category) }}">{{ $category->name }}</a>
+                                    </li>
                                 @endforeach
                             </ul>
                         </nav>
@@ -1172,7 +1202,10 @@
                         <h2 class="section-title" id="latest-title">Berita Terbaru</h2>
                         <a class="more-link" href="{{ route('articles.index') }}">
                             Lihat semua berita
-                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 8h10M9 4l4 4-4 4" />
+                            </svg>
                         </a>
                     </div>
 
@@ -1185,26 +1218,28 @@
                                     @else
                                         <div class="ph">
                                             <img src="{{ asset('images/logo-ruangkabar.png') }}" alt="RuangKabar">
-                                    </div>
+                                        </div>
                                     @endif
                                 </a>
 
                                 <div class="card-body">
-                                    <a class="cat" href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
+                                    <a class="cat"
+                                        href="{{ route('kategori.show', $article->category) }}">{{ $article->category->name }}</a>
 
                                     <h3 class="title">
                                         <a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a>
                                     </h3>
 
-                                    <p class="card-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags($article->content), 120) }}</p>
+                                    <p class="card-excerpt">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 120) }}</p>
 
                                     <div class="meta">
-                                        <span>{{ $article->user->name }}</span>
+                                        <span>{{ $article->user?->name ?? 'Penulis Tidak Aktif' }}</span>
                                         @if ($article->created_at)
-                                            <time datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
+                                            <time
+                                                datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
                                         @endif
-                                    </div>
-                                </div>
+                                    </div>  
                             </article>
                         @endforeach
                     </div>
@@ -1212,7 +1247,7 @@
             </section>
         @endif
 
-        @if (! $articles->count())
+        @if (!$articles->count())
             <div class="wrap">
                 <div class="empty">
                     <strong>Belum ada berita yang dipublikasikan</strong>
@@ -1226,7 +1261,9 @@
         <div class="wrap footer-grid">
             <div class="footer-brand">
                 <a class="rk-brand" href="/" aria-label="RuangKabar, ke beranda">
-                    <svg class="rk-brand__mark" aria-hidden="true" focusable="false"><use href="#rk-mark"/></svg>
+                    <svg class="rk-brand__mark" aria-hidden="true" focusable="false">
+                        <use href="#rk-mark" />
+                    </svg>
                     <span class="rk-brand__name">Ruang<span>Kabar</span></span>
                 </a>
                 <p class="footer-about">Portal berita dan informasi terkini.</p>
@@ -1393,4 +1430,5 @@
     </script>
 
 </body>
+
 </html>

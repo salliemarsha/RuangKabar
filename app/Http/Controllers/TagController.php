@@ -4,15 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tags = Tag::orderBy('name')->get();
+        $query = Tag::query();
 
-        return view('tags.index', compact('tags'));
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('slug', 'like', '%' . $search . '%');
+            });
+        }
+
+        $tagCount = (clone $query)->count();
+
+        $tags = $query
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('tags.index', compact('tags', 'tagCount'));
     }
 
     public function create()
@@ -23,7 +40,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|max:100|unique:tags,name',
+            'name' => 'required|string|max:100|unique:tags,name',
         ]);
 
         $data['slug'] = Str::slug($data['name']);
@@ -37,10 +54,8 @@ class TagController extends Controller
             ], 201);
         }
 
-        return redirect('/tags')->with(
-            'success',
-            'Tag berhasil ditambahkan.'
-        );
+        return redirect()->route('tags.index')
+            ->with('success', 'Tag berhasil ditambahkan.');
     }
 
     public function edit(Tag $tag)
@@ -51,7 +66,7 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag)
     {
         $data = $request->validate([
-            'name' => 'required|max:100|unique:tags,name,' . $tag->id,
+            'name' => 'required|string|max:100|unique:tags,name,' . $tag->id,
         ]);
 
         $data['slug'] = Str::slug($data['name']);
@@ -65,25 +80,30 @@ class TagController extends Controller
             ]);
         }
 
-        return redirect('/tags')->with(
-            'success',
-            'Tag berhasil diperbarui.'
-        );
+        return redirect()->route('tags.index')
+            ->with('success', 'Tag berhasil diperbarui.');
     }
 
     public function destroy(Request $request, Tag $tag)
     {
-        $tag->delete();
+        $articleCount = $tag->articles()->count();
+
+        DB::transaction(function () use ($tag) {
+            $tag->articles()->detach();
+            $tag->delete();
+        });
+
+        $message = $articleCount > 0
+            ? "Tag berhasil dihapus dan dilepaskan dari {$articleCount} artikel."
+            : 'Tag berhasil dihapus.';
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Tag berhasil dihapus.',
+                'message' => $message,
             ]);
         }
 
-        return redirect('/tags')->with(
-            'success',
-            'Tag berhasil dihapus.'
-        );
+        return redirect()->route('tags.index')
+            ->with('success', $message);
     }
 }

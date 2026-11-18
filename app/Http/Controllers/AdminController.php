@@ -15,7 +15,7 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::query()
-            ->select(['id', 'name', 'username', 'role', 'created_at'])
+            ->select(['id', 'name', 'email', 'role', 'created_at'])
             ->orderBy('id')
             ->paginate(10);
 
@@ -23,79 +23,76 @@ class AdminController extends Controller
     }
 
     public function userIndex(Request $request)
-{
-    $search = trim($request->query('search', ''));
-    $role = $request->query('role', '');
+    {
+        $search = trim($request->query('search', ''));
+        $role = $request->query('role', '');
 
-    if (! in_array($role, ['', 'penulis', 'pengguna'], true)) {
-        $role = '';
+        if (! in_array($role, ['', 'penulis', 'pengguna'], true)) {
+            $role = '';
+        }
+
+        $users = User::query()
+            ->select(['id', 'name', 'email', 'role', 'created_at'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('email', 'like', '%'.$search.'%');
+                });
+            })
+            ->when($role !== '', function ($query) use ($role) {
+                $query->where('role', $role);
+            })
+            ->orderBy('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.users', compact('users', 'search', 'role'));
     }
 
-    $users = User::query()
-        ->select(['id', 'name', 'username', 'role', 'created_at'])
-        ->when($search !== '', function ($query) use ($search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('username', 'like', '%' . $search . '%');
-            });
-        })
-        ->when($role !== '', function ($query) use ($role) {
-            $query->where('role', $role);
-        })
-        ->orderBy('id')
-        ->paginate(10)
-        ->withQueryString();
+    public function editUser(User $user)
+    {
+        if ($user->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat diedit melalui fitur ini.');
+        }
 
-    return view('admin.users', compact('users', 'search', 'role'));
-}
-
-public function editUser(User $user)
-{
-    if ($user->role === 'admin') {
-        abort(403, 'Akun admin tidak dapat diedit melalui fitur ini.');
+        return view('admin.users-edit', compact('user'));
     }
 
-    return view('admin.users-edit', compact('user'));
-}
+    public function updateUser(Request $request, User $user)
+    {
+        if ($user->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat diubah melalui fitur ini.');
+        }
 
-public function updateUser(Request $request, User $user)
-{
-    if ($user->role === 'admin') {
-        abort(403, 'Akun admin tidak dapat diubah melalui fitur ini.');
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'role' => ['required', 'in:penulis,pengguna'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 100 karakter.',
+            'role.required' => 'Role wajib dipilih.',
+            'role.in' => 'Role yang dipilih tidak valid.',
+        ]);
+
+        $user->name = $validated['name'];
+        $user->role = $validated['role'];
+        $user->save();
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    $validated = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'username' => [
-            'required',
-            'string',
-            'max:255',
-            'alpha_dash',
-            \Illuminate\Validation\Rule::unique('users', 'username')->ignore($user->id),
-        ],
-        'role' => ['required', 'in:penulis,pengguna'],
-    ]);
+    public function deleteUser(User $user)
+    {
+        if ($user->role === 'admin' || $user->id === auth()->id()) {
+            abort(403, 'Akun ini tidak dapat dihapus.');
+        }
 
-    $user->name = $validated['name'];
-    $user->username = $validated['username'];
-    $user->role = $validated['role'];
-    $user->save();
+        $user->delete();
 
-    return redirect()
-        ->route('admin.users.index')
-        ->with('success', 'Data pengguna berhasil diperbarui.');
-}
-
-public function deleteUser(User $user)
-{
-    if ($user->role === 'admin' || $user->id === auth()->id()) {
-        abort(403, 'Akun ini tidak dapat dihapus.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Pengguna berhasil dihapus.');
     }
-
-    $user->delete();
-
-    return redirect()
-        ->route('admin.users.index')
-        ->with('success', 'Pengguna berhasil dihapus.');
-}
 }

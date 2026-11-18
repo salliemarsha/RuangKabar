@@ -15,8 +15,14 @@ class PublicCategoryController extends Controller
             ->latest()
             ->paginate(9);
 
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::where('is_active', true)
+            ->orderBy('name')
+            ->get();
 
-        return view('categories.show', compact('category', 'articles', 'categories'));
+        return view('categories.show', compact(
+            'category',
+            'articles',
+            'categories'
+        ));
     }
 }
