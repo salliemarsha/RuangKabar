@@ -151,11 +151,11 @@ Seluruh screenshot berikut merupakan dokumentasi antarmuka aplikasi RuangKabar.
 
 ![Lanjutan Area Pengguna](docs/lanjutan-pengguna.png)
 
-*Gambar 7. Tampilan lanjutan area pengguna.*
+*Gambar 7. Dashboard pengguna.*
 
 ![Dashboard Pengguna](docs/beranda-pembaca.png)
 
-*Gambar 8. Dashboard pengguna.*
+*Gambar 8. Tampilan lanjutan area pengguna.*
 
 ![Pengaturan Akun](docs/pengaturan-akun.png)
 
