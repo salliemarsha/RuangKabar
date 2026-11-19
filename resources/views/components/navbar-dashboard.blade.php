@@ -323,7 +323,14 @@
 
 <header class="dash-header" id="dash-header">
     <div class="hd-left">
-        <button class="hd-toggle" id="sb-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Ciutkan sidebar">
+        <button
+            class="hd-toggle"
+            id="sb-toggle"
+            type="button"
+            aria-controls="sidebar"
+            aria-expanded="true"
+            aria-label="Ciutkan sidebar"
+        >
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
                 <path d="M3 6h14M3 10h14M3 14h14"/>
             </svg>
@@ -388,10 +395,6 @@
 
                                             <span>
                                                 {{ $notification->data['message'] ?? 'Ada notifikasi baru.' }}
-
-                                                @if (!empty($notification->data['article_title']))
-                                                    <strong>{{ $notification->data['article_title'] }}</strong>
-                                                @endif
                                             </span>
                                         </span>
 

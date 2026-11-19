@@ -24,10 +24,13 @@ class CommentController extends Controller
 
         $search = trim((string) $request->query('search'));
 
-        $comments = Comment::with(['article:id,title', 'user:id,name'])
+        $comments = Comment::with([
+            'article:id,title',
+            'user:id,name,role,profile_photo',
+        ])
             ->when($status, fn ($query, $s) => $query->where('status', $s))
             ->when($search !== '', function ($query) use ($search) {
-                $like = '%' . addcslashes($search, '%\\_') . '%';
+                $like = '%'.addcslashes($search, '%\\_').'%';
 
                 $query->where(function ($query) use ($like) {
                     $query->where('comment', 'like', $like)
@@ -76,7 +79,7 @@ class CommentController extends Controller
         $data = $request->validate([
             'article_id' => 'required|integer|exists:articles,id',
             'parent_id' => 'nullable|integer|exists:comments,id',
-            'comment' => 'required|string|max:' . config('moderation.thresholds.max_length'),
+            'comment' => 'required|string|max:'.config('moderation.thresholds.max_length'),
         ]);
 
         $data['comment'] = trim($data['comment']);
@@ -89,7 +92,7 @@ class CommentController extends Controller
 
         $parent = null;
 
-        if (!empty($data['parent_id'])) {
+        if (! empty($data['parent_id'])) {
             $parent = Comment::whereKey($data['parent_id'])
                 ->where('article_id', $data['article_id'])
                 ->whereNull('parent_id')
@@ -130,8 +133,8 @@ class CommentController extends Controller
             (int) $article->user_id !== (int) $user->id
         ) {
             $message = $parent
-                ? $user->name . ' membalas komentar pada artikel Anda.'
-                : $user->name . ' mengomentari artikel Anda.';
+                ? $user->name.' membalas komentar pada artikel Anda.'
+                : $user->name.' mengomentari artikel Anda.';
 
             $article->user->notify(
                 new WriterActivityNotification(
@@ -185,7 +188,7 @@ class CommentController extends Controller
                 $reader->notify(
                     new ReaderActivityNotification(
                         'comment_reply',
-                        $user->name . ' membalas komentar Anda.',
+                        $user->name.' membalas komentar Anda.',
                         route('articles.show', $article),
                         $article->title
                     )
@@ -203,7 +206,7 @@ class CommentController extends Controller
                 : 'Komentar berhasil dikirim dan menunggu moderasi.';
         }
 
-        return redirect('/articles/' . $data['article_id'])
+        return redirect('/articles/'.$data['article_id'])
             ->with('success', $message);
     }
 
@@ -260,7 +263,7 @@ class CommentController extends Controller
                     $reader->notify(
                         new ReaderActivityNotification(
                             'comment_reply',
-                            $comment->user->name . ' membalas komentar Anda.',
+                            $comment->user->name.' membalas komentar Anda.',
                             route('articles.show', $comment->article),
                             $comment->article->title
                         )

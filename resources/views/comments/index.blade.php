@@ -1,3 +1,4 @@
+
 @extends('layouts.dashboard')
 
 @section('title', 'Kelola Komentar')
@@ -173,6 +174,8 @@
                                     : '';
                                 $updateUrl = route('comments.update', $row);
 
+                                $profilePhoto = $row->user?->profile_photo;
+
                                 $canApprove = !$isAdminComment && $row->status !== 'approved';
                                 $canReject = !$isAdminComment && $row->status === 'pending';
                             @endphp
@@ -180,9 +183,18 @@
                             <tr>
                                 <td data-label="Pengguna">
                                     <div class="cell-user">
-                                        <span class="user-dot" aria-hidden="true">
-                                            {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($userName, 0, 1)) }}
-                                        </span>
+                                        @if ($profilePhoto)
+                                            <img
+                                                class="user-avatar"
+                                                src="{{ asset('storage/' . $profilePhoto) }}"
+                                                alt="Foto profil {{ $userName }}"
+                                                loading="lazy"
+                                            >
+                                        @else
+                                            <span class="user-dot" aria-hidden="true">
+                                                {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($userName, 0, 1)) }}
+                                            </span>
+                                        @endif
 
                                         <div class="cell-user__info">
                                             <span class="cell-user__name" title="{{ $userName }}">{{ $userName }}</span>
@@ -676,6 +688,17 @@
     align-items: center;
     gap: 9px;
     min-width: 0;
+}
+
+/* Foto profil pengguna */
+.user-avatar {
+    display: block;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
 }
 
 .user-dot {

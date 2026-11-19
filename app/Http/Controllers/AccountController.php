@@ -55,6 +55,7 @@ class AccountController extends Controller
 
         $user = $request->user();
 
+        // Simpan foto melalui disk public Laravel.
         $newPhoto = $validated['profile_photo']->store(
             'profile-photos',
             'public'
@@ -66,27 +67,12 @@ class AccountController extends Controller
             ]);
         }
 
-        // Salin foto ke folder publik untuk dukungan hosting.
-        $source = storage_path('app/public/'.$newPhoto);
-        $destination = public_path('storage/'.$newPhoto);
-
-        if (!is_dir(dirname($destination))) {
-            mkdir(dirname($destination), 0755, true);
-        }
-
-        if (!copy($source, $destination)) {
-            Storage::disk('public')->delete($newPhoto);
-
-            return back()->withErrors([
-                'profile_photo' => 'Foto profil gagal disimpan ke folder publik.',
-            ]);
-        }
-
         $oldPhoto = $user->profile_photo;
 
         $user->profile_photo = $newPhoto;
         $user->save();
 
+        // Hapus foto lama setelah foto baru berhasil disimpan.
         if ($oldPhoto && $oldPhoto !== $newPhoto) {
             $this->deleteProfilePhotoFiles($oldPhoto);
         }
@@ -116,7 +102,7 @@ class AccountController extends Controller
     {
         Storage::disk('public')->delete($path);
 
-        $publicFile = public_path('storage/'.$path);
+        $publicFile = public_path('storage/' . $path);
 
         if (is_file($publicFile)) {
             unlink($publicFile);
@@ -170,7 +156,7 @@ class AccountController extends Controller
             // Pertahankan artikel dan relasinya.
             // Anonimkan identitas pemilik artikel.
             $user->name = 'Akun Dihapus';
-            $user->email = 'deleted-'.$user->id.'@ruangkabar.invalid';
+            $user->email = 'deleted-' . $user->id . '@ruangkabar.invalid';
             $user->password = Hash::make(Str::random(64));
             $user->profile_photo = null;
 
