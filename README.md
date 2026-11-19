@@ -149,61 +149,65 @@ Seluruh screenshot berikut merupakan dokumentasi antarmuka aplikasi RuangKabar.
 
 ### Area Pengguna
 
+![Lanjutan Area Pengguna](docs/lanjutan-pengguna.png)
+
+*Gambar 7. Tampilan lanjutan area pengguna.*
+
 ![Dashboard Pengguna](docs/beranda-pembaca.png)
 
-*Gambar 7. Dashboard pengguna.*
+*Gambar 8. Dashboard pengguna.*
 
 ![Pengaturan Akun](docs/pengaturan-akun.png)
 
-*Gambar 8. Halaman pengaturan akun.*
+*Gambar 9. Halaman pengaturan akun.*
 
 ### Area Penulis
 
 ![Dashboard Penulis](docs/beranda-penulis.png)
 
-*Gambar 9. Dashboard penulis.*
+*Gambar 10. Dashboard penulis.*
 
 ![Daftar Artikel Penulis](docs/daftar-penulis.png)
 
-*Gambar 10. Halaman pengelolaan artikel penulis.*
+*Gambar 11. Halaman pengelolaan artikel penulis.*
 
 ### Area Admin
 
 ![Dashboard Admin](docs/beranda-admin.png)
 
-*Gambar 11. Dashboard admin.*
+*Gambar 12. Dashboard admin.*
 
 ![Ringkasan Laporan Dashboard](docs/report.png)
 
-*Gambar 12. Ringkasan statistik dan laporan pada dashboard admin.*
+*Gambar 13. Ringkasan statistik dan laporan pada dashboard admin.*
 
 ![Pengelolaan Artikel](docs/pengelolaan-artikel.png)
 
-*Gambar 13. Halaman pengelolaan artikel.*
+*Gambar 14. Halaman pengelolaan artikel.*
 
 ![Pengelolaan Kategori](docs/pengelolaan-kategori.png)
 
-*Gambar 14. Halaman pengelolaan kategori.*
+*Gambar 15. Halaman pengelolaan kategori.*
 
 ![Pengelolaan Tag](docs/pengelolaan-tag.png)
 
-*Gambar 15. Halaman pengelolaan tag.*
+*Gambar 16. Halaman pengelolaan tag.*
 
 ![Pengelolaan Komentar](docs/pengelolaan-komentar.png)
 
-*Gambar 16. Halaman moderasi komentar.*
+*Gambar 17. Halaman moderasi komentar.*
 
 ![Pengelolaan Pengguna](docs/pengelolaan-pengguna.png)
 
-*Gambar 17. Halaman pengelolaan pengguna.*
+*Gambar 18. Halaman pengelolaan pengguna.*
 
 ![Laporan Artikel](docs/laporan.png)
 
-*Gambar 18. Halaman laporan artikel.*
+*Gambar 19. Halaman laporan artikel.*
 
 ![Detail Laporan Artikel](docs/laporan1.png)
 
-*Gambar 19. Tampilan lanjutan laporan artikel.*
+*Gambar 20. Tampilan lanjutan laporan artikel.*
 
 ## Persyaratan Sistem
 
