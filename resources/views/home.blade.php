@@ -51,6 +51,8 @@
 
         html {
             scroll-behavior: smooth;
+            /* Tautan lompat (mis. "Lewati ke konten utama") tidak tertutup navbar yang sticky */
+            scroll-padding-top: 96px;
         }
 
         body {
@@ -562,7 +564,8 @@
         }
 
         .latest {
-            margin: 72px 12px 0;
+            /* Di layar lebar panel berhenti melebar sejajar dengan kolom konten; di layar sempit margin tetap 12px */
+            margin: 72px max(12px, calc((100% - var(--wrap)) / 2)) 0;
             padding: 72px 0 80px;
             background: var(--sand);
             border-radius: var(--r-lg);
@@ -644,10 +647,16 @@
             transition: transform 600ms var(--ease);
         }
 
+        /* Placeholder logo mengikuti tinggi bingkai (tidak dipaksa min-height 180px) */
+        .card .media .ph {
+            min-height: 0;
+        }
+
         .card-body {
             display: flex;
             flex-direction: column;
             flex: 1;
+            min-width: 0;
             padding: 20px 10px 8px;
         }
 
@@ -705,6 +714,7 @@
             font-size: 14.5px;
             line-height: 1.65;
             color: var(--text-soft);
+            overflow-wrap: anywhere;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
         }
@@ -719,6 +729,11 @@
             font-size: 13px;
             color: var(--text-soft);
             border-top: 1px solid var(--rule);
+        }
+
+        .meta>* {
+            min-width: 0;
+            overflow-wrap: anywhere;
         }
 
         .meta span:first-child {
@@ -868,6 +883,11 @@
                 padding: 0 40px 26px;
             }
 
+            /* 16px mencegah iPhone/iPad memperbesar halaman otomatis saat kolom cari difokuskan */
+            .search input {
+                font-size: 16px;
+            }
+
             .latest {
                 margin-top: 56px;
                 padding: 56px 0 64px;
@@ -1007,6 +1027,11 @@
                 font-size: 28px;
             }
 
+            /* Area sentuh tautan teks minimal sekitar 44px */
+            .more-link {
+                padding: 12px 0;
+            }
+
             .card {
                 flex-direction: column;
                 gap: 0;
@@ -1034,6 +1059,10 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 28px 24px;
                 padding-top: 44px;
+            }
+
+            .footer-links a {
+                padding: 10px 0;
             }
         }
 
@@ -1074,6 +1103,412 @@
                 transform: none;
             }
         }
+
+
+        /* =========================================================
+           RESPONSIVE OVERRIDES — RuangKabar Homepage
+           Aturan ini sengaja diletakkan paling akhir agar mengalahkan
+           aturan breakpoint lama tanpa mengubah struktur Blade.
+           ========================================================= */
+        img,
+        svg {
+            max-width: 100%;
+        }
+
+        .wrap,
+        .headline,
+        .finder,
+        .latest,
+        .footer-grid,
+        .footer-bottom {
+            min-width: 0;
+        }
+
+        .headline__stage,
+        .slide,
+        .slide__media,
+        .slide__body,
+        .finder__card,
+        .card,
+        .card-body {
+            min-width: 0;
+        }
+
+        .slide__title,
+        .card .title,
+        .card-excerpt,
+        .footer-about {
+            overflow-wrap: anywhere;
+            word-break: normal;
+        }
+
+        .card .media img,
+        .slide__media > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (min-width: 1024px) {
+            .cards,
+            .cards--2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .cards:not(.cards--1):not(.cards--2) {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 720px) and (max-width: 1023px) {
+            .headline__stage {
+                height: clamp(420px, 58vw, 520px);
+            }
+
+            .slide__body {
+                max-width: 100%;
+                padding: 36px 32px 104px;
+            }
+
+            .slide__title {
+                max-width: 720px;
+                font-size: clamp(30px, 4.5vw, 44px);
+            }
+
+            .headline__controls {
+                padding: 0 32px 22px;
+            }
+
+            .cards,
+            .cards--1,
+            .cards--2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 18px;
+            }
+
+            .card {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .card .media {
+                flex: none;
+                min-height: 0;
+                aspect-ratio: 16 / 10;
+            }
+
+            .card-body {
+                padding: 18px 8px 8px;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 28px;
+            }
+
+            .footer-brand {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 719px) {
+            html {
+                scroll-padding-top: 76px;
+            }
+
+            .wrap {
+                padding-right: max(16px, env(safe-area-inset-right));
+                padding-left: max(16px, env(safe-area-inset-left));
+            }
+
+            .headline__stage {
+                height: clamp(430px, 125vw, 540px);
+                min-height: 430px;
+                border-radius: 20px;
+            }
+
+            .slide__body {
+                max-width: 100%;
+                padding: 24px 20px 92px;
+            }
+
+            .slide__cat {
+                max-width: 100%;
+                margin-bottom: 12px;
+                font-size: 11px;
+            }
+
+            .slide__title {
+                margin-bottom: 12px;
+                font-size: clamp(26px, 7.2vw, 36px);
+                line-height: 1.16;
+                -webkit-line-clamp: 4;
+            }
+
+            .slide__meta {
+                align-items: flex-start;
+                gap: 10px 14px;
+                font-size: 12px;
+            }
+
+            .slide__meta .btn {
+                height: 42px;
+                padding: 0 17px;
+                font-size: 12px;
+            }
+
+            .headline__controls {
+                padding: 0 16px 16px;
+            }
+
+            .headline__dots {
+                max-width: calc(100% - 104px);
+                overflow: hidden;
+            }
+
+            .dot {
+                padding: 0 4px;
+            }
+
+            .dot span {
+                width: 18px;
+            }
+
+            .dot.is-active span {
+                width: 34px;
+            }
+
+            .arrow {
+                width: 40px;
+                height: 40px;
+            }
+
+            .finder__card {
+                padding: 14px;
+                border-radius: 18px;
+            }
+
+            .search {
+                display: grid;
+                grid-template-columns: 20px minmax(0, 1fr) auto;
+                gap: 8px;
+                height: 54px;
+                padding: 0 6px 0 13px;
+            }
+
+            .search input {
+                width: 100%;
+                min-width: 0;
+                height: 50px;
+                font-size: 16px;
+            }
+
+            .search .btn {
+                min-width: 58px;
+                height: 40px;
+                padding: 0 14px;
+                font-size: 13px;
+            }
+
+            .finder__cats {
+                min-width: 0;
+            }
+
+            .chips {
+                width: calc(100% + 28px);
+                max-width: calc(100% + 28px);
+            }
+
+            .latest {
+                margin-right: 8px;
+                margin-left: 8px;
+                padding: 38px 0 44px;
+                border-radius: 20px;
+            }
+
+            .latest__head {
+                align-items: flex-start;
+                gap: 8px;
+                margin-bottom: 22px;
+            }
+
+            .section-title {
+                font-size: clamp(25px, 7vw, 29px);
+            }
+
+            .more-link {
+                flex: 0 0 auto;
+                font-size: 12px;
+            }
+
+            .cards,
+            .cards--1,
+            .cards--2 {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+            }
+
+            .card {
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                padding: 10px;
+                border-radius: 18px;
+            }
+
+            .card .media {
+                width: 100%;
+                min-height: 0;
+                aspect-ratio: 16 / 10;
+            }
+
+            .card-body {
+                width: 100%;
+                padding: 16px 6px 6px;
+            }
+
+            .card .title {
+                font-size: clamp(19px, 5.4vw, 21px);
+                line-height: 1.28;
+            }
+
+            .card-excerpt {
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .meta {
+                gap: 6px 12px;
+                font-size: 12px;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 24px 18px;
+                padding-top: 38px;
+                padding-bottom: 32px;
+            }
+
+            .footer-brand {
+                grid-column: 1 / -1;
+            }
+
+            .footer-about {
+                max-width: 100%;
+            }
+
+            .footer-title {
+                font-size: 13px;
+            }
+
+            .footer-links a {
+                font-size: 13px;
+                overflow-wrap: anywhere;
+            }
+
+            .footer-bottom {
+                padding-bottom: max(24px, env(safe-area-inset-bottom));
+                font-size: 12px;
+                line-height: 1.6;
+            }
+
+            .empty {
+                padding: 48px 20px;
+            }
+
+            .empty strong {
+                font-size: 23px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            :root {
+                --pad: 14px;
+            }
+
+            .wrap {
+                padding-right: 14px;
+                padding-left: 14px;
+            }
+
+            .headline__stage {
+                min-height: 410px;
+                height: 430px;
+            }
+
+            .slide__body {
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .slide__title {
+                font-size: 25px;
+            }
+
+            .slide__meta .btn {
+                padding: 0 13px;
+            }
+
+            .finder__card {
+                padding: 12px;
+            }
+
+            .footer-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .footer-brand {
+                grid-column: auto;
+            }
+        }
+
+
+        /* Perbaikan responsif khusus pilihan kategori publik */
+        @media (max-width: 719px) {
+            .finder__cats {
+                align-items: stretch;
+                width: 100%;
+                min-width: 0;
+            }
+
+            .finder__cats nav {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .chips {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+                max-width: 100%;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+                overflow: visible;
+            }
+
+            .chip {
+                flex: 0 1 auto;
+                max-width: 100%;
+                height: auto;
+                min-height: 40px;
+                padding: 9px 14px;
+                white-space: normal;
+                line-height: 1.35;
+            }
+        }
+
+        @media (min-width: 720px) {
+            .finder__cats nav {
+                min-width: 0;
+                flex: 1 1 auto;
+            }
+
+            .chips {
+                flex-wrap: wrap;
+            }
+        }
+
     </style>
 </head>
 
@@ -1101,8 +1536,7 @@
                                 aria-label="{{ $i + 1 }} dari {{ $slides->count() }}" @if ($i !== 0) aria-hidden="true" @endif>
                                 <div class="slide__media">
                                     @if ($article->image)
-                                        <img src="{{ asset('storage/' . $article->image) }}" alt="" @if ($i === 0)
-                                        fetchpriority="high" @endif>
+                                        <img src="{{ asset('storage/' . $article->image) }}" alt="" @if ($i === 0) fetchpriority="high" @endif>
                                     @else
                                         <div class="ph">
                                             <img src="{{ asset('images/logo-ruangkabar.png') }}" alt="RuangKabar">
@@ -1141,8 +1575,7 @@
                             <div class="headline__dots" role="group" aria-label="Pilih berita utama">
                                 @foreach ($slides as $i => $article)
                                     <button class="dot {{ $i === 0 ? 'is-active' : '' }}" type="button"
-                                        aria-label="Berita {{ $i + 1 }}" @if ($i === 0) aria-current="true"
-                                        @endif><span></span></button>
+                                        aria-label="Berita {{ $i + 1 }}" @if ($i === 0) aria-current="true" @endif><span></span></button>
                                 @endforeach
                             </div>
 
@@ -1239,7 +1672,8 @@
                                             <time
                                                 datetime="{{ $article->created_at->toDateString() }}">{{ $article->created_at->locale('id')->translatedFormat('d F Y') }}</time>
                                         @endif
-                                    </div>  
+                                    </div>
+                                </div>
                             </article>
                         @endforeach
                     </div>

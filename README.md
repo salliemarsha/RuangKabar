@@ -2,6 +2,8 @@
 
 RuangKabar adalah portal berita berbasis web yang dibangun menggunakan Laravel. Aplikasi ini menyediakan layanan membaca berita bagi pengunjung, pengelolaan artikel bagi penulis, serta panel administrasi untuk mengelola konten dan pengguna.
 
+Website: https://ruangkabar.web.id
+
 ## Daftar Isi
 
 1. [Gambaran Umum](#gambaran-umum)
