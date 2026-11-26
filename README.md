@@ -224,7 +224,7 @@ Seluruh screenshot berikut merupakan dokumentasi antarmuka aplikasi RuangKabar.
 ### 1. Clone Repository
 
 ```bash
-git clone <URL_REPOSITORY>
+git clone (https://github.com/salliemarsha/RuangKabar.git)
 cd ruangkabar
 ```
 
